@@ -34,6 +34,7 @@
             // 
             // PBox
             // 
+            this.PBox.BackColor = System.Drawing.Color.Gray;
             this.PBox.Location = new System.Drawing.Point(12, 12);
             this.PBox.Name = "PBox";
             this.PBox.Size = new System.Drawing.Size(700, 450);
