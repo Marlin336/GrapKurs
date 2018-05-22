@@ -15,6 +15,10 @@ namespace GrapKurs
         public MainForm()
         {
             InitializeComponent();
+            Bitmap bitmap = new Bitmap(PBox.Width, PBox.Height);
+            PBox.BackColor = Color.FromArgb(70, 70, 70);
+            bitmap.SetPixel(100, 100, Color.Red);
+            PBox.Image = bitmap;
         }
     }
 }

@@ -88,8 +88,8 @@ namespace GrapKurs
         public Point[] Points { get; } = new Point[3];
         public double Area { get; }
         public double Perimeter { get; }
-        Color color = Color.Gray;
-        public Triangle(Point pt1, Point pt2, Point pt3)
+        Color color;
+        public Triangle(Point pt1, Point pt2, Point pt3, Color col)
         {
             this.Points = new Point[] { pt1, pt2, pt3 };
             Perimeter = new Line(pt1, pt2).Length + new Line(pt2, pt3).Length + new Line(pt3, pt1).Length;
@@ -99,9 +99,10 @@ namespace GrapKurs
             {
                 throw new Exception("Площадь равна нулю");
             }
+            color = col;
         }
-        public Triangle(Point[] points) : this(new Point(points[0]), new Point(points[1]), new Point(points[2])) { }
-        public Triangle(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3) : this(new Point(x1, y1, z1), new Point(x2, y2, z2), new Point(x3, y3, z3)) { }
+        public Triangle(Point[] points, Color col) : this(new Point(points[0]), new Point(points[1]), new Point(points[2]), col) { }
+        public Triangle(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, Color col) : this(new Point(x1, y1, z1), new Point(x2, y2, z2), new Point(x3, y3, z3), col) { }
     }
     public class Rectangle
     {
