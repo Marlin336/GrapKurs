@@ -74,7 +74,7 @@ namespace GrapKurs
         }
         private void DrawCircle(int x0, int y0, int rad, Bitmap bitmap)//Рисование отрезками
         {
-            int sect = 36;
+            int sect = 12;
 
         }
     }
