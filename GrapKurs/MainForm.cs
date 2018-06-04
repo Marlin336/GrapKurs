@@ -16,7 +16,7 @@ namespace GrapKurs
         {
             InitializeComponent();
             WorkScene scene = new WorkScene(PBox.Width, PBox.Height);
-            DrawLine(0, 0, 100, 100, scene.bmp, Color.Red);
+            DrawLine(-5, 0, 100, 100, scene.bmp, Color.Red);
             DrawLine(100, 0, 0, 100, scene.bmp, Color.Red);
             PBox.Image = scene.bmp;
         }
@@ -50,11 +50,19 @@ namespace GrapKurs
             {
                 if (steep)
                 {
-                    bitmap.SetPixel(y, x, color);
+                    try
+                    {
+                        bitmap.SetPixel(y, x, color);
+                    }
+                    catch { }
                 }
                 else
                 {
-                    bitmap.SetPixel(x, y, color);
+                    try
+                    {
+                        bitmap.SetPixel(x, y, color);
+                    }
+                    catch { }
                 }
                 error2 += derror2;
 
