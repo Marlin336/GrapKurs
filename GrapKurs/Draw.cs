@@ -9,10 +9,10 @@ namespace GrapKurs
 {
     public class Point
     {
-        public double x { get; } = 0;
-        public double y { get; } = 0;
-        public double z { get; } = 0;
-        public Point(double x, double y, double z)
+        public int x { get; } = 0;
+        public int y { get; } = 0;
+        public int z { get; } = 0;
+        public Point(int x, int y, int z)
         {
             this.x = x;
             this.y = y;
@@ -23,6 +23,10 @@ namespace GrapKurs
             this.x = pt.x;
             this.y = pt.y;
             this.z = pt.z;
+        }
+        public static Point operator *(Point pt1, float dig)
+        {
+            return new Point((int)(pt1.x * dig), (int)(pt1.y * dig), (int)(pt1.z * dig));
         }
         public static bool operator ==(Point pt1, Point pt2)
         {
@@ -81,7 +85,7 @@ namespace GrapKurs
             Length = Math.Sqrt(Math.Pow(pt1.x - pt2.x, 2) + Math.Pow(pt1.y - pt2.y, 2) + Math.Pow(pt1.z - pt2.z, 2));
         }
         public Line(Point[] points) : this(new Point(points[0]), new Point(points[1])) { }
-        public Line(double x1, double y1, double z1, double x2, double y2, double z2) : this(new Point(x1, y1, z1), new Point(x2, y2, z2)) { }
+        public Line(int x1, int y1, int z1, int x2, int y2, int z2) : this(new Point(x1, y1, z1), new Point(x2, y2, z2)) { }
     }
     public class Triangle
     {
@@ -102,9 +106,9 @@ namespace GrapKurs
             color = col;
         }
         public Triangle(Point[] points, Color col) : this(new Point(points[0]), new Point(points[1]), new Point(points[2]), col) { }
-        public Triangle(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, Color col) : this(new Point(x1, y1, z1), new Point(x2, y2, z2), new Point(x3, y3, z3), col) { }
+        public Triangle(int x1, int y1, int z1, int x2, int y2, int z2, int x3, int y3, int z3, Color col) : this(new Point(x1, y1, z1), new Point(x2, y2, z2), new Point(x3, y3, z3), col) { }
     }
-    public class Rectangle
+    /*public class Rectangle
     {
         public Point[] Points { get; } = new Point[4];
         public double Area { get; }
@@ -184,5 +188,5 @@ namespace GrapKurs
             }
             this.Hole = hole;
         }
-    }
+    }*/
 }
