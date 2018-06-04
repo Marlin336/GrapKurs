@@ -16,30 +16,52 @@ namespace GrapKurs
         {
             InitializeComponent();
             WorkScene scene = new WorkScene(PBox.Width, PBox.Height);
-            //DrawLine(20, 100, 150, 120, scene.bmp);
-            DrawCircleBrez(100, 100, 45, scene.bmp);
+            DrawLine(0, 0, 100, 100, scene.bmp, Color.Red);
+            DrawLine(100, 0, 0, 100, scene.bmp, Color.Red);
             PBox.Image = scene.bmp;
         }
-        private void DrawLine(int x0, int y0, int x1, int y1, Bitmap bitmap)
+
+        void Swap(ref int a, ref int b)
         {
-            int delx = Math.Abs(x1 - x0);
-            int dely = Math.Abs(y1 - y0);
-            int err = 0;
-            int delerr = dely;
-            int y = y0;
-            int diry = y1 - y0;
-            if (diry > 0)
-                diry = 1;
-            if (diry < 0)
-                diry = -1;
-            for (int x = x0; x < x1; x++)
+            int swap = a;
+            a = b;
+            b = swap;
+        }
+        void DrawLine(int x0, int y0, int x1, int y1, Bitmap bitmap, Color color)//Улучшеный алг. Брезенхэма
+        {
+            bool steep = false;
+            if (Math.Abs(x0 - x1) < Math.Abs(y0 - y1))
             {
-                bitmap.SetPixel(x, y, Color.Red);
-                err += delerr;
-                if (2 * err >= delx)
+                Swap(ref x0, ref y0);
+                Swap(ref x1, ref y1);
+                steep = true;
+            }
+            if (x0 > x1)
+            {
+                Swap(ref x0, ref x1);
+                Swap(ref y0, ref y1);
+            }
+            int dx = x1 - x0;
+            int dy = y1 - y0;
+            double derror = Math.Abs(dy / (double)dx);
+            double error = 0;
+            int y = y0;
+            for (int x = x0; x <= x1; x++)
+            {
+                if (steep)
                 {
-                    y += diry;
-                    err -= delx;
+                    bitmap.SetPixel(y, x, color);
+                }
+                else
+                {
+                    bitmap.SetPixel(x, y, color);
+                }
+                error += derror;
+
+                if (error > .5)
+                {
+                    y += (y1 > y0 ? 1 : -1);
+                    error -= 1.0;
                 }
             }
         }
