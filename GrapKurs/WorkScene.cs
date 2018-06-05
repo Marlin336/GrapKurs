@@ -21,7 +21,7 @@ namespace GrapKurs
         bool carcas = false;
         public Bitmap bmp;
         byte[] pixels;
-        double[] zBuf;
+        public int[] zBuf;
         public WorkScene(int width, int height)
         {
             bmp = new Bitmap(width, height);

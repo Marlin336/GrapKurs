@@ -16,13 +16,13 @@ namespace GrapKurs
         {
             InitializeComponent();
             WorkScene scene = new WorkScene(PBox.Width, PBox.Height);
-            Point p1 = new Point(5, 5, 5);
-            Point p2 = new Point(105, 105, 105);
-            Point p3 = new Point(75, 150, 10);
-            //DrawLine(-5, 0, 100, 100, scene.bmp, Color.Red);
-            //DrawLine(100, 0, 0, 100, scene.bmp, Color.Red);
-            //DrawTriangle(p1, p2, p3, scene.bmp, Color.White, false);
+            scene.zBuf = new int[scene.bmp.Height * scene.bmp.Width];
+            Point p1 = new Point(10, 10, 0);
+            Point p2 = new Point(10, 110, 0);
+            Point p3 = new Point(110, 10, 0);
+            Point p4 = new Point(110, 110, 0);
             DrawTriangle(p1, p2, p3, scene.bmp, Color.White, true);
+            DrawTriangle(p2, p3, p4, scene.bmp, Color.Black, true);
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             PBox.Image = scene.bmp; 
         }
@@ -40,26 +40,26 @@ namespace GrapKurs
             b = swap;
         }
 
-        void DrawLine(int x0, int y0, int x1, int y1, Bitmap bitmap, Color color)//Улучшеный алг. Брезенхэма
+        void DrawLine(int x1, int y1, int x2, int y2, Bitmap bitmap, Color color)//Улучшеный алг. Брезенхэма
         {
             bool steep = false;
-            if (Math.Abs(x0 - x1) < Math.Abs(y0 - y1))
+            if (Math.Abs(x1 - x2) < Math.Abs(y1 - y2))
             {
-                Swap(ref x0, ref y0);
                 Swap(ref x1, ref y1);
+                Swap(ref x2, ref y2);
                 steep = true;
             }
-            if (x0 > x1)
+            if (x1 > x2)
             {
-                Swap(ref x0, ref x1);
-                Swap(ref y0, ref y1);
+                Swap(ref x1, ref x2);
+                Swap(ref y1, ref y2);
             }
-            int dx = x1 - x0;
-            int dy = y1 - y0;
+            int dx = x2 - x1;
+            int dy = y2 - y1;
             int derror2 = Math.Abs(dy) * 2;
             int error2 = 0;
-            int y = y0;
-            for (int x = x0; x <= x1; x++)
+            int y = y1;
+            for (int x = x1; x <= x2; x++)
             {
                 if (steep)
                 {
@@ -81,7 +81,7 @@ namespace GrapKurs
 
                 if (error2 > dx)
                 {
-                    y += (y1 > y0 ? 1 : -1);
+                    y += (y2 > y1 ? 1 : -1);
                     error2 -= dx * 2;
                 }
             }
@@ -110,10 +110,31 @@ namespace GrapKurs
                     Point A = p1 + (p3 - p1) * alpha;
                     Point B = second_half ? p2 + (p3 - p2) * beta : p1 + (p2 - p1) * beta;
                     if (A.x > B.x) Swap(ref A, ref B);
-                    for (int j = A.x; j <= B.x; j++) { bitmap.SetPixel(j, p1.y + i, color); } // attention, due to int casts t0.y+i != A.y
+                    for (int j = A.x; j <= B.x; j++) // attention, due to int casts t0.y+i != A.y
+                    {
+                        bitmap.SetPixel(j, p1.y + i, color);
+                    }
                 }
             }
         }
+        void Rasterize(Point p0, Point p1, Bitmap bitmap, Color color, int[] ybuffer)
+        {
+            if (p0.x > p1.x)
+            {
+                Swap(ref p0, ref p1);
+            }
+            for (int x = p0.x; x <= p1.x; x++)
+            {
+                float t = (x - p0.x) / (float)(p1.x - p0.x);
+                int y = (int)(p0.y * (1 - t) + p1.y * t);
+                if (ybuffer[x] < y)
+                {
+                    ybuffer[x] = y;
+                    bitmap.SetPixel(x, 0, color);
+                }
+            }
+        }
+
 
         private void DrawCircleBrez(int x0, int y0, int rad, Bitmap bitmap)//Алгоритм Брезенхэма
         {
