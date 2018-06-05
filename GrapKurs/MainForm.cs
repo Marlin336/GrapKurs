@@ -17,12 +17,16 @@ namespace GrapKurs
             InitializeComponent();
             WorkScene scene = new WorkScene(PBox.Width, PBox.Height);
             scene.zBuf = new int[scene.bmp.Height * scene.bmp.Width];
+            for (int i = 0; i < scene.zBuf.Length; i++)
+            {
+                scene.zBuf[i] = int.MinValue;
+            }
             Point p1 = new Point(10, 10, 0);
             Point p2 = new Point(10, 110, 0);
             Point p3 = new Point(110, 10, 0);
-            Point p4 = new Point(110, 110, 0);
-            DrawTriangle(p1, p2, p3, scene.bmp, Color.White, true);
-            DrawTriangle(p2, p3, p4, scene.bmp, Color.Black, true);
+            //Point p4 = new Point(110, 110, 0);
+            DrawTriangle(p1, p2, p3, scene.bmp, Color.White, ref scene.zBuf, true);
+            //DrawTriangle(p2, p3, p4, scene.bmp, Color.Black, scene.zBuf, true);
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             PBox.Image = scene.bmp; 
         }
@@ -86,7 +90,7 @@ namespace GrapKurs
                 }
             }
         }
-        void DrawTriangle(Point p1, Point p2, Point p3, Bitmap bitmap, Color color, bool fill)
+        void DrawTriangle(Point p1, Point p2, Point p3, Bitmap bitmap, Color color, ref int[] zbuffer, bool fill)
         {
             if (p1.y > p2.y) Swap(ref p1, ref p2);
             if (p1.y > p3.y) Swap(ref p1, ref p3);
@@ -112,7 +116,14 @@ namespace GrapKurs
                     if (A.x > B.x) Swap(ref A, ref B);
                     for (int j = A.x; j <= B.x; j++) // attention, due to int casts t0.y+i != A.y
                     {
-                        bitmap.SetPixel(j, p1.y + i, color);
+                        float phi = B.x == A.x ? 1 : (j - A.x) / (B.x - A.x);
+                        Point P = new Point(A) + new Point(B - A) * phi;
+                        int idx = P.x + P.y * bitmap.Width;
+                        if (zbuffer[idx] < P.z)
+                        {
+                            zbuffer[idx] = P.z;
+                            bitmap.SetPixel(P.x, P.y, color);
+                        }
                     }
                 }
             }
