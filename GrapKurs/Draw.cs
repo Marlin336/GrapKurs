@@ -9,9 +9,9 @@ namespace GrapKurs
 {
     public class Point
     {
-        public int x { get; } = 0;
-        public int y { get; } = 0;
-        public int z { get; } = 0;
+        public int x { get; set; } = 0;
+        public int y { get; set; } = 0;
+        public int z { get; set; } = 0;
         public Point(int x, int y, int z)
         {
             this.x = x;

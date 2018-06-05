@@ -21,12 +21,17 @@ namespace GrapKurs
             {
                 scene.zBuf[i] = int.MinValue;
             }
-            Point p1 = new Point(10, 10, 0);
-            Point p2 = new Point(10, 110, 0);
-            Point p3 = new Point(110, 10, 0);
-            //Point p4 = new Point(110, 110, 0);
-            DrawTriangle(p1, p2, p3, scene.bmp, Color.White, ref scene.zBuf, true);
-            //DrawTriangle(p2, p3, p4, scene.bmp, Color.Black, scene.zBuf, true);
+            Point[] tr1 = new Point[3];
+            tr1[0] = new Point(10, 10, 0);
+            tr1[1] = new Point(55, 110, 50);
+            tr1[2] = new Point(110, 70, 0);
+            Point[] tr2 = new Point[3];
+            tr2[0] = new Point(10, 110, 0);
+            tr2[1] = new Point(55, 10, 50);
+            tr2[2] = new Point(110, 80, 0);
+            DrawTriangle(tr2[0], tr2[1], tr2[2], scene.bmp, Color.Red, ref scene.zBuf);
+            DrawTriangle(tr1[0], tr1[1], tr1[2], scene.bmp, Color.White, ref scene.zBuf);
+            
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             PBox.Image = scene.bmp; 
         }
@@ -90,40 +95,32 @@ namespace GrapKurs
                 }
             }
         }
-        void DrawTriangle(Point p1, Point p2, Point p3, Bitmap bitmap, Color color, ref int[] zbuffer, bool fill)
+        void DrawTriangle(Point p1, Point p2, Point p3, Bitmap bitmap, Color color, ref int[] zbuffer)
         {
             if (p1.y > p2.y) Swap(ref p1, ref p2);
             if (p1.y > p3.y) Swap(ref p1, ref p3);
             if (p2.y > p3.y) Swap(ref p2, ref p3);
-
-            if (!fill)
+            int total_height = p3.y - p1.y;
+            for (int i = 0; i < total_height; i++)
             {
-                DrawLine(p1.x, p1.y, p2.x, p2.y, bitmap, color);
-                DrawLine(p2.x, p2.y, p3.x, p3.y, bitmap, color);
-                DrawLine(p3.x, p3.y, p1.x, p1.y, bitmap, color);
-            }
-            else
-            {
-                int total_height = p3.y - p1.y;
-                for (int i = 0; i < total_height; i++)
+                bool second_half = i > p2.y - p1.y || p2.y == p1.y;
+                int segment_height = second_half ? p3.y - p2.y : p2.y - p1.y;
+                float alpha = (float)i / total_height;
+                float beta = (float)(i - (second_half ? p2.y - p1.y : 0)) / segment_height; // be careful: with above conditions no division by zero here
+                Point A = p1 + (p3 - p1) * alpha;
+                Point B = second_half ? p2 + (p3 - p2) * beta : p1 + (p2 - p1) * beta;
+                if (A.x > B.x) Swap(ref A, ref B);
+                for (int j = A.x; j <= B.x; j++) // attention, due to int casts t0.y+i != A.y
                 {
-                    bool second_half = i > p2.y - p1.y || p2.y == p1.y;
-                    int segment_height = second_half ? p3.y - p2.y : p2.y - p1.y;
-                    float alpha = (float)i / total_height;
-                    float beta = (float)(i - (second_half ? p2.y - p1.y : 0)) / segment_height; // be careful: with above conditions no division by zero here
-                    Point A = p1 + (p3 - p1) * alpha;
-                    Point B = second_half ? p2 + (p3 - p2) * beta : p1 + (p2 - p1) * beta;
-                    if (A.x > B.x) Swap(ref A, ref B);
-                    for (int j = A.x; j <= B.x; j++) // attention, due to int casts t0.y+i != A.y
+                    //bitmap.SetPixel(j, p1.y + i, color);
+                    float phi = B.x == A.x ? 1 : (j - A.x) / (B.x - A.x);
+                    Point P = new Point(A) + new Point(B - A) * phi;
+                    P.x = j; P.y = p1.y + i;
+                    int idx = P.x + P.y * bitmap.Width;
+                    if (zbuffer[idx] < P.z)
                     {
-                        float phi = B.x == A.x ? 1 : (j - A.x) / (B.x - A.x);
-                        Point P = new Point(A) + new Point(B - A) * phi;
-                        int idx = P.x + P.y * bitmap.Width;
-                        if (zbuffer[idx] < P.z)
-                        {
-                            zbuffer[idx] = P.z;
-                            bitmap.SetPixel(P.x, P.y, color);
-                        }
+                        zbuffer[idx] = P.z;
+                        bitmap.SetPixel(P.x, P.y, color);
                     }
                 }
             }
