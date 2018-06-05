@@ -29,9 +29,13 @@ namespace GrapKurs
             tr2[0] = new Point(10, 110, 0);
             tr2[1] = new Point(55, 10, 50);
             tr2[2] = new Point(110, 80, 0);
-            DrawTriangle(tr2[0], tr2[1], tr2[2], scene.bmp, Color.Red, ref scene.zBuf);
+            Point[] tr3 = new Point[3];
+            tr3[0] = new Point(0, 10, 10);
+            tr3[1] = new Point(45, 120, 30);
+            tr3[2] = new Point(100, 80, -20);
             DrawTriangle(tr1[0], tr1[1], tr1[2], scene.bmp, Color.White, ref scene.zBuf);
-            
+            DrawTriangle(tr2[0], tr2[1], tr2[2], scene.bmp, Color.Red, ref scene.zBuf);
+            DrawTriangle(tr3[0], tr3[1], tr3[2], scene.bmp, Color.Blue, ref scene.zBuf);
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             PBox.Image = scene.bmp; 
         }
@@ -143,7 +147,6 @@ namespace GrapKurs
             }
         }
 
-
         private void DrawCircleBrez(int x0, int y0, int rad, Bitmap bitmap)//Алгоритм Брезенхэма
         {
             int x = 0;
@@ -172,11 +175,6 @@ namespace GrapKurs
                 del += 2 * (x - y);
                 y--;
             }
-        }
-        private void DrawCircle(int x0, int y0, int rad, Bitmap bitmap)//Рисование отрезками
-        {
-            int sect = 12;
-
         }
     }
 }
