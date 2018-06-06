@@ -92,7 +92,7 @@ namespace GrapKurs
         public Point[] Points { get; } = new Point[3];
         public double Area { get; }
         public double Perimeter { get; }
-        Color color;
+        public Color color;
         public Triangle(Point pt1, Point pt2, Point pt3, Color col)
         {
             this.Points = new Point[] { pt1, pt2, pt3 };

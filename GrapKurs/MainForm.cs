@@ -22,9 +22,10 @@ namespace GrapKurs
                 scene.zBuf[i] = int.MinValue;
             }
             Point[] tr1 = new Point[3];
-            tr1[0] = new Point(10, 10, 0);
-            tr1[1] = new Point(55, 110, 50);
-            tr1[2] = new Point(110, 70, 0);
+            tr1[0] = new Point(100, 100, 0);
+            tr1[1] = new Point(150, 200, 30);
+            tr1[2] = new Point(200, 100, 0);
+            Triangle triangle1 = new Triangle(tr1, Color.Black);
             Point[] tr2 = new Point[3];
             tr2[0] = new Point(10, 110, 0);
             tr2[1] = new Point(55, 10, 50);
@@ -33,9 +34,18 @@ namespace GrapKurs
             tr3[0] = new Point(0, 10, 10);
             tr3[1] = new Point(45, 120, 30);
             tr3[2] = new Point(100, 80, -20);
-            DrawTriangle(tr1[0], tr1[1], tr1[2], scene.bmp, Color.White, ref scene.zBuf);
-            DrawTriangle(tr2[0], tr2[1], tr2[2], scene.bmp, Color.Red, ref scene.zBuf);
-            DrawTriangle(tr3[0], tr3[1], tr3[2], scene.bmp, Color.Blue, ref scene.zBuf);
+            DrawTriangle(triangle1, scene.bmp, scene.zBuf);
+            Transform(ref triangle1, 1.5, 1.5, 0, 0);
+            triangle1.color = Color.Red;
+            DrawTriangle(triangle1, scene.bmp, scene.zBuf);
+            Transform(ref triangle1, 1, 1, 0.5, 0);
+            triangle1.color = Color.Green;
+            DrawTriangle(triangle1, scene.bmp, scene.zBuf);
+            Transform(ref triangle1, 1, 1, 0, 0.5);
+            triangle1.color = Color.Blue;
+            DrawTriangle(triangle1, scene.bmp, scene.zBuf);
+            //DrawTriangle(tr2[0], tr2[1], tr2[2], scene.bmp, Color.Red, scene.zBuf);
+            //DrawTriangle(tr3[0], tr3[1], tr3[2], scene.bmp, Color.Blue, scene.zBuf);
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             PBox.Image = scene.bmp; 
         }
@@ -99,7 +109,7 @@ namespace GrapKurs
                 }
             }
         }
-        void DrawTriangle(Point p1, Point p2, Point p3, Bitmap bitmap, Color color, ref int[] zbuffer)
+        void DrawTriangle(Point p1, Point p2, Point p3, Bitmap bitmap, Color color, int[] zbuffer)
         {
             if (p1.y > p2.y) Swap(ref p1, ref p2);
             if (p1.y > p3.y) Swap(ref p1, ref p3);
@@ -128,6 +138,32 @@ namespace GrapKurs
                     }
                 }
             }
+        }
+        void DrawTriangle(Triangle triangle, Bitmap bitmap, int[] zbuffer)
+        {
+            DrawTriangle(triangle.Points[0], triangle.Points[1], triangle.Points[2], bitmap, triangle.color, zbuffer);
+        }
+
+        private void Transform(ref Point pt, double x_scale, double y_scale, double x_shift, double y_shift)
+        {
+            Matrix TransformMtx = new Matrix(2);
+            TransformMtx.Elems[0, 0] = x_scale;
+            TransformMtx.Elems[1, 0] = x_shift;
+            TransformMtx.Elems[0, 1] = y_shift;
+            TransformMtx.Elems[1, 1] = y_scale;
+            Matrix PointMtx = new Matrix(2, 1);
+            PointMtx.Elems[0, 0] = pt.x;
+            PointMtx.Elems[1, 0] = pt.y;
+            Matrix res = new Matrix(TransformMtx.Rows, PointMtx.Columns);
+            res = TransformMtx*PointMtx;
+            pt.x = (int)res.Elems[0, 0];
+            pt.y = (int)res.Elems[1, 0];
+        }
+        public void Transform(ref Triangle triangle, double x_scale, double y_scale, double x_shift, double y_shift)
+        {
+            Transform(ref triangle.Points[0], x_scale, y_scale, x_shift, y_shift);
+            Transform(ref triangle.Points[1], x_scale, y_scale, x_shift, y_shift);
+            Transform(ref triangle.Points[2], x_scale, y_scale, x_shift, y_shift);
         }
 
         private void DrawCircleBrez(int x0, int y0, int rad, Bitmap bitmap)//Алгоритм Брезенхэма
