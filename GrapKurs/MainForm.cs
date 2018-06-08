@@ -22,30 +22,12 @@ namespace GrapKurs
                 scene.zBuf[i] = int.MinValue;
             }
             Point[] tr1 = new Point[3];
-            tr1[0] = new Point(100, 100, 0);
-            tr1[1] = new Point(150, 200, 30);
-            tr1[2] = new Point(200, 100, 0);
+            tr1[0] = new Point(275, 0, 0);
+            tr1[1] = new Point(325, 100, 30);
+            tr1[2] = new Point(375, 0, 0);
             Triangle triangle1 = new Triangle(tr1, Color.Black);
-            Point[] tr2 = new Point[3];
-            tr2[0] = new Point(10, 110, 0);
-            tr2[1] = new Point(55, 10, 50);
-            tr2[2] = new Point(110, 80, 0);
-            Point[] tr3 = new Point[3];
-            tr3[0] = new Point(0, 10, 10);
-            tr3[1] = new Point(45, 120, 30);
-            tr3[2] = new Point(100, 80, -20);
+            Round(ref triangle1, 45);
             DrawTriangle(triangle1, scene.bmp, scene.zBuf);
-            Transform(ref triangle1, 1.5, 1.5, 0, 0);
-            triangle1.color = Color.Red;
-            DrawTriangle(triangle1, scene.bmp, scene.zBuf);
-            Transform(ref triangle1, 1, 1, 0.5, 0);
-            triangle1.color = Color.Green;
-            DrawTriangle(triangle1, scene.bmp, scene.zBuf);
-            Transform(ref triangle1, 1, 1, 0, 0.5);
-            triangle1.color = Color.Blue;
-            DrawTriangle(triangle1, scene.bmp, scene.zBuf);
-            //DrawTriangle(tr2[0], tr2[1], tr2[2], scene.bmp, Color.Red, scene.zBuf);
-            //DrawTriangle(tr3[0], tr3[1], tr3[2], scene.bmp, Color.Blue, scene.zBuf);
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             PBox.Image = scene.bmp; 
         }
@@ -164,6 +146,11 @@ namespace GrapKurs
             Transform(ref triangle.Points[0], x_scale, y_scale, x_shift, y_shift);
             Transform(ref triangle.Points[1], x_scale, y_scale, x_shift, y_shift);
             Transform(ref triangle.Points[2], x_scale, y_scale, x_shift, y_shift);
+        }
+        public void Round(ref Triangle triangle, double angle)
+        {
+            double alpha = angle * (Math.PI / 180);
+            Transform(ref triangle, Math.Cos(alpha), Math.Cos(alpha), Math.Sin(alpha), -Math.Sin(alpha));
         }
 
         private void DrawCircleBrez(int x0, int y0, int rad, Bitmap bitmap)//Алгоритм Брезенхэма
