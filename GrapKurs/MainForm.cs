@@ -25,10 +25,10 @@ namespace GrapKurs
             tr1[0] = new Point(275, 0, 0);
             tr1[1] = new Point(325, 100, 30);
             tr1[2] = new Point(375, 0, 0);
-            Triangle triangle1 = new Triangle(tr1, Color.Black);
-            Round(ref triangle1, 0);
-            Moving(ref triangle1, 100, 50);
-            DrawTriangle(triangle1, scene.bmp, scene.zBuf);
+            Triangle test = new Triangle(tr1, Color.Black);
+            Round(ref test, 135, new Point(test.Points[1]));
+            //Moving(ref triangle1, 100, 50);
+            DrawTriangle(test, scene.bmp, scene.zBuf);
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             PBox.Image = scene.bmp; 
         }
@@ -127,7 +127,7 @@ namespace GrapKurs
             DrawTriangle(triangle.Points[0], triangle.Points[1], triangle.Points[2], bitmap, triangle.color, zbuffer);
         }
 
-        private void Transform(ref Point pt, double x_scale, double y_scale, double x_shift, double y_shift)
+        /*private void Transform(ref Point pt, double x_scale, double y_scale, double x_shift, double y_shift)
         {
             Matrix TransformMtx = new Matrix(3);
             TransformMtx.Elems[0, 0] = x_scale;
@@ -142,18 +142,33 @@ namespace GrapKurs
             res = TransformMtx*PointMtx;
             pt.x = (int)res.Elems[0, 0];
             pt.y = (int)res.Elems[1, 0];
-        }
-        private void Transform(ref Triangle triangle, double x_scale, double y_scale, double x_shift, double y_shift)
+        }*/
+        public void Transform(ref Triangle triangle, double x_scale, double y_scale, double x_shift, double y_shift)
         {
-            Transform(ref triangle.Points[0], x_scale, y_scale, x_shift, y_shift);
-            Transform(ref triangle.Points[1], x_scale, y_scale, x_shift, y_shift);
-            Transform(ref triangle.Points[2], x_scale, y_scale, x_shift, y_shift);
+            Matrix TransformMtx = new Matrix(3);
+            TransformMtx.Elems[0, 0] = x_scale;
+            TransformMtx.Elems[1, 0] = x_shift;
+            TransformMtx.Elems[0, 1] = y_shift;
+            TransformMtx.Elems[1, 1] = y_scale;
+            for (int i = 0; i < 3; i++)
+            {
+                Matrix PointMtx = new Matrix(3, 1);
+                PointMtx.Elems[0, 0] = triangle.Points[i].x;
+                PointMtx.Elems[1, 0] = triangle.Points[i].y;
+                PointMtx.Elems[2, 0] = 1;
+                Matrix res = new Matrix(TransformMtx.Rows, PointMtx.Columns);
+                res = TransformMtx * PointMtx;
+                triangle.Points[i].x = (int)res.Elems[0, 0];
+                triangle.Points[i].y = (int)res.Elems[1, 0];
+            }
         }
 
-        public void Round(ref Triangle triangle, double angle)
-        {
+        public void Round(ref Triangle triangle, double angle, Point axis)
+        { 
             double alpha = angle * (Math.PI / 180);//Градусы -> радианы
+            Moving(ref triangle, -axis.x, -axis.y);
             Transform(ref triangle, Math.Cos(alpha), Math.Cos(alpha), Math.Sin(alpha), -Math.Sin(alpha));
+            Moving(ref triangle, axis.x, axis.y);
         }
         public void Moving(ref Triangle triangle, int x_move, int y_move)
         {
