@@ -29,18 +29,18 @@ namespace GrapKurs
         {
             scene.bmp = new Bitmap(PBox.Width, PBox.Height);
             Point[] tr1 = new Point[3];
-            tr1[0] = new Point(90, 100, -10);
-            tr1[1] = new Point(150, 175, 20);
-            tr1[2] = new Point(250, 80, 80);
+            tr1[0] = new Point(90, 100, 0);
+            tr1[1] = new Point(120, 200, 0);
+            tr1[2] = new Point(150, 100, 0);
             Triangle test1 = new Triangle(tr1, Color.Green);
             Point[] tr2 = new Point[3];
             tr2[0] = new Point(90, 90, 0);
             tr2[1] = new Point(160, 185, 0);
             tr2[2] = new Point(210, 100, 0);
             Triangle test2 = new Triangle(tr2, Color.Red);
+            Rotate(ref test1, 45, 45, 45, new Point(test1.Points[0]));
             DrawTriangle(test1, scene.bmp, scene.zBuf, scene.fill);
-            DrawTriangle(test2, scene.bmp, scene.zBuf, scene.fill);
-            //DrawTriangle(test1, scene.bmp, scene.zBuf, scene.fill);
+            //DrawTriangle(test2, scene.bmp, scene.zBuf, scene.fill);
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             PBox.Image = scene.bmp;
         }
@@ -58,7 +58,7 @@ namespace GrapKurs
             b = swap;
         }
 
-        void DrawLine(int x1, int y1, int x2, int y2, Bitmap bitmap, Color color)//Улучшеный алг. Брезенхэма
+        void DrawLine(int x1, int y1, int x2, int y2, Bitmap bitmap, Color color)
         {
             bool steep = false;
             if (Math.Abs(x1 - x2) < Math.Abs(y1 - y2))
@@ -147,48 +147,104 @@ namespace GrapKurs
             DrawTriangle(triangle.Points[0], triangle.Points[1], triangle.Points[2], bitmap, triangle.color, zbuffer, fill);
         }
 
-        public void Transform(ref Triangle triangle, double x_scale, double y_scale, double x_shift, double y_shift)
+        public void Scale(ref Triangle triangle, double x_scale, double y_scale, double z_scale)
         {
-            Matrix TransformMtx = new Matrix(3);
-            TransformMtx.Elems[0, 0] = x_scale;
-            TransformMtx.Elems[1, 0] = x_shift;
-            TransformMtx.Elems[0, 1] = y_shift;
-            TransformMtx.Elems[1, 1] = y_scale;
+            Matrix TMtx = new Matrix(4);
+            TMtx.Elems[0, 0] = x_scale;
+            TMtx.Elems[1, 1] = y_scale;
+            TMtx.Elems[2, 2] = z_scale;
             for (int i = 0; i < 3; i++)
             {
-                Matrix PointMtx = new Matrix(3, 1);
-                PointMtx.Elems[0, 0] = triangle.Points[i].x;
-                PointMtx.Elems[1, 0] = triangle.Points[i].y;
-                PointMtx.Elems[2, 0] = 1;
-                Matrix res = new Matrix(TransformMtx.Rows, PointMtx.Columns);
-                res = TransformMtx * PointMtx;
+                Matrix PMtx = new Matrix(4, 1);
+                PMtx.Elems[0, 0] = triangle.Points[i].x;
+                PMtx.Elems[1, 0] = triangle.Points[i].y;
+                PMtx.Elems[2, 0] = triangle.Points[i].z;
+                PMtx.Elems[3, 0] = 1;
+                Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
+                res = TMtx * PMtx;
                 triangle.Points[i].x = (int)res.Elems[0, 0];
                 triangle.Points[i].y = (int)res.Elems[1, 0];
+                triangle.Points[i].z = (int)res.Elems[2, 0];
+            }
+        }
+        public void Shift(ref Triangle triangle, double xy, double xz, double yx, double yz, double zx, double zy)
+        {
+            Matrix TMtx = new Matrix(4);
+            TMtx.Elems[0, 1] = xy;
+            TMtx.Elems[0, 2] = xz;
+            TMtx.Elems[1, 0] = yx;
+            TMtx.Elems[1, 2] = yz;
+            TMtx.Elems[2, 0] = zx;
+            TMtx.Elems[2, 1] = zy;
+            for (int i = 0; i < 3; i++)
+            {
+                Matrix PMtx = new Matrix(4, 1);
+                PMtx.Elems[0, 0] = triangle.Points[i].x;
+                PMtx.Elems[1, 0] = triangle.Points[i].y;
+                PMtx.Elems[2, 0] = triangle.Points[i].z;
+                PMtx.Elems[3, 0] = 1;
+                Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
+                res = TMtx * PMtx;
+                triangle.Points[i].x = (int)res.Elems[0, 0];
+                triangle.Points[i].y = (int)res.Elems[1, 0];
+                triangle.Points[i].z = (int)res.Elems[2, 0];
+            }
+        }
+        public void Transform(ref Triangle triangle, double x_scale, double y_scale, double z_scale, double xy, double xz, double yx, double yz, double zx, double zy)
+        {
+            Matrix TMtx = new Matrix(3);
+            TMtx.Elems[0, 0] = x_scale;
+            TMtx.Elems[1, 1] = y_scale;
+            TMtx.Elems[2, 2] = z_scale;
+            TMtx.Elems[0, 1] = xy;
+            TMtx.Elems[0, 2] = xz;
+            TMtx.Elems[1, 0] = yx;
+            TMtx.Elems[1, 2] = yz;
+            TMtx.Elems[2, 0] = zx;
+            TMtx.Elems[2, 1] = zy;
+            for (int i = 0; i < 3; i++)
+            {
+                Matrix PMtx = new Matrix(3, 1);
+                PMtx.Elems[0, 0] = triangle.Points[i].x;
+                PMtx.Elems[1, 0] = triangle.Points[i].y;
+                PMtx.Elems[2, 0] = 1;
+                Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
+                res = TMtx * PMtx;
+                triangle.Points[i].x = (int)res.Elems[0, 0];
+                triangle.Points[i].y = (int)res.Elems[1, 0];
+                triangle.Points[i].z = (int)res.Elems[2, 0];
             }
         }
 
-        public void Round(ref Triangle triangle, double angle, Point axis)
+        public void Rotate(ref Triangle triangle, double x_angle, double y_angle, double z_angle, Point axis)
         { 
-            double alpha = angle * (Math.PI / 180);//Градусы -> радианы
-            Moving(ref triangle, -axis.x, -axis.y);
-            Transform(ref triangle, Math.Cos(alpha), Math.Cos(alpha), Math.Sin(alpha), -Math.Sin(alpha));
-            Moving(ref triangle, axis.x, axis.y);
+            double x = x_angle * (Math.PI / 180);//Градусы -> радианы
+            double y = y_angle * (Math.PI / 180);
+            double z = z_angle * (Math.PI / 180);
+            Moving(ref triangle, -axis.x, -axis.y, -axis.z);
+            Transform(ref triangle, 1, Math.Cos(x), Math.Cos(x), 0, 0, 0, -Math.Sin(x), 0, Math.Sin(x));
+            Transform(ref triangle, Math.Cos(y), 1, Math.Cos(y), 0, Math.Sin(y), 0, 0, -Math.Sin(y), 0);
+            Transform(ref triangle, Math.Cos(z), Math.Cos(z), 1, -Math.Sin(z), 0, Math.Sin(z), 0, 0, 0);
+            Moving(ref triangle, axis.x, axis.y, axis.z);
         }
-        public void Moving(ref Triangle triangle, int x_move, int y_move)
+        public void Moving(ref Triangle triangle, int x_move, int y_move, int z_move)
         {
-            Matrix MoveMtx = new Matrix(3);
-            MoveMtx.Elems[0, 2] = x_move;
-            MoveMtx.Elems[1, 2] = y_move;
+            Matrix MoveMtx = new Matrix(4);
+            MoveMtx.Elems[0, 3] = x_move;
+            MoveMtx.Elems[1, 3] = y_move;
+            MoveMtx.Elems[2, 3] = z_move;
             for (int i = 0; i < 3; i++)
             {
-                Matrix PointMtx = new Matrix(3, 1);
+                Matrix PointMtx = new Matrix(4, 1);
                 PointMtx.Elems[0, 0] = triangle.Points[i].x;
                 PointMtx.Elems[1, 0] = triangle.Points[i].y;
-                PointMtx.Elems[2, 0] = 1;
+                PointMtx.Elems[2, 0] = triangle.Points[i].z;
+                PointMtx.Elems[3, 0] = 1;
                 Matrix res = new Matrix(MoveMtx.Rows, PointMtx.Columns);
                 res = MoveMtx * PointMtx;
                 triangle.Points[i].x = (int)res.Elems[0, 0];
                 triangle.Points[i].y = (int)res.Elems[1, 0];
+                triangle.Points[i].z = (int)res.Elems[2, 0];
             }
         }
 
