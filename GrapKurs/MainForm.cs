@@ -29,18 +29,18 @@ namespace GrapKurs
         {
             scene.bmp = new Bitmap(PBox.Width, PBox.Height);
             Point[] tr1 = new Point[3];
-            tr1[0] = new Point(90, 100, -10);
-            tr1[1] = new Point(150, 175, 20);
-            tr1[2] = new Point(250, 80, 80);
+            tr1[0] = new Point(90, 100, 0);
+            tr1[1] = new Point(120, 200, 0);
+            tr1[2] = new Point(150, 100, 0);
             Triangle test1 = new Triangle(tr1, Color.Green);
             Point[] tr2 = new Point[3];
             tr2[0] = new Point(90, 90, 0);
             tr2[1] = new Point(160, 185, 0);
             tr2[2] = new Point(210, 100, 0);
             Triangle test2 = new Triangle(tr2, Color.Red);
+            Rotate(ref test1, 45, 45, 45, new Point(test1.Points[0]));
             DrawTriangle(test1, scene.bmp, scene.zBuf, scene.fill);
-            DrawTriangle(test2, scene.bmp, scene.zBuf, scene.fill);
-            //DrawTriangle(test1, scene.bmp, scene.zBuf, scene.fill);
+            //DrawTriangle(test2, scene.bmp, scene.zBuf, scene.fill);
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             PBox.Image = scene.bmp;
         }
@@ -216,7 +216,7 @@ namespace GrapKurs
             }
         }
 
-        public void Round(ref Triangle triangle, double x_angle, double y_angle, double z_angle, Point axis)
+        public void Rotate(ref Triangle triangle, double x_angle, double y_angle, double z_angle, Point axis)
         { 
             double x = x_angle * (Math.PI / 180);//Градусы -> радианы
             double y = y_angle * (Math.PI / 180);
@@ -235,7 +235,7 @@ namespace GrapKurs
             MoveMtx.Elems[2, 3] = z_move;
             for (int i = 0; i < 3; i++)
             {
-                Matrix PointMtx = new Matrix(3, 1);
+                Matrix PointMtx = new Matrix(4, 1);
                 PointMtx.Elems[0, 0] = triangle.Points[i].x;
                 PointMtx.Elems[1, 0] = triangle.Points[i].y;
                 PointMtx.Elems[2, 0] = triangle.Points[i].z;
