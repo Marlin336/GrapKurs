@@ -18,7 +18,7 @@ namespace GrapKurs
         public double pos_cam_x = 180, pos_cam_y = 0;
         public double pos_center_x, pos_center_y;
         public bool projection_centr = false;
-        bool carcas = false;
+        public bool fill = true;
         public Bitmap bmp;
         byte[] pixels;
         public int[] zBuf;

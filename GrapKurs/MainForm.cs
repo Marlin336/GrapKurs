@@ -12,25 +12,37 @@ namespace GrapKurs
 {
     public partial class MainForm : Form
     {
+        WorkScene scene;
         public MainForm()
         {
             InitializeComponent();
-            WorkScene scene = new WorkScene(PBox.Width, PBox.Height);
+            scene = new WorkScene(PBox.Width, PBox.Height);
             scene.zBuf = new int[scene.bmp.Height * scene.bmp.Width];
             for (int i = 0; i < scene.zBuf.Length; i++)
             {
                 scene.zBuf[i] = int.MinValue;
             }
+            Redraw();
+        }
+
+        void Redraw()
+        {
+            scene.bmp = new Bitmap(PBox.Width, PBox.Height);
             Point[] tr1 = new Point[3];
-            tr1[0] = new Point(275, 0, 0);
-            tr1[1] = new Point(325, 100, 30);
-            tr1[2] = new Point(375, 0, 0);
-            Triangle test = new Triangle(tr1, Color.Black);
-            Round(ref test, 135, new Point(test.Points[1]));
-            //Moving(ref triangle1, 100, 50);
-            DrawTriangle(test, scene.bmp, scene.zBuf);
+            tr1[0] = new Point(90, 100, -10);
+            tr1[1] = new Point(150, 175, 20);
+            tr1[2] = new Point(250, 80, 80);
+            Triangle test1 = new Triangle(tr1, Color.Green);
+            Point[] tr2 = new Point[3];
+            tr2[0] = new Point(90, 90, 0);
+            tr2[1] = new Point(160, 185, 0);
+            tr2[2] = new Point(210, 100, 0);
+            Triangle test2 = new Triangle(tr2, Color.Red);
+            DrawTriangle(test1, scene.bmp, scene.zBuf, scene.fill);
+            DrawTriangle(test2, scene.bmp, scene.zBuf, scene.fill);
+            //DrawTriangle(test1, scene.bmp, scene.zBuf, scene.fill);
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
-            PBox.Image = scene.bmp; 
+            PBox.Image = scene.bmp;
         }
  
         void Swap(ref int a, ref int b)
@@ -92,57 +104,49 @@ namespace GrapKurs
                 }
             }
         }
-        void DrawTriangle(Point p1, Point p2, Point p3, Bitmap bitmap, Color color, int[] zbuffer)
+        void DrawTriangle(Point p1, Point p2, Point p3, Bitmap bitmap, Color color, int[] zbuffer, bool fill)
         {
             if (p1.y > p2.y) Swap(ref p1, ref p2);
             if (p1.y > p3.y) Swap(ref p1, ref p3);
             if (p2.y > p3.y) Swap(ref p2, ref p3);
-            int total_height = p3.y - p1.y;
-            for (int i = 0; i < total_height; i++)
+            if(!fill)
             {
-                bool second_half = i > p2.y - p1.y || p2.y == p1.y;
-                int segment_height = second_half ? p3.y - p2.y : p2.y - p1.y;
-                float alpha = (float)i / total_height;
-                float beta = (float)(i - (second_half ? p2.y - p1.y : 0)) / segment_height; // be careful: with above conditions no division by zero here
-                Point A = p1 + (p3 - p1) * alpha;
-                Point B = second_half ? p2 + (p3 - p2) * beta : p1 + (p2 - p1) * beta;
-                if (A.x > B.x) Swap(ref A, ref B);
-                for (int j = A.x; j <= B.x; j++) // attention, due to int casts t0.y+i != A.y
+                DrawLine(p1.x, p1.y, p2.x, p2.y, bitmap, color);
+                DrawLine(p2.x, p2.y, p3.x, p3.y, bitmap, color);
+                DrawLine(p3.x, p3.y, p1.x, p1.y, bitmap, color);
+            }
+            else
+            { 
+            int total_height = p3.y - p1.y;
+                for (int i = 0; i < total_height; i++)
                 {
-                    //bitmap.SetPixel(j, p1.y + i, color);
-                    float phi = B.x == A.x ? 1 : (j - A.x) / (B.x - A.x);
-                    Point P = new Point(A) + new Point(B - A) * phi;
-                    P.x = j; P.y = p1.y + i;
-                    int idx = P.x + P.y * bitmap.Width;
-                    if (zbuffer[idx] < P.z)
+                    bool second_half = i > p2.y - p1.y || p2.y == p1.y;
+                    int segment_height = second_half ? p3.y - p2.y : p2.y - p1.y;
+                    float alpha = (float)i / total_height;
+                    float beta = (float)(i - (second_half ? p2.y - p1.y : 0)) / segment_height; // be careful: with above conditions no division by zero here
+                    Point A = p1 + (p3 - p1) * alpha;
+                    Point B = second_half ? p2 + (p3 - p2) * beta : p1 + (p2 - p1) * beta;
+                    if (A.x > B.x) Swap(ref A, ref B);
+                    for (int j = A.x; j <= B.x; j++) // attention, due to int casts t0.y+i != A.y
                     {
-                        zbuffer[idx] = P.z;
-                        bitmap.SetPixel(P.x, P.y, color);
+                        float phi = B.x == A.x ? 1 : (j - A.x) / (B.x - A.x);
+                        Point P = new Point(A) + new Point(B - A) * phi;
+                        P.x = j; P.y = p1.y + i;
+                        int idx = P.x + P.y * bitmap.Width;
+                        if (zbuffer[idx] <= P.z)
+                        {
+                            zbuffer[idx] = P.z;
+                            bitmap.SetPixel(P.x, P.y, color);
+                        }
                     }
                 }
             }
         }
-        void DrawTriangle(Triangle triangle, Bitmap bitmap, int[] zbuffer)
+        void DrawTriangle(Triangle triangle, Bitmap bitmap, int[] zbuffer, bool fill)
         {
-            DrawTriangle(triangle.Points[0], triangle.Points[1], triangle.Points[2], bitmap, triangle.color, zbuffer);
+            DrawTriangle(triangle.Points[0], triangle.Points[1], triangle.Points[2], bitmap, triangle.color, zbuffer, fill);
         }
 
-        /*private void Transform(ref Point pt, double x_scale, double y_scale, double x_shift, double y_shift)
-        {
-            Matrix TransformMtx = new Matrix(3);
-            TransformMtx.Elems[0, 0] = x_scale;
-            TransformMtx.Elems[1, 0] = x_shift;
-            TransformMtx.Elems[0, 1] = y_shift;
-            TransformMtx.Elems[1, 1] = y_scale;
-            Matrix PointMtx = new Matrix(3, 1);
-            PointMtx.Elems[0, 0] = pt.x;
-            PointMtx.Elems[1, 0] = pt.y;
-            PointMtx.Elems[2, 0] = 1;
-            Matrix res = new Matrix(TransformMtx.Rows, PointMtx.Columns);
-            res = TransformMtx*PointMtx;
-            pt.x = (int)res.Elems[0, 0];
-            pt.y = (int)res.Elems[1, 0];
-        }*/
         public void Transform(ref Triangle triangle, double x_scale, double y_scale, double x_shift, double y_shift)
         {
             Matrix TransformMtx = new Matrix(3);
@@ -216,6 +220,18 @@ namespace GrapKurs
                 del += 2 * (x - y);
                 y--;
             }
+        }
+
+        private void реалистичныйToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            scene.fill = true;
+            Redraw();
+        }
+
+        private void каркасныйToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            scene.fill = false;
+            Redraw();
         }
     }
 }
