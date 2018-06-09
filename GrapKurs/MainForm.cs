@@ -29,16 +29,16 @@ namespace GrapKurs
         {
             scene.bmp = new Bitmap(PBox.Width, PBox.Height);
             Point[] tr1 = new Point[3];
-            tr1[0] = new Point(90, 100, 0);
-            tr1[1] = new Point(120, 200, 0);
-            tr1[2] = new Point(150, 100, 0);
+            tr1[0] = new Point(300, 100, 0);
+            tr1[1] = new Point(350, 200, 10);
+            tr1[2] = new Point(400, 100, 20);
             Triangle test1 = new Triangle(tr1, Color.Green);
             Point[] tr2 = new Point[3];
             tr2[0] = new Point(90, 90, 0);
             tr2[1] = new Point(160, 185, 0);
             tr2[2] = new Point(210, 100, 0);
             Triangle test2 = new Triangle(tr2, Color.Red);
-            Rotate(ref test1, 45, 45, 45, new Point(test1.Points[0]));
+            Rotate(ref test1, 90, 90, 90, new Point(test1.Points[0]));
             DrawTriangle(test1, scene.bmp, scene.zBuf, scene.fill);
             //DrawTriangle(test2, scene.bmp, scene.zBuf, scene.fill);
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
@@ -162,9 +162,9 @@ namespace GrapKurs
                 PMtx.Elems[3, 0] = 1;
                 Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
                 res = TMtx * PMtx;
-                triangle.Points[i].x = (int)res.Elems[0, 0];
-                triangle.Points[i].y = (int)res.Elems[1, 0];
-                triangle.Points[i].z = (int)res.Elems[2, 0];
+                triangle.Points[i].x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
+                triangle.Points[i].y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
+                triangle.Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
             }
         }
         public void Shift(ref Triangle triangle, double xy, double xz, double yx, double yz, double zx, double zy)
@@ -185,14 +185,14 @@ namespace GrapKurs
                 PMtx.Elems[3, 0] = 1;
                 Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
                 res = TMtx * PMtx;
-                triangle.Points[i].x = (int)res.Elems[0, 0];
-                triangle.Points[i].y = (int)res.Elems[1, 0];
-                triangle.Points[i].z = (int)res.Elems[2, 0];
+                triangle.Points[i].x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
+                triangle.Points[i].y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
+                triangle.Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
             }
         }
         public void Transform(ref Triangle triangle, double x_scale, double y_scale, double z_scale, double xy, double xz, double yx, double yz, double zx, double zy)
         {
-            Matrix TMtx = new Matrix(3);
+            Matrix TMtx = new Matrix(4);
             TMtx.Elems[0, 0] = x_scale;
             TMtx.Elems[1, 1] = y_scale;
             TMtx.Elems[2, 2] = z_scale;
@@ -204,15 +204,16 @@ namespace GrapKurs
             TMtx.Elems[2, 1] = zy;
             for (int i = 0; i < 3; i++)
             {
-                Matrix PMtx = new Matrix(3, 1);
+                Matrix PMtx = new Matrix(4, 1);
                 PMtx.Elems[0, 0] = triangle.Points[i].x;
                 PMtx.Elems[1, 0] = triangle.Points[i].y;
-                PMtx.Elems[2, 0] = 1;
+                PMtx.Elems[2, 0] = triangle.Points[i].z;
+                PMtx.Elems[3, 0] = 1;
                 Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
                 res = TMtx * PMtx;
-                triangle.Points[i].x = (int)res.Elems[0, 0];
-                triangle.Points[i].y = (int)res.Elems[1, 0];
-                triangle.Points[i].z = (int)res.Elems[2, 0];
+                triangle.Points[i].x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
+                triangle.Points[i].y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
+                triangle.Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
             }
         }
 
@@ -242,9 +243,9 @@ namespace GrapKurs
                 PointMtx.Elems[3, 0] = 1;
                 Matrix res = new Matrix(MoveMtx.Rows, PointMtx.Columns);
                 res = MoveMtx * PointMtx;
-                triangle.Points[i].x = (int)res.Elems[0, 0];
-                triangle.Points[i].y = (int)res.Elems[1, 0];
-                triangle.Points[i].z = (int)res.Elems[2, 0];
+                triangle.Points[i].x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
+                triangle.Points[i].y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
+                triangle.Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
             }
         }
 
