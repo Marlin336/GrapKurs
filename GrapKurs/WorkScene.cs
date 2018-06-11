@@ -21,7 +21,7 @@ namespace GrapKurs
         public bool fill = true;
         public Bitmap bmp;
         byte[] pixels;
-        public int[] zBuf;
+        public float[] zBuf;
         public WorkScene(int width, int height)
         {
             bmp = new Bitmap(width, height);

@@ -9,10 +9,10 @@ namespace GrapKurs
 {
     public class Point
     {
-        public int x { get; set; } = 0;
-        public int y { get; set; } = 0;
-        public int z { get; set; } = 0;
-        public Point(int x, int y, int z)
+        public float x { get; set; }
+        public float y { get; set; }
+        public float z { get; set; }
+        public Point(float x, float y, float z)
         {
             this.x = x;
             this.y = y;
@@ -26,7 +26,7 @@ namespace GrapKurs
         }
         public static Point operator *(Point pt1, float dig)
         {
-            return new Point((int)(pt1.x * dig), (int)(pt1.y * dig), (int)(pt1.z * dig));
+            return new Point((pt1.x * dig), (pt1.y * dig), (pt1.z * dig));
         }
         public static bool operator ==(Point pt1, Point pt2)
         {
@@ -85,7 +85,7 @@ namespace GrapKurs
             Length = Math.Sqrt(Math.Pow(pt1.x - pt2.x, 2) + Math.Pow(pt1.y - pt2.y, 2) + Math.Pow(pt1.z - pt2.z, 2));
         }
         public Line(Point[] points) : this(new Point(points[0]), new Point(points[1])) { }
-        public Line(int x1, int y1, int z1, int x2, int y2, int z2) : this(new Point(x1, y1, z1), new Point(x2, y2, z2)) { }
+        public Line(float x1, float y1, float z1, float x2, float y2, float z2) : this(new Point(x1, y1, z1), new Point(x2, y2, z2)) { }
     }
     public class Triangle
     {

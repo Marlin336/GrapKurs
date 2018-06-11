@@ -17,10 +17,10 @@ namespace GrapKurs
         {
             InitializeComponent();
             scene = new WorkScene(PBox.Width, PBox.Height);
-            scene.zBuf = new int[scene.bmp.Height * scene.bmp.Width];
+            scene.zBuf = new float[scene.bmp.Height * scene.bmp.Width];
             for (int i = 0; i < scene.zBuf.Length; i++)
             {
-                scene.zBuf[i] = int.MinValue;
+                scene.zBuf[i] = float.MinValue;
             }
             Redraw();
         }
@@ -29,25 +29,26 @@ namespace GrapKurs
         {
             scene.bmp = new Bitmap(PBox.Width, PBox.Height);
             Point[] tr1 = new Point[3];
-            tr1[0] = new Point(300, 100, 0);
-            tr1[1] = new Point(350, 200, 10);
-            tr1[2] = new Point(400, 100, 20);
+            tr1[0] = new Point(300, 50, 0);
+            tr1[1] = new Point(350, 150, 0);
+            tr1[2] = new Point(400, 50, 0);
             Triangle test1 = new Triangle(tr1, Color.Green);
             Point[] tr2 = new Point[3];
             tr2[0] = new Point(90, 90, 0);
             tr2[1] = new Point(160, 185, 0);
             tr2[2] = new Point(210, 100, 0);
             Triangle test2 = new Triangle(tr2, Color.Red);
-            Rotate(ref test1, 90, 90, 90, new Point(test1.Points[0]));
+            Rotate(ref test1, 0, 0, 188, new Point(test1.Points[0]));
             DrawTriangle(test1, scene.bmp, scene.zBuf, scene.fill);
+            DrawCircle(new Point(200, 300, 0), 45, 14, scene.bmp, Color.Red, scene.zBuf, scene.fill);
             //DrawTriangle(test2, scene.bmp, scene.zBuf, scene.fill);
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             PBox.Image = scene.bmp;
         }
  
-        void Swap(ref int a, ref int b)
+        void Swap(ref float a, ref float b)
         {
-            int swap = a;
+            float swap = a;
             a = b;
             b = swap;
         }
@@ -58,7 +59,7 @@ namespace GrapKurs
             b = swap;
         }
 
-        void DrawLine(int x1, int y1, int x2, int y2, Bitmap bitmap, Color color)
+        void DrawLine(float x1, float y1, float x2, float y2, Bitmap bitmap, Color color)
         {
             bool steep = false;
             if (Math.Abs(x1 - x2) < Math.Abs(y1 - y2))
@@ -72,12 +73,12 @@ namespace GrapKurs
                 Swap(ref x1, ref x2);
                 Swap(ref y1, ref y2);
             }
-            int dx = x2 - x1;
-            int dy = y2 - y1;
+            int dx = (int)(x2 - x1);
+            int dy = (int)(y2 - y1);
             int derror2 = Math.Abs(dy) * 2;
             int error2 = 0;
-            int y = y1;
-            for (int x = x1; x <= x2; x++)
+            int y = (int)y1;
+            for (int x = (int)x1; x <= x2; x++)
             {
                 if (steep)
                 {
@@ -104,7 +105,7 @@ namespace GrapKurs
                 }
             }
         }
-        void DrawTriangle(Point p1, Point p2, Point p3, Bitmap bitmap, Color color, int[] zbuffer, bool fill)
+        void DrawTriangle(Point p1, Point p2, Point p3, Bitmap bitmap, Color color, float[] zbuffer, bool fill)
         {
             if (p1.y > p2.y) Swap(ref p1, ref p2);
             if (p1.y > p3.y) Swap(ref p1, ref p3);
@@ -117,34 +118,44 @@ namespace GrapKurs
             }
             else
             { 
-            int total_height = p3.y - p1.y;
+            int total_height = (int)(p3.y - p1.y);
                 for (int i = 0; i < total_height; i++)
                 {
                     bool second_half = i > p2.y - p1.y || p2.y == p1.y;
-                    int segment_height = second_half ? p3.y - p2.y : p2.y - p1.y;
+                    int segment_height = second_half ? (int)(p3.y - p2.y) : (int)(p2.y - p1.y);
                     float alpha = (float)i / total_height;
-                    float beta = (float)(i - (second_half ? p2.y - p1.y : 0)) / segment_height; // be careful: with above conditions no division by zero here
+                    float beta = (i - (second_half ? p2.y - p1.y : 0)) / segment_height; // be careful: with above conditions no division by zero here
                     Point A = p1 + (p3 - p1) * alpha;
                     Point B = second_half ? p2 + (p3 - p2) * beta : p1 + (p2 - p1) * beta;
                     if (A.x > B.x) Swap(ref A, ref B);
-                    for (int j = A.x; j <= B.x; j++) // attention, due to int casts t0.y+i != A.y
+                    for (int j = (int)A.x; j <= B.x; j++) // attention, due to int casts t0.y+i != A.y
                     {
                         float phi = B.x == A.x ? 1 : (j - A.x) / (B.x - A.x);
                         Point P = new Point(A) + new Point(B - A) * phi;
                         P.x = j; P.y = p1.y + i;
-                        int idx = P.x + P.y * bitmap.Width;
-                        if (zbuffer[idx] <= P.z)
+                        int idx = (int)(P.x + P.y * bitmap.Width);
+                        if (idx > 0 && idx < zbuffer.Length)
                         {
-                            zbuffer[idx] = P.z;
-                            bitmap.SetPixel(P.x, P.y, color);
+                            if (zbuffer[idx] <= P.z)
+                            {
+                                zbuffer[idx] = P.z;
+                                bitmap.SetPixel((int)P.x, (int)P.y, color);
+                            }
                         }
                     }
                 }
             }
         }
-        void DrawTriangle(Triangle triangle, Bitmap bitmap, int[] zbuffer, bool fill)
+        void DrawTriangle(Triangle triangle, Bitmap bitmap, float[] zbuffer, bool fill)
         {
             DrawTriangle(triangle.Points[0], triangle.Points[1], triangle.Points[2], bitmap, triangle.color, zbuffer, fill);
+        }
+        void DrawCircle(Point center, float radius, int polygon, Bitmap bitmap, Color color, float[] zbuffer, bool fill)
+        {
+            for (int i = 0; i < polygon; i++)
+            {
+                DrawTriangle(new Point(center), new Point((float)(center.x+radius*(Math.Cos(Math.PI*(i/(polygon/2.0))))), (float)(center.y + radius * (Math.Sin(Math.PI * (i/ (polygon / 2.0))))), center.z), new Point((float)(center.x + radius * (Math.Cos(Math.PI * ((i+1) / (polygon / 2.0))))), (float)(center.y + radius * (Math.Sin(Math.PI * ((i+1) / (polygon / 2.0))))), center.z), bitmap, color, zbuffer, fill);
+            }
         }
 
         public void Scale(ref Triangle triangle, double x_scale, double y_scale, double z_scale)
@@ -228,7 +239,7 @@ namespace GrapKurs
             Transform(ref triangle, Math.Cos(z), Math.Cos(z), 1, -Math.Sin(z), 0, Math.Sin(z), 0, 0, 0);
             Moving(ref triangle, axis.x, axis.y, axis.z);
         }
-        public void Moving(ref Triangle triangle, int x_move, int y_move, int z_move)
+        public void Moving(ref Triangle triangle, float x_move, float y_move, float z_move)
         {
             Matrix MoveMtx = new Matrix(4);
             MoveMtx.Elems[0, 3] = x_move;
