@@ -143,14 +143,14 @@
             this.реалистичныйToolStripMenuItem.Name = "реалистичныйToolStripMenuItem";
             this.реалистичныйToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.реалистичныйToolStripMenuItem.Text = "Реалистичный";
-            this.реалистичныйToolStripMenuItem.Click += new System.EventHandler(this.реалистичныйToolStripMenuItem_Click);
+            this.реалистичныйToolStripMenuItem.Click += new System.EventHandler(this.РеалистичныйToolStripMenuItem_Click);
             // 
             // каркасныйToolStripMenuItem
             // 
             this.каркасныйToolStripMenuItem.Name = "каркасныйToolStripMenuItem";
             this.каркасныйToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.каркасныйToolStripMenuItem.Text = "Каркасный";
-            this.каркасныйToolStripMenuItem.Click += new System.EventHandler(this.каркасныйToolStripMenuItem_Click);
+            this.каркасныйToolStripMenuItem.Click += new System.EventHandler(this.КаркасныйToolStripMenuItem_Click);
             // 
             // файлToolStripMenuItem
             // 

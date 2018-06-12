@@ -91,12 +91,12 @@ namespace GrapKurs
     {
         public Point[] Points { get; } = new Point[3];
         public Point Center { get; }
-        public Color color;
-        public Triangle(Point pt1, Point pt2, Point pt3, Color col)
+        public Color Color;
+        public Triangle(Point pt1, Point pt2, Point pt3, Color color)
         {
             Points = new Point[] { pt1, pt2, pt3 };
             Center = new Point((Points[0].x + Points[1].x + Points[2].x) / 3, (Points[0].y + Points[1].y + Points[2].y) / 3, (Points[0].z + Points[1].z + Points[2].z) / 3);
-            color = col;
+            Color = color;
         }
         public Triangle(Point[] points, Color col) : this(new Point(points[0]), new Point(points[1]), new Point(points[2]), col) { }
         public Triangle(int x1, int y1, int z1, int x2, int y2, int z2, int x3, int y3, int z3, Color col) : this(new Point(x1, y1, z1), new Point(x2, y2, z2), new Point(x3, y3, z3), col) { }
@@ -213,9 +213,11 @@ namespace GrapKurs
         public Point Center { get; }
         public double Radius { get; }
         private double Area { get; }
+        public Color Color;
         public Circle(Point center, double radius, Color color)
         {
             Radius = radius;
+            Color = color;
             Center = center;
             Area = Math.PI * radius * radius;
             if (Area == 0)

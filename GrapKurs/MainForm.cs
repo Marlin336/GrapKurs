@@ -39,7 +39,6 @@ namespace GrapKurs
             pa2[1] = new Point(80, 170, -10);
             pa2[2] = new Point(130, 70, -10);
             Triangle tr2 = new Triangle(pa2, Color.Blue);
-            //Scale(ref test1, 1.5, 1, 1);
             tr1.Scale(1, 2, 1, new Point(tr1.Center));
             DrawTriangle(tr2, scene.bmp, scene.zBuf, scene.fill);
             DrawTriangle(tr1, scene.bmp, scene.zBuf, scene.fill);
@@ -149,7 +148,7 @@ namespace GrapKurs
         }
         void DrawTriangle(Triangle triangle, Bitmap bitmap, float[] zbuffer, bool fill)
         {
-            DrawTriangle(triangle.Points[0], triangle.Points[1], triangle.Points[2], bitmap, triangle.color, zbuffer, fill);
+            DrawTriangle(triangle.Points[0], triangle.Points[1], triangle.Points[2], bitmap, triangle.Color, zbuffer, fill);
         }
         void DrawCircle(Circle circle, Bitmap bitmap, float[] zbuffer, bool fill)
         {
@@ -157,13 +156,13 @@ namespace GrapKurs
                 DrawTriangle(circle.polygons[i], bitmap, zbuffer, fill);
         }
 
-        private void реалистичныйToolStripMenuItem_Click(object sender, EventArgs e)
+        private void РеалистичныйToolStripMenuItem_Click(object sender, EventArgs e)
         {
             scene.fill = true;
             Redraw();
         }
 
-        private void каркасныйToolStripMenuItem_Click(object sender, EventArgs e)
+        private void КаркасныйToolStripMenuItem_Click(object sender, EventArgs e)
         {
             scene.fill = false;
             Redraw();
