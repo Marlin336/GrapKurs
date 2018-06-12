@@ -31,7 +31,7 @@ namespace GrapKurs
             scene.bmp = new Bitmap(PBox.Width, PBox.Height);
             Point[] pa1 = new Point[3];
             pa1[0] = new Point(10, 50, 0);
-            pa1[1] = new Point(60, 150, 0);
+            pa1[1] = new Point(150, 150, 0);
             pa1[2] = new Point(110, 50, 0);
             Triangle tr1 = new Triangle(pa1, Color.Green);
             Point[] pa2 = new Point[3];
@@ -39,8 +39,8 @@ namespace GrapKurs
             pa2[1] = new Point(80, 170, -10);
             pa2[2] = new Point(130, 70, -10);
             Triangle tr2 = new Triangle(pa2, Color.Blue);
-            //Rotate(ref test1, 0, 0, -45, new Point(test1.Points[0]));
             //Scale(ref test1, 1.5, 1, 1);
+            tr1.Scale(1, 2, 1, new Point(tr1.Center));
             DrawTriangle(tr2, scene.bmp, scene.zBuf, scene.fill);
             DrawTriangle(tr1, scene.bmp, scene.zBuf, scene.fill);
             Circle crcl1 = new Circle(new Point(200, 200, 0), 50, Color.Red);

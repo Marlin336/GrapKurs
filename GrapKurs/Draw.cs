@@ -90,15 +90,17 @@ namespace GrapKurs
     public class Triangle
     {
         public Point[] Points { get; } = new Point[3];
+        public Point Center { get; }
         public Color color;
         public Triangle(Point pt1, Point pt2, Point pt3, Color col)
         {
             Points = new Point[] { pt1, pt2, pt3 };
+            Center = new Point((Points[0].x + Points[1].x + Points[2].x) / 3, (Points[0].y + Points[1].y + Points[2].y) / 3, (Points[0].z + Points[1].z + Points[2].z) / 3);
             color = col;
         }
         public Triangle(Point[] points, Color col) : this(new Point(points[0]), new Point(points[1]), new Point(points[2]), col) { }
         public Triangle(int x1, int y1, int z1, int x2, int y2, int z2, int x3, int y3, int z3, Color col) : this(new Point(x1, y1, z1), new Point(x2, y2, z2), new Point(x3, y3, z3), col) { }
-        public void Scale(double x_scale, double y_scale, double z_scale)
+        public void Scale(double x_scale, double y_scale, double z_scale, Point axis)
         {
             if (x_scale <=0 || y_scale <= 0 || z_scale <= 0) 
                 return;
@@ -106,6 +108,7 @@ namespace GrapKurs
             TMtx.Elems[0, 0] = x_scale;
             TMtx.Elems[1, 1] = y_scale;
             TMtx.Elems[2, 2] = z_scale;
+            Moving(-axis.x, -axis.y, -axis.z);
             for (int i = 0; i < 3; i++)
             {
                 Matrix PMtx = new Matrix(4, 1);
@@ -119,8 +122,9 @@ namespace GrapKurs
                 Points[i].y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
                 Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
             }
+            Moving(axis.x, axis.y, axis.z);
         }
-        public void Slip(double xy, double xz, double yx, double yz, double zx, double zy)
+        public void Slip(double xy, double xz, double yx, double yz, double zx, double zy, Point axis)
         {
             Matrix TMtx = new Matrix(4);
             TMtx.Elems[0, 1] = xy;
@@ -129,6 +133,7 @@ namespace GrapKurs
             TMtx.Elems[1, 2] = yz;
             TMtx.Elems[2, 0] = zx;
             TMtx.Elems[2, 1] = zy;
+            Moving(-axis.x, -axis.y, -axis.z);
             for (int i = 0; i < 3; i++)
             {
                 Matrix PMtx = new Matrix(4, 1);
@@ -142,6 +147,7 @@ namespace GrapKurs
                 Points[i].y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
                 Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
             }
+            Moving(-axis.x, -axis.y, -axis.z);
         }
         private void Transform(double x_scale, double y_scale, double z_scale, double xy, double xz, double yx, double yz, double zx, double zy)
         {
@@ -215,20 +221,20 @@ namespace GrapKurs
             if (Area == 0)
                 throw new Exception("Площадь равна нулю");
             for (int i = 0; i < polygons.Length; i++)
-                polygons[i]= new Triangle(new Point(center), new Point((int)(center.x + radius * (Math.Cos(Math.PI * (i / ((float)polygons.Length/2))))), (int)(center.y + radius * (Math.Sin(Math.PI * (i / ((float)polygons.Length/2))))), center.z), new Point((int)(center.x + radius * (Math.Cos(Math.PI * ((i + 1.0) / ((float)polygons.Length/2))))), (int)(center.y + radius * (Math.Sin(Math.PI * ((i + 1.0) / ((float)polygons.Length/2))))), center.z), color);
+                polygons[i]= new Triangle(new Point(center), new Point((int)(center.x + radius * (Math.Cos(Math.PI * (i / (polygons.Length/2.0))))), (int)(center.y + radius * (Math.Sin(Math.PI * (i / (polygons.Length/2.0))))), center.z), new Point((int)(center.x + radius * (Math.Cos(Math.PI * ((i + 1.0) / (polygons.Length/2.0))))), (int)(center.y + radius * (Math.Sin(Math.PI * ((i + 1.0) / (polygons.Length/2.0))))), center.z), color);
         }
-        public void Scale(double x_scale, double y_scale, double z_scale)
+        public void Scale(double x_scale, double y_scale, double z_scale, Point axis)
         {
             for (int i = 0; i < polygons.Length; i++)
             {
-                polygons[i].Scale(x_scale, y_scale, z_scale);
+                polygons[i].Scale(x_scale, y_scale, z_scale, axis);
             }
         }
-        public void Slip(double xy, double xz, double yx, double yz, double zx, double zy)
+        public void Slip(double xy, double xz, double yx, double yz, double zx, double zy, Point axis)
         {
             for (int i = 0; i < polygons.Length; i++)
             {
-                polygons[i].Slip(xy, xz, yx, yz, zx, zy);
+                polygons[i].Slip(xy, xz, yx, yz, zx, zy, axis);
             }
         }
         public void Rotate(double x_angle, double y_angle, double z_angle, Point axis)
