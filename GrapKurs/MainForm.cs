@@ -29,23 +29,22 @@ namespace GrapKurs
         void Redraw()
         {
             scene.bmp = new Bitmap(PBox.Width, PBox.Height);
-            Point[] tr1 = new Point[3];
-            tr1[0] = new Point(-10, 50, 0);
-            tr1[1] = new Point(60, 150, 0);
-            tr1[2] = new Point(110, 50, 0);
-            Triangle test1 = new Triangle(tr1, Color.Green);
-            Point[] tr2 = new Point[3];
-            tr2[0] = new Point(90, 90, 0);
-            tr2[1] = new Point(160, 185, 0);
-            tr2[2] = new Point(210, 100, 0);
-            Triangle test2 = new Triangle(tr2, Color.Red);
+            Point[] pa1 = new Point[3];
+            pa1[0] = new Point(10, 50, 0);
+            pa1[1] = new Point(60, 150, 0);
+            pa1[2] = new Point(110, 50, 0);
+            Triangle tr1 = new Triangle(pa1, Color.Green);
+            Point[] pa2 = new Point[3];
+            pa2[0] = new Point(30, 70, -10);
+            pa2[1] = new Point(80, 170, -10);
+            pa2[2] = new Point(130, 70, -10);
+            Triangle tr2 = new Triangle(pa2, Color.Blue);
             //Rotate(ref test1, 0, 0, -45, new Point(test1.Points[0]));
             //Scale(ref test1, 1.5, 1, 1);
-            DrawTriangle(test1, scene.bmp, scene.zBuf, scene.fill);
-            Circle crcl = new Circle(new Point(200, 200, 0), 40, Color.Red);
-            //crcl.Scale(1, 1, 1);
-            DrawCircle(crcl, scene.bmp, scene.zBuf, scene.fill);
-            //DrawTriangle(test2, scene.bmp, scene.zBuf, scene.fill);
+            DrawTriangle(tr2, scene.bmp, scene.zBuf, scene.fill);
+            DrawTriangle(tr1, scene.bmp, scene.zBuf, scene.fill);
+            Circle crcl1 = new Circle(new Point(200, 200, 0), 50, Color.Red);
+            DrawCircle(crcl1, scene.bmp, scene.zBuf, scene.fill);
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             PBox.Image = scene.bmp;
         }
@@ -154,140 +153,8 @@ namespace GrapKurs
         }
         void DrawCircle(Circle circle, Bitmap bitmap, float[] zbuffer, bool fill)
         {
-            for (int i = 0; i < 16; i++)
+            for (int i = 0; i < 20; i++)
                 DrawTriangle(circle.polygons[i], bitmap, zbuffer, fill);
-        }
-
-        public void Scale(ref Triangle triangle, double x_scale, double y_scale, double z_scale)
-        {
-            Matrix TMtx = new Matrix(4);
-            TMtx.Elems[0, 0] = x_scale;
-            TMtx.Elems[1, 1] = y_scale;
-            TMtx.Elems[2, 2] = z_scale;
-            for (int i = 0; i < 3; i++)
-            {
-                Matrix PMtx = new Matrix(4, 1);
-                PMtx.Elems[0, 0] = triangle.Points[i].x;
-                PMtx.Elems[1, 0] = triangle.Points[i].y;
-                PMtx.Elems[2, 0] = triangle.Points[i].z;
-                PMtx.Elems[3, 0] = 1;
-                Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
-                res = TMtx * PMtx;
-                triangle.Points[i].x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
-                triangle.Points[i].y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
-                triangle.Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
-            }
-        }
-        public void Shift(ref Triangle triangle, double xy, double xz, double yx, double yz, double zx, double zy)
-        {
-            Matrix TMtx = new Matrix(4);
-            TMtx.Elems[0, 1] = xy;
-            TMtx.Elems[0, 2] = xz;
-            TMtx.Elems[1, 0] = yx;
-            TMtx.Elems[1, 2] = yz;
-            TMtx.Elems[2, 0] = zx;
-            TMtx.Elems[2, 1] = zy;
-            for (int i = 0; i < 3; i++)
-            {
-                Matrix PMtx = new Matrix(4, 1);
-                PMtx.Elems[0, 0] = triangle.Points[i].x;
-                PMtx.Elems[1, 0] = triangle.Points[i].y;
-                PMtx.Elems[2, 0] = triangle.Points[i].z;
-                PMtx.Elems[3, 0] = 1;
-                Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
-                res = TMtx * PMtx;
-                triangle.Points[i].x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
-                triangle.Points[i].y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
-                triangle.Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
-            }
-        }
-        public void Transform(ref Triangle triangle, double x_scale, double y_scale, double z_scale, double xy, double xz, double yx, double yz, double zx, double zy)
-        {
-            Matrix TMtx = new Matrix(4);
-            TMtx.Elems[0, 0] = x_scale;
-            TMtx.Elems[1, 1] = y_scale;
-            TMtx.Elems[2, 2] = z_scale;
-            TMtx.Elems[0, 1] = xy;
-            TMtx.Elems[0, 2] = xz;
-            TMtx.Elems[1, 0] = yx;
-            TMtx.Elems[1, 2] = yz;
-            TMtx.Elems[2, 0] = zx;
-            TMtx.Elems[2, 1] = zy;
-            for (int i = 0; i < 3; i++)
-            {
-                Matrix PMtx = new Matrix(4, 1);
-                PMtx.Elems[0, 0] = triangle.Points[i].x;
-                PMtx.Elems[1, 0] = triangle.Points[i].y;
-                PMtx.Elems[2, 0] = triangle.Points[i].z;
-                PMtx.Elems[3, 0] = 1;
-                Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
-                res = TMtx * PMtx;
-                triangle.Points[i].x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
-                triangle.Points[i].y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
-                triangle.Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
-            }
-        }
-
-        public void Rotate(ref Triangle triangle, double x_angle, double y_angle, double z_angle, Point axis)
-        { 
-            double x = x_angle * (Math.PI / 180);//Градусы -> радианы
-            double y = y_angle * (Math.PI / 180);
-            double z = z_angle * (Math.PI / 180);
-            Moving(ref triangle, -axis.x, -axis.y, -axis.z);
-            Transform(ref triangle, 1, Math.Cos(x), Math.Cos(x), 0, 0, 0, -Math.Sin(x), 0, Math.Sin(x));
-            Transform(ref triangle, Math.Cos(y), 1, Math.Cos(y), 0, Math.Sin(y), 0, 0, -Math.Sin(y), 0);
-            Transform(ref triangle, Math.Cos(z), Math.Cos(z), 1, -Math.Sin(z), 0, Math.Sin(z), 0, 0, 0);
-            Moving(ref triangle, axis.x, axis.y, axis.z);
-        }
-        public void Moving(ref Triangle triangle, float x_move, float y_move, float z_move)
-        {
-            Matrix MoveMtx = new Matrix(4);
-            MoveMtx.Elems[0, 3] = x_move;
-            MoveMtx.Elems[1, 3] = y_move;
-            MoveMtx.Elems[2, 3] = z_move;
-            for (int i = 0; i < 3; i++)
-            {
-                Matrix PointMtx = new Matrix(4, 1);
-                PointMtx.Elems[0, 0] = triangle.Points[i].x;
-                PointMtx.Elems[1, 0] = triangle.Points[i].y;
-                PointMtx.Elems[2, 0] = triangle.Points[i].z;
-                PointMtx.Elems[3, 0] = 1;
-                Matrix res = new Matrix(MoveMtx.Rows, PointMtx.Columns);
-                res = MoveMtx * PointMtx;
-                triangle.Points[i].x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
-                triangle.Points[i].y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
-                triangle.Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
-            }
-        }
-
-        private void DrawCircleBrez(int x0, int y0, int rad, Bitmap bitmap)//Алгоритм Брезенхэма
-        {
-            int x = 0;
-            int y = rad;
-            int del = 1 - 2 * rad;
-            int err = 0;
-            while (y >= 0)
-            {
-                bitmap.SetPixel(x0 + x, y0 + y, Color.Red);
-                bitmap.SetPixel(x0 + x, y0 - y, Color.Red);
-                bitmap.SetPixel(x0 - x, y0 + y, Color.Red);
-                bitmap.SetPixel(x0 - x, y0 - y, Color.Red);
-                err = 2 * (del + y) - 1;
-                if ((del < 0) && (err <= 0))
-                {
-                    del += 2 * ++x + 1;
-                    continue;
-                }
-                err = 2 * (del - x) - 1;
-                if ((del > 0) && (err > 0))
-                {
-                    del += 1 - 2 * --y;
-                    continue;
-                }
-                x++;
-                del += 2 * (x - y);
-                y--;
-            }
         }
 
         private void реалистичныйToolStripMenuItem_Click(object sender, EventArgs e)

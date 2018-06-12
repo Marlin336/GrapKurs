@@ -90,25 +90,18 @@ namespace GrapKurs
     public class Triangle
     {
         public Point[] Points { get; } = new Point[3];
-        public double Area { get; }
-        public double Perimeter { get; }
         public Color color;
         public Triangle(Point pt1, Point pt2, Point pt3, Color col)
         {
-            this.Points = new Point[] { pt1, pt2, pt3 };
-            Perimeter = new Line(pt1, pt2).Length + new Line(pt2, pt3).Length + new Line(pt3, pt1).Length;
-            double p = Perimeter / 2;
-            Area = Math.Sqrt(p * (p - (new Line(pt1, pt2).Length)) * (p - (new Line(pt2, pt3).Length)) * (p - (new Line(pt3, pt1).Length)));
-            if (Area == 0)
-            {
-                throw new Exception("Площадь равна нулю");
-            }
+            Points = new Point[] { pt1, pt2, pt3 };
             color = col;
         }
         public Triangle(Point[] points, Color col) : this(new Point(points[0]), new Point(points[1]), new Point(points[2]), col) { }
         public Triangle(int x1, int y1, int z1, int x2, int y2, int z2, int x3, int y3, int z3, Color col) : this(new Point(x1, y1, z1), new Point(x2, y2, z2), new Point(x3, y3, z3), col) { }
         public void Scale(double x_scale, double y_scale, double z_scale)
         {
+            if (x_scale <=0 || y_scale <= 0 || z_scale <= 0) 
+                return;
             Matrix TMtx = new Matrix(4);
             TMtx.Elems[0, 0] = x_scale;
             TMtx.Elems[1, 1] = y_scale;
@@ -127,30 +120,129 @@ namespace GrapKurs
                 Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
             }
         }
+        public void Slip(double xy, double xz, double yx, double yz, double zx, double zy)
+        {
+            Matrix TMtx = new Matrix(4);
+            TMtx.Elems[0, 1] = xy;
+            TMtx.Elems[0, 2] = xz;
+            TMtx.Elems[1, 0] = yx;
+            TMtx.Elems[1, 2] = yz;
+            TMtx.Elems[2, 0] = zx;
+            TMtx.Elems[2, 1] = zy;
+            for (int i = 0; i < 3; i++)
+            {
+                Matrix PMtx = new Matrix(4, 1);
+                PMtx.Elems[0, 0] = Points[i].x;
+                PMtx.Elems[1, 0] = Points[i].y;
+                PMtx.Elems[2, 0] = Points[i].z;
+                PMtx.Elems[3, 0] = 1;
+                Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
+                res = TMtx * PMtx;
+                Points[i].x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
+                Points[i].y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
+                Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
+            }
+        }
+        private void Transform(double x_scale, double y_scale, double z_scale, double xy, double xz, double yx, double yz, double zx, double zy)
+        {
+            Matrix TMtx = new Matrix(4);
+            TMtx.Elems[0, 0] = x_scale;
+            TMtx.Elems[1, 1] = y_scale;
+            TMtx.Elems[2, 2] = z_scale;
+            TMtx.Elems[0, 1] = xy;
+            TMtx.Elems[0, 2] = xz;
+            TMtx.Elems[1, 0] = yx;
+            TMtx.Elems[1, 2] = yz;
+            TMtx.Elems[2, 0] = zx;
+            TMtx.Elems[2, 1] = zy;
+            for (int i = 0; i < 3; i++)
+            {
+                Matrix PMtx = new Matrix(4, 1);
+                PMtx.Elems[0, 0] = Points[i].x;
+                PMtx.Elems[1, 0] = Points[i].y;
+                PMtx.Elems[2, 0] = Points[i].z;
+                PMtx.Elems[3, 0] = 1;
+                Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
+                res = TMtx * PMtx;
+                Points[i].x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
+                Points[i].y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
+                Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
+            }
+        }
+        public void Rotate(double x_angle, double y_angle, double z_angle, Point axis)
+        {
+            double x = x_angle * (Math.PI / 180);//Градусы -> радианы
+            double y = y_angle * (Math.PI / 180);
+            double z = z_angle * (Math.PI / 180);
+            Moving(-axis.x, -axis.y, -axis.z);
+            Transform(1, Math.Cos(x), Math.Cos(x), 0, 0, 0, -Math.Sin(x), 0, Math.Sin(x));
+            Transform(Math.Cos(y), 1, Math.Cos(y), 0, Math.Sin(y), 0, 0, -Math.Sin(y), 0);
+            Transform(Math.Cos(z), Math.Cos(z), 1, -Math.Sin(z), 0, Math.Sin(z), 0, 0, 0);
+            Moving(axis.x, axis.y, axis.z);
+        }
+        public void Moving(float x_move, float y_move, float z_move)
+        {
+            Matrix MoveMtx = new Matrix(4);
+            MoveMtx.Elems[0, 3] = x_move;
+            MoveMtx.Elems[1, 3] = y_move;
+            MoveMtx.Elems[2, 3] = z_move;
+            for (int i = 0; i < 3; i++)
+            {
+                Matrix PointMtx = new Matrix(4, 1);
+                PointMtx.Elems[0, 0] = Points[i].x;
+                PointMtx.Elems[1, 0] = Points[i].y;
+                PointMtx.Elems[2, 0] = Points[i].z;
+                PointMtx.Elems[3, 0] = 1;
+                Matrix res = new Matrix(MoveMtx.Rows, PointMtx.Columns);
+                res = MoveMtx * PointMtx;
+                Points[i].x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
+                Points[i].y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
+                Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
+            }
+        }
     }
     public class Circle
     {
-        public Triangle[] polygons { get; } = new Triangle[16];
+        public Triangle[] polygons { get; } = new Triangle[20];
         public Point Center { get; }
         public double Radius { get; }
-        public double Area { get; }
-        public double Circuit { get; }
+        private double Area { get; }
         public Circle(Point center, double radius, Color color)
         {
-            this.Radius = radius;
-            this.Center = center;
+            Radius = radius;
+            Center = center;
             Area = Math.PI * radius * radius;
-            Circuit = 2 * Math.PI * radius;
             if (Area == 0)
                 throw new Exception("Площадь равна нулю");
-            for (int i = 0; i < 16; i++)
-                polygons[i]= new Triangle(new Point(center), new Point((int)(center.x + radius * (Math.Cos(Math.PI * (i / 8.0)))), (int)(center.y + radius * (Math.Sin(Math.PI * (i / 8.0)))), center.z), new Point((int)(center.x + radius * (Math.Cos(Math.PI * ((i + 1.0) / 8.0)))), (int)(center.y + radius * (Math.Sin(Math.PI * ((i + 1.0) / 8.0)))), center.z), color);
+            for (int i = 0; i < polygons.Length; i++)
+                polygons[i]= new Triangle(new Point(center), new Point((int)(center.x + radius * (Math.Cos(Math.PI * (i / ((float)polygons.Length/2))))), (int)(center.y + radius * (Math.Sin(Math.PI * (i / ((float)polygons.Length/2))))), center.z), new Point((int)(center.x + radius * (Math.Cos(Math.PI * ((i + 1.0) / ((float)polygons.Length/2))))), (int)(center.y + radius * (Math.Sin(Math.PI * ((i + 1.0) / ((float)polygons.Length/2))))), center.z), color);
         }
         public void Scale(double x_scale, double y_scale, double z_scale)
         {
             for (int i = 0; i < polygons.Length; i++)
             {
                 polygons[i].Scale(x_scale, y_scale, z_scale);
+            }
+        }
+        public void Slip(double xy, double xz, double yx, double yz, double zx, double zy)
+        {
+            for (int i = 0; i < polygons.Length; i++)
+            {
+                polygons[i].Slip(xy, xz, yx, yz, zx, zy);
+            }
+        }
+        public void Rotate(double x_angle, double y_angle, double z_angle, Point axis)
+        {
+            for (int i = 0; i < polygons.Length; i++)
+            {
+                polygons[i].Rotate(x_angle, y_angle, z_angle, axis);
+            }
+        }
+        public void Moving(float x_move, float y_move, float z_move)
+        {
+            for (int i = 0; i < polygons.Length; i++)
+            {
+                polygons[i].Moving(x_move, y_move, z_move);
             }
         }
     }
