@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,18 +30,21 @@ namespace GrapKurs
         {
             scene.bmp = new Bitmap(PBox.Width, PBox.Height);
             Point[] tr1 = new Point[3];
-            tr1[0] = new Point(300, 50, 0);
-            tr1[1] = new Point(350, 150, 0);
-            tr1[2] = new Point(400, 50, 0);
+            tr1[0] = new Point(-10, 50, 0);
+            tr1[1] = new Point(60, 150, 0);
+            tr1[2] = new Point(110, 50, 0);
             Triangle test1 = new Triangle(tr1, Color.Green);
             Point[] tr2 = new Point[3];
             tr2[0] = new Point(90, 90, 0);
             tr2[1] = new Point(160, 185, 0);
             tr2[2] = new Point(210, 100, 0);
             Triangle test2 = new Triangle(tr2, Color.Red);
-            Rotate(ref test1, 0, 0, 188, new Point(test1.Points[0]));
+            //Rotate(ref test1, 0, 0, -45, new Point(test1.Points[0]));
+            //Scale(ref test1, 1.5, 1, 1);
             DrawTriangle(test1, scene.bmp, scene.zBuf, scene.fill);
-            DrawCircle(new Point(200, 300, 0), 45, 14, scene.bmp, Color.Red, scene.zBuf, scene.fill);
+            Circle crcl = new Circle(new Point(200, 200, 0), 40, Color.Red);
+            //crcl.Scale(1, 1, 1);
+            DrawCircle(crcl, scene.bmp, scene.zBuf, scene.fill);
             //DrawTriangle(test2, scene.bmp, scene.zBuf, scene.fill);
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             PBox.Image = scene.bmp;
@@ -134,13 +138,11 @@ namespace GrapKurs
                         Point P = new Point(A) + new Point(B - A) * phi;
                         P.x = j; P.y = p1.y + i;
                         int idx = (int)(P.x + P.y * bitmap.Width);
-                        if (idx > 0 && idx < zbuffer.Length)
+                        if (P.x > bitmap.Width || P.x < 0 || P.y > bitmap.Height || P.y < 0) continue;
+                        if (zbuffer[idx] <= P.z)
                         {
-                            if (zbuffer[idx] <= P.z)
-                            {
-                                zbuffer[idx] = P.z;
-                                bitmap.SetPixel((int)P.x, (int)P.y, color);
-                            }
+                            zbuffer[idx] = P.z;
+                            bitmap.SetPixel((int)P.x, (int)P.y, color);
                         }
                     }
                 }
@@ -150,12 +152,10 @@ namespace GrapKurs
         {
             DrawTriangle(triangle.Points[0], triangle.Points[1], triangle.Points[2], bitmap, triangle.color, zbuffer, fill);
         }
-        void DrawCircle(Point center, float radius, int polygon, Bitmap bitmap, Color color, float[] zbuffer, bool fill)
+        void DrawCircle(Circle circle, Bitmap bitmap, float[] zbuffer, bool fill)
         {
-            for (int i = 0; i < polygon; i++)
-            {
-                DrawTriangle(new Point(center), new Point((float)(center.x+radius*(Math.Cos(Math.PI*(i/(polygon/2.0))))), (float)(center.y + radius * (Math.Sin(Math.PI * (i/ (polygon / 2.0))))), center.z), new Point((float)(center.x + radius * (Math.Cos(Math.PI * ((i+1) / (polygon / 2.0))))), (float)(center.y + radius * (Math.Sin(Math.PI * ((i+1) / (polygon / 2.0))))), center.z), bitmap, color, zbuffer, fill);
-            }
+            for (int i = 0; i < 16; i++)
+                DrawTriangle(circle.polygons[i], bitmap, zbuffer, fill);
         }
 
         public void Scale(ref Triangle triangle, double x_scale, double y_scale, double z_scale)

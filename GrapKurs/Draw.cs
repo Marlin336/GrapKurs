@@ -107,6 +107,52 @@ namespace GrapKurs
         }
         public Triangle(Point[] points, Color col) : this(new Point(points[0]), new Point(points[1]), new Point(points[2]), col) { }
         public Triangle(int x1, int y1, int z1, int x2, int y2, int z2, int x3, int y3, int z3, Color col) : this(new Point(x1, y1, z1), new Point(x2, y2, z2), new Point(x3, y3, z3), col) { }
+        public void Scale(double x_scale, double y_scale, double z_scale)
+        {
+            Matrix TMtx = new Matrix(4);
+            TMtx.Elems[0, 0] = x_scale;
+            TMtx.Elems[1, 1] = y_scale;
+            TMtx.Elems[2, 2] = z_scale;
+            for (int i = 0; i < 3; i++)
+            {
+                Matrix PMtx = new Matrix(4, 1);
+                PMtx.Elems[0, 0] = Points[i].x;
+                PMtx.Elems[1, 0] = Points[i].y;
+                PMtx.Elems[2, 0] = Points[i].z;
+                PMtx.Elems[3, 0] = 1;
+                Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
+                res = TMtx * PMtx;
+                Points[i].x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
+                Points[i].y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
+                Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
+            }
+        }
+    }
+    public class Circle
+    {
+        public Triangle[] polygons { get; } = new Triangle[16];
+        public Point Center { get; }
+        public double Radius { get; }
+        public double Area { get; }
+        public double Circuit { get; }
+        public Circle(Point center, double radius, Color color)
+        {
+            this.Radius = radius;
+            this.Center = center;
+            Area = Math.PI * radius * radius;
+            Circuit = 2 * Math.PI * radius;
+            if (Area == 0)
+                throw new Exception("Площадь равна нулю");
+            for (int i = 0; i < 16; i++)
+                polygons[i]= new Triangle(new Point(center), new Point((int)(center.x + radius * (Math.Cos(Math.PI * (i / 8.0)))), (int)(center.y + radius * (Math.Sin(Math.PI * (i / 8.0)))), center.z), new Point((int)(center.x + radius * (Math.Cos(Math.PI * ((i + 1.0) / 8.0)))), (int)(center.y + radius * (Math.Sin(Math.PI * ((i + 1.0) / 8.0)))), center.z), color);
+        }
+        public void Scale(double x_scale, double y_scale, double z_scale)
+        {
+            for (int i = 0; i < polygons.Length; i++)
+            {
+                polygons[i].Scale(x_scale, y_scale, z_scale);
+            }
+        }
     }
     /*public class Rectangle
     {
