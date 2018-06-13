@@ -10,20 +10,22 @@ namespace GrapKurs
 {
     class WorkScene
     {
+        public List<Triangle> triangles_save = new List<Triangle>();
         public List<Triangle> triangles = new List<Triangle>();
-        //public List<ParamObj> objs = new List<ParamObj>();
-        public List<Object> objs = new List<object>();
+        public double Zoom = 1;
         Point eye = new Point(100, 100, 100);
-        Point center = new Point(0, 0, 0);
+        public Point Center { get; set; }
         public double pos_cam_x = 180, pos_cam_y = 0;
         public double pos_center_x { get; set; }
         public double pos_center_y { get; set; }
         public bool projection_centr = false;
         public bool fill = true;
-        public Bitmap bmp = new Bitmap(1000, 1000, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+        public Bitmap bmp;
         public int[] zBuf;
-        public WorkScene()
+        public WorkScene(int width, int height)
         {
+            bmp = new Bitmap(width, height);
+            Center = new Point(height / 2, width / 2, 0);
             zBuf = new int[bmp.Width * bmp.Height];
             ClearzBuf();
         }
@@ -48,7 +50,7 @@ namespace GrapKurs
         {
             try
             {
-                center = new Point(x_pos, y_pos, z_pos);
+                Center = new Point(Center.x+x_pos, Center.y+y_pos, Center.z+z_pos);
             }
             catch (Exception)
             {
@@ -67,11 +69,14 @@ namespace GrapKurs
                 case "Circle":
                     Circle circle = (Circle)obj;
                     foreach (Triangle item in circle.polygons)
+                    {
                         triangles.Add(item);
+                    }
                     break;
                 default:
                     break;
             }
+            triangles_save = new List<Triangle>(triangles);
         }
     }
 }

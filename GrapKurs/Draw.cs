@@ -9,10 +9,11 @@ namespace GrapKurs
 {
     public class Point
     {
-        public float x { get; set; }
-        public float y { get; set; }
-        public float z { get; set; }
-        public Point(float x, float y, float z)
+        public double x { get; set; } = 0;
+        public double y { get; set; } = 0;
+        public double z { get; set; } = 0;
+        public Point() { }
+        public Point(double x, double y, double z)
         {
             this.x = x;
             this.y = y;
@@ -20,11 +21,11 @@ namespace GrapKurs
         }
         public Point(Point pt)
         {
-            this.x = pt.x;
-            this.y = pt.y;
-            this.z = pt.z;
+            x = pt.x;
+            y = pt.y;
+            z = pt.z;
         }
-        public static Point operator *(Point pt1, float dig)
+        public static Point operator *(Point pt1, double dig)
         {
             return new Point((pt1.x * dig), (pt1.y * dig), (pt1.z * dig));
         }
@@ -92,9 +93,6 @@ namespace GrapKurs
         public Point[] Points { get; } = new Point[3];
         public Point Center { get; }
         public Color Color;
-        public double x_scale = 1;
-        public double y_scale = 1;
-        public double z_scale = 1;
         public Triangle(Point pt1, Point pt2, Point pt3, Color color)
         {
             Points = new Point[] { pt1, pt2, pt3 };
@@ -102,7 +100,7 @@ namespace GrapKurs
             Color = color;
         }
         public Triangle(Point[] points, Color col) : this(new Point(points[0]), new Point(points[1]), new Point(points[2]), col) { }
-        public Triangle(int x1, int y1, int z1, int x2, int y2, int z2, int x3, int y3, int z3, Color col) : this(new Point(x1, y1, z1), new Point(x2, y2, z2), new Point(x3, y3, z3), col) { }
+        public Triangle(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, Color col) : this(new Point(x1, y1, z1), new Point(x2, y2, z2), new Point(x3, y3, z3), col) { }
         public void Scale(double x_scale, double y_scale, double z_scale, Point axis)
         {
             if (x_scale <=0 || y_scale <= 0 || z_scale <= 0) 
@@ -126,9 +124,6 @@ namespace GrapKurs
                 Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
             }
             Moving(axis.x, axis.y, axis.z);
-            this.x_scale *= x_scale;
-            this.y_scale *= y_scale;
-            this.z_scale *= z_scale;
         }
         public void Slip(double xy, double xz, double yx, double yz, double zx, double zy, Point axis)
         {
@@ -192,7 +187,7 @@ namespace GrapKurs
             Transform(Math.Cos(z), Math.Cos(z), 1, -Math.Sin(z), 0, Math.Sin(z), 0, 0, 0);
             Moving(axis.x, axis.y, axis.z);
         }
-        public void Moving(float x_move, float y_move, float z_move)
+        public void Moving(double x_move, double y_move, double z_move)
         {
             Matrix MoveMtx = new Matrix(4);
             MoveMtx.Elems[0, 3] = x_move;

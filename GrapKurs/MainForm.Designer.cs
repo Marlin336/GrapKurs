@@ -48,10 +48,15 @@
             this.снизуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.слеваToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.справаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.openFD = new System.Windows.Forms.OpenFileDialog();
+            this.bUp = new System.Windows.Forms.Button();
+            this.bDown = new System.Windows.Forms.Button();
+            this.bRight = new System.Windows.Forms.Button();
+            this.bLeft = new System.Windows.Forms.Button();
+            this.ScaleUpDown = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.PBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ScaleUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // lboxObj
@@ -174,6 +179,7 @@
             this.загрузитьToolStripMenuItem.Name = "загрузитьToolStripMenuItem";
             this.загрузитьToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.загрузитьToolStripMenuItem.Text = "Загрузить";
+            this.загрузитьToolStripMenuItem.Click += new System.EventHandler(this.ЗагрузитьToolStripMenuItem_Click);
             // 
             // видыToolStripMenuItem
             // 
@@ -210,33 +216,85 @@
             this.справаToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.справаToolStripMenuItem.Text = "Справа";
             // 
-            // button1
+            // openFD
             // 
-            this.button1.Location = new System.Drawing.Point(668, 335);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(39, 23);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "-";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.openFD.FileName = "openFileDialog";
+            this.openFD.Filter = "3D model format|*.obj";
             // 
-            // button2
+            // bUp
             // 
-            this.button2.Location = new System.Drawing.Point(722, 335);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(39, 23);
-            this.button2.TabIndex = 7;
-            this.button2.Text = "+";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.bUp.Location = new System.Drawing.Point(710, 362);
+            this.bUp.Name = "bUp";
+            this.bUp.Size = new System.Drawing.Size(39, 23);
+            this.bUp.TabIndex = 8;
+            this.bUp.Text = "↑";
+            this.bUp.UseVisualStyleBackColor = true;
+            this.bUp.Click += new System.EventHandler(this.bUp_Click);
+            // 
+            // bDown
+            // 
+            this.bDown.Location = new System.Drawing.Point(710, 391);
+            this.bDown.Name = "bDown";
+            this.bDown.Size = new System.Drawing.Size(39, 23);
+            this.bDown.TabIndex = 9;
+            this.bDown.Text = "↓";
+            this.bDown.UseVisualStyleBackColor = true;
+            this.bDown.Click += new System.EventHandler(this.bDown_Click);
+            // 
+            // bRight
+            // 
+            this.bRight.Location = new System.Drawing.Point(755, 378);
+            this.bRight.Name = "bRight";
+            this.bRight.Size = new System.Drawing.Size(39, 23);
+            this.bRight.TabIndex = 10;
+            this.bRight.Text = "→";
+            this.bRight.UseVisualStyleBackColor = true;
+            this.bRight.Click += new System.EventHandler(this.bRight_Click);
+            // 
+            // bLeft
+            // 
+            this.bLeft.Location = new System.Drawing.Point(665, 378);
+            this.bLeft.Name = "bLeft";
+            this.bLeft.Size = new System.Drawing.Size(39, 23);
+            this.bLeft.TabIndex = 11;
+            this.bLeft.Text = "←";
+            this.bLeft.UseVisualStyleBackColor = true;
+            this.bLeft.Click += new System.EventHandler(this.bLeft_Click);
+            // 
+            // ScaleUpDown
+            // 
+            this.ScaleUpDown.DecimalPlaces = 2;
+            this.ScaleUpDown.Increment = new decimal(new int[] {
+            15,
+            0,
+            0,
+            131072});
+            this.ScaleUpDown.Location = new System.Drawing.Point(720, 437);
+            this.ScaleUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.ScaleUpDown.Name = "ScaleUpDown";
+            this.ScaleUpDown.Size = new System.Drawing.Size(120, 20);
+            this.ScaleUpDown.TabIndex = 12;
+            this.ScaleUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.ScaleUpDown.ValueChanged += new System.EventHandler(this.ScaleUpDown_ValueChanged);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(876, 481);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.ScaleUpDown);
+            this.Controls.Add(this.bLeft);
+            this.Controls.Add(this.bRight);
+            this.Controls.Add(this.bDown);
+            this.Controls.Add(this.bUp);
             this.Controls.Add(this.bAdd);
             this.Controls.Add(this.bDel);
             this.Controls.Add(this.lboxObj);
@@ -248,6 +306,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.PBox)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ScaleUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -275,8 +334,12 @@
         private System.Windows.Forms.ToolStripMenuItem снизуToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem слеваToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem справаToolStripMenuItem;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.OpenFileDialog openFD;
+        private System.Windows.Forms.Button bUp;
+        private System.Windows.Forms.Button bDown;
+        private System.Windows.Forms.Button bRight;
+        private System.Windows.Forms.Button bLeft;
+        private System.Windows.Forms.NumericUpDown ScaleUpDown;
     }
 }
 
