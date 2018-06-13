@@ -252,9 +252,9 @@ namespace GrapKurs
 
         private void ScaleUpDown_ValueChanged(object sender, EventArgs e)
         {
-            scene.triangles = new List<Triangle>(scene.triangles_save);
             foreach (Triangle item in scene.triangles)
             {
+                item.Reset();
                 item.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, scene.Center);
             }
             scene.ClearzBuf();

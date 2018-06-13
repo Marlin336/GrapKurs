@@ -10,9 +10,7 @@ namespace GrapKurs
 {
     class WorkScene
     {
-        public List<Triangle> triangles_save = new List<Triangle>();
         public List<Triangle> triangles = new List<Triangle>();
-        public double Zoom = 1;
         Point eye = new Point(100, 100, 100);
         public Point Center { get; set; }
         public double pos_cam_x = 180, pos_cam_y = 0;
@@ -76,7 +74,6 @@ namespace GrapKurs
                 default:
                     break;
             }
-            triangles_save = new List<Triangle>(triangles);
         }
     }
 }

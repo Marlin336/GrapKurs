@@ -12,18 +12,30 @@ namespace GrapKurs
         public double x { get; set; } = 0;
         public double y { get; set; } = 0;
         public double z { get; set; } = 0;
+        private double sx { get; set; } = 0;
+        private double sy { get; set; } = 0;
+        private double sz { get; set; } = 0;
         public Point() { }
         public Point(double x, double y, double z)
         {
-            this.x = x;
-            this.y = y;
-            this.z = z;
+            this.x = sx = x;
+            this.y = sy = y;
+            this.z = sz = z;
         }
         public Point(Point pt)
         {
             x = pt.x;
             y = pt.y;
             z = pt.z;
+            sx = pt.sx;
+            sy = pt.sy;
+            sz = pt.sz;
+        }
+        public void Reset()
+        {
+            x = sx;
+            y = sy;
+            z = sz;
         }
         public static Point operator *(Point pt1, double dig)
         {
@@ -93,6 +105,12 @@ namespace GrapKurs
         public Point[] Points { get; } = new Point[3];
         public Point Center { get; }
         public Color Color;
+        public Triangle(Triangle triangle)
+        {
+            triangle.Points.CopyTo(Points, 0);
+            Center = new Point(triangle.Center);
+            Color = triangle.Color;
+        }
         public Triangle(Point pt1, Point pt2, Point pt3, Color color)
         {
             Points = new Point[] { pt1, pt2, pt3 };
@@ -101,6 +119,13 @@ namespace GrapKurs
         }
         public Triangle(Point[] points, Color col) : this(new Point(points[0]), new Point(points[1]), new Point(points[2]), col) { }
         public Triangle(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, Color col) : this(new Point(x1, y1, z1), new Point(x2, y2, z2), new Point(x3, y3, z3), col) { }
+        public void Reset()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                Points[i].Reset();
+            }
+        }
         public void Scale(double x_scale, double y_scale, double z_scale, Point axis)
         {
             if (x_scale <=0 || y_scale <= 0 || z_scale <= 0) 
