@@ -26,12 +26,18 @@ namespace GrapKurs
             pa1[1] = new Point(150, 150, 0);
             pa1[2] = new Point(110, 50, 0);
             Triangle tr1 = new Triangle(pa1, System.Drawing.Color.FromArgb(255,r.Next(0,255), r.Next(0, 255), r.Next(0, 255)));
+            scene.objs.Add(tr1);
+            lboxObj.Items.Add(tr1);
             Point[] pa2 = new Point[3];
             pa2[0] = new Point(30, 70, -10);
             pa2[1] = new Point(80, 150, 10);
             pa2[2] = new Point(130, 70, -10);
             Triangle tr2 = new Triangle(pa2, System.Drawing.Color.FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255)));
+            scene.objs.Add(tr2);
+            lboxObj.Items.Add(tr2);
             Circle crcl1 = new Circle(new Point(200, 200, 0), 50, System.Drawing.Color.Red);
+            scene.objs.Add(crcl1);
+            lboxObj.Items.Add(crcl1);
             scene.AddObj(tr1);
             scene.AddObj(tr2);
             scene.AddObj(crcl1);
@@ -208,57 +214,182 @@ namespace GrapKurs
 
         private void bUp_Click(object sender, EventArgs e)
         {
-            foreach (Triangle item in scene.triangles)
+            if (lboxObj.SelectedIndex == -1)
+            { 
+                foreach (Triangle item in scene.triangles)
             {
                 item.Moving(0, 15, 0);
             }
-            scene.CenterPos(0, 15, 0);
+                scene.CenterPos(0, 15, 0);
+            }
+            else
+            {
+                int index = scene.objs.IndexOf(lboxObj.Items[lboxObj.SelectedIndex]);
+                switch (scene.objs[index].GetType().Name)
+                {
+                    case "Triangle":
+                        Triangle triangle = (Triangle)scene.objs[index];
+                        triangle.Moving(0, 15, 0);
+                        break;
+                    case "Circle":
+                        Circle circle = (Circle)scene.objs[index];
+                        foreach (Triangle item in circle.polygons)
+                        {
+                            item.Moving(0, 15, 0);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
             scene.ClearzBuf();
             Redraw();
         }
 
         private void bDown_Click(object sender, EventArgs e)
         {
-            foreach (Triangle item in scene.triangles)
+            if (lboxObj.SelectedIndex == -1)
             {
-                item.Moving(0, -15, 0);
+                foreach (Triangle item in scene.triangles)
+                {
+                    item.Moving(0, -15, 0);
+                }
+                scene.CenterPos(0, -15, 0);
             }
-            scene.CenterPos(0, -15, 0);
+            else
+            {
+                int index = scene.objs.IndexOf(lboxObj.Items[lboxObj.SelectedIndex]);
+                switch (scene.objs[index].GetType().Name)
+                {
+                    case "Triangle":
+                        Triangle triangle = (Triangle)scene.objs[index];
+                        triangle.Moving(0, -15, 0);
+                        break;
+                    case "Circle":
+                        Circle circle = (Circle)scene.objs[index];
+                        foreach (Triangle item in circle.polygons)
+                        {
+                            item.Moving(0, -15, 0);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
             scene.ClearzBuf();
             Redraw();
         }
 
         private void bRight_Click(object sender, EventArgs e)
         {
-            foreach (Triangle item in scene.triangles)
+            if (lboxObj.SelectedIndex == -1)
             {
-                item.Moving(15, 0, 0);
+                foreach (Triangle item in scene.triangles)
+                {
+                    item.Moving(15, 0, 0);
+                }
+                scene.CenterPos(15, 0, 0);
             }
-            scene.CenterPos(15, 0, 0);
+            else
+            {
+                int index = scene.objs.IndexOf(lboxObj.Items[lboxObj.SelectedIndex]);
+                switch (scene.objs[index].GetType().Name)
+                {
+                    case "Triangle":
+                        Triangle triangle = (Triangle)scene.objs[index];
+                        triangle.Moving(15, 0, 0);
+                        break;
+                    case "Circle":
+                        Circle circle = (Circle)scene.objs[index];
+                        foreach (Triangle item in circle.polygons)
+                        {
+                            item.Moving(15, 0, 0);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
             scene.ClearzBuf();
             Redraw();
         }
 
         private void bLeft_Click(object sender, EventArgs e)
         {
-            foreach (Triangle item in scene.triangles)
+            if (lboxObj.SelectedIndex == -1)
             {
-                item.Moving(-15, 0, 0);
+                foreach (Triangle item in scene.triangles)
+                {
+                    item.Moving(-15, 0, 0);
+                }
+                scene.CenterPos(-15, 0, 0);
             }
-            scene.CenterPos(-15, 0, 0);
+            else
+            {
+                int index = scene.objs.IndexOf(lboxObj.Items[lboxObj.SelectedIndex]);
+                switch (scene.objs[index].GetType().Name)
+                {
+                    case "Triangle":
+                        Triangle triangle = (Triangle)scene.objs[index];
+                        triangle.Moving(-15, 0, 0);
+                        break;
+                    case "Circle":
+                        Circle circle = (Circle)scene.objs[index];
+                        foreach (Triangle item in circle.polygons)
+                        {
+                            item.Moving(-15, 0, 0);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
             scene.ClearzBuf();
             Redraw();
         }
 
         private void ScaleUpDown_ValueChanged(object sender, EventArgs e)
         {
-            foreach (Triangle item in scene.triangles)
+            if (lboxObj.SelectedIndex == -1)
             {
-                item.Reset();
-                item.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, scene.Center);
+                foreach (Triangle item in scene.triangles)
+                {
+                    item.Reset();
+                    item.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, scene.Center);
+                }
+            }
+            else
+            {
+                int index = scene.objs.IndexOf(lboxObj.Items[lboxObj.SelectedIndex]);
+                switch (scene.objs[index].GetType().Name)
+                {
+                    case "Triangle":
+                        Triangle triangle = (Triangle)scene.objs[index];
+                        triangle.Reset();
+                        triangle.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, triangle.Center);
+                        break;
+                    case "Circle":
+                        Circle circle = (Circle)scene.objs[index];
+                        foreach (Triangle item in circle.polygons)
+                        {
+                            item.Reset();
+                            item.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, circle.Center);
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
             scene.ClearzBuf();
             Redraw();
+        }
+
+        private void lboxObj_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                lboxObj.SelectedIndex = -1;
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ namespace GrapKurs
     class WorkScene
     {
         public List<Triangle> triangles = new List<Triangle>();
+        public List<Object> objs = new List<Object>();
         Point eye = new Point(100, 100, 100);
         public Point Center { get; set; }
         public double pos_cam_x = 180, pos_cam_y = 0;
@@ -67,9 +68,7 @@ namespace GrapKurs
                 case "Circle":
                     Circle circle = (Circle)obj;
                     foreach (Triangle item in circle.polygons)
-                    {
                         triangles.Add(item);
-                    }
                     break;
                 default:
                     break;

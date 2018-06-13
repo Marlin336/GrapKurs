@@ -66,6 +66,7 @@
             this.lboxObj.Name = "lboxObj";
             this.lboxObj.Size = new System.Drawing.Size(203, 212);
             this.lboxObj.TabIndex = 1;
+            this.lboxObj.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lboxObj_MouseDown);
             // 
             // bDel
             // 
@@ -223,7 +224,7 @@
             // 
             // bUp
             // 
-            this.bUp.Location = new System.Drawing.Point(710, 362);
+            this.bUp.Location = new System.Drawing.Point(750, 289);
             this.bUp.Name = "bUp";
             this.bUp.Size = new System.Drawing.Size(39, 23);
             this.bUp.TabIndex = 8;
@@ -233,7 +234,7 @@
             // 
             // bDown
             // 
-            this.bDown.Location = new System.Drawing.Point(710, 391);
+            this.bDown.Location = new System.Drawing.Point(750, 318);
             this.bDown.Name = "bDown";
             this.bDown.Size = new System.Drawing.Size(39, 23);
             this.bDown.TabIndex = 9;
@@ -243,7 +244,7 @@
             // 
             // bRight
             // 
-            this.bRight.Location = new System.Drawing.Point(755, 378);
+            this.bRight.Location = new System.Drawing.Point(795, 305);
             this.bRight.Name = "bRight";
             this.bRight.Size = new System.Drawing.Size(39, 23);
             this.bRight.TabIndex = 10;
@@ -253,7 +254,7 @@
             // 
             // bLeft
             // 
-            this.bLeft.Location = new System.Drawing.Point(665, 378);
+            this.bLeft.Location = new System.Drawing.Point(705, 305);
             this.bLeft.Name = "bLeft";
             this.bLeft.Size = new System.Drawing.Size(39, 23);
             this.bLeft.TabIndex = 11;
@@ -265,18 +266,18 @@
             // 
             this.ScaleUpDown.DecimalPlaces = 2;
             this.ScaleUpDown.Increment = new decimal(new int[] {
-            15,
+            5,
             0,
             0,
             131072});
-            this.ScaleUpDown.Location = new System.Drawing.Point(720, 437);
+            this.ScaleUpDown.Location = new System.Drawing.Point(802, 351);
             this.ScaleUpDown.Minimum = new decimal(new int[] {
-            1,
+            5,
             0,
             0,
             131072});
             this.ScaleUpDown.Name = "ScaleUpDown";
-            this.ScaleUpDown.Size = new System.Drawing.Size(120, 20);
+            this.ScaleUpDown.Size = new System.Drawing.Size(62, 20);
             this.ScaleUpDown.TabIndex = 12;
             this.ScaleUpDown.Value = new decimal(new int[] {
             1,
