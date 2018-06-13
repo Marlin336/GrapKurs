@@ -92,6 +92,9 @@ namespace GrapKurs
         public Point[] Points { get; } = new Point[3];
         public Point Center { get; }
         public Color Color;
+        public double x_scale = 1;
+        public double y_scale = 1;
+        public double z_scale = 1;
         public Triangle(Point pt1, Point pt2, Point pt3, Color color)
         {
             Points = new Point[] { pt1, pt2, pt3 };
@@ -123,6 +126,9 @@ namespace GrapKurs
                 Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
             }
             Moving(axis.x, axis.y, axis.z);
+            this.x_scale *= x_scale;
+            this.y_scale *= y_scale;
+            this.z_scale *= z_scale;
         }
         public void Slip(double xy, double xz, double yx, double yz, double zx, double zy, Point axis)
         {

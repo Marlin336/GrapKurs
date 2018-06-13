@@ -13,16 +13,10 @@ namespace GrapKurs
 {
     public partial class MainForm : Form
     {
-        WorkScene scene;
+        WorkScene scene = new WorkScene();
         public MainForm()
         {
             InitializeComponent();
-            scene = new WorkScene(PBox.Width, PBox.Height);
-            scene.zBuf = new float[scene.bmp.Height * scene.bmp.Width];
-            for (int i = 0; i < scene.zBuf.Length; i++)
-            {
-                scene.zBuf[i] = float.MinValue;
-            }
             Redraw();
         }
 
@@ -36,14 +30,17 @@ namespace GrapKurs
             Triangle tr1 = new Triangle(pa1, Color.Green);
             Point[] pa2 = new Point[3];
             pa2[0] = new Point(30, 70, -10);
-            pa2[1] = new Point(80, 170, -10);
+            pa2[1] = new Point(80, 150, 10);
             pa2[2] = new Point(130, 70, -10);
             Triangle tr2 = new Triangle(pa2, Color.Blue);
-            tr1.Scale(1, 2, 1, new Point(tr1.Center));
-            DrawTriangle(tr2, scene.bmp, scene.zBuf, scene.fill);
-            DrawTriangle(tr1, scene.bmp, scene.zBuf, scene.fill);
             Circle crcl1 = new Circle(new Point(200, 200, 0), 50, Color.Red);
-            DrawCircle(crcl1, scene.bmp, scene.zBuf, scene.fill);
+            scene.AddObj(tr1);
+            scene.AddObj(tr2);
+            scene.AddObj(crcl1);
+            foreach (Triangle item in scene.triangles)
+            {
+                DrawTriangle(item, scene.bmp, scene.zBuf, scene.fill);
+            }
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             PBox.Image = scene.bmp;
         }
@@ -107,7 +104,7 @@ namespace GrapKurs
                 }
             }
         }
-        void DrawTriangle(Point p1, Point p2, Point p3, Bitmap bitmap, Color color, float[] zbuffer, bool fill)
+        void DrawTriangle(Point p1, Point p2, Point p3, Bitmap bitmap, Color color, int[] zbuffer, bool fill)
         {
             if (p1.y > p2.y) Swap(ref p1, ref p2);
             if (p1.y > p3.y) Swap(ref p1, ref p3);
@@ -137,34 +134,51 @@ namespace GrapKurs
                         P.x = j; P.y = p1.y + i;
                         int idx = (int)(P.x + P.y * bitmap.Width);
                         if (P.x > bitmap.Width || P.x < 0 || P.y > bitmap.Height || P.y < 0) continue;
-                        if (zbuffer[idx] <= P.z)
+                        if (zbuffer[idx] < P.z)
                         {
-                            zbuffer[idx] = P.z;
+                            zbuffer[idx] = (int)P.z;
                             bitmap.SetPixel((int)P.x, (int)P.y, color);
                         }
                     }
                 }
             }
         }
-        void DrawTriangle(Triangle triangle, Bitmap bitmap, float[] zbuffer, bool fill)
+        void DrawTriangle(Triangle triangle, Bitmap bitmap, int[] zbuffer, bool fill)
         {
             DrawTriangle(triangle.Points[0], triangle.Points[1], triangle.Points[2], bitmap, triangle.Color, zbuffer, fill);
-        }
-        void DrawCircle(Circle circle, Bitmap bitmap, float[] zbuffer, bool fill)
-        {
-            for (int i = 0; i < 20; i++)
-                DrawTriangle(circle.polygons[i], bitmap, zbuffer, fill);
         }
 
         private void РеалистичныйToolStripMenuItem_Click(object sender, EventArgs e)
         {
             scene.fill = true;
+            scene.ClearzBuf();
             Redraw();
         }
 
         private void КаркасныйToolStripMenuItem_Click(object sender, EventArgs e)
         {
             scene.fill = false;
+            scene.ClearzBuf();
+            Redraw();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            foreach (Triangle item in scene.triangles)
+            {
+                item.Scale(0.8, 0.8, 0.8, new Point(0, 0, 0));
+            }
+            scene.ClearzBuf();
+            Redraw();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            foreach (Triangle item in scene.triangles)
+            {
+                item.Scale(1.25, 1.25, 1.25, new Point(0, 0, 0));
+            }
+            scene.ClearzBuf();
             Redraw();
         }
     }
