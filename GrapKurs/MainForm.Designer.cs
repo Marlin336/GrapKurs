@@ -48,8 +48,15 @@
             this.снизуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.слеваToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.справаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openFD = new System.Windows.Forms.OpenFileDialog();
+            this.bUp = new System.Windows.Forms.Button();
+            this.bDown = new System.Windows.Forms.Button();
+            this.bRight = new System.Windows.Forms.Button();
+            this.bLeft = new System.Windows.Forms.Button();
+            this.ScaleUpDown = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.PBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ScaleUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // lboxObj
@@ -59,6 +66,7 @@
             this.lboxObj.Name = "lboxObj";
             this.lboxObj.Size = new System.Drawing.Size(203, 212);
             this.lboxObj.TabIndex = 1;
+            this.lboxObj.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lboxObj_MouseDown);
             // 
             // bDel
             // 
@@ -114,7 +122,7 @@
             this.центральноеToolStripMenuItem,
             this.параллельноеToolStripMenuItem});
             this.проецированиеToolStripMenuItem.Name = "проецированиеToolStripMenuItem";
-            this.проецированиеToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.проецированиеToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.проецированиеToolStripMenuItem.Text = "Проецирование";
             // 
             // центральноеToolStripMenuItem
@@ -135,20 +143,20 @@
             this.реалистичныйToolStripMenuItem,
             this.каркасныйToolStripMenuItem});
             this.визуализацияToolStripMenuItem.Name = "визуализацияToolStripMenuItem";
-            this.визуализацияToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.визуализацияToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.визуализацияToolStripMenuItem.Text = "Визуализация";
             // 
             // реалистичныйToolStripMenuItem
             // 
             this.реалистичныйToolStripMenuItem.Name = "реалистичныйToolStripMenuItem";
-            this.реалистичныйToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.реалистичныйToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.реалистичныйToolStripMenuItem.Text = "Реалистичный";
             this.реалистичныйToolStripMenuItem.Click += new System.EventHandler(this.РеалистичныйToolStripMenuItem_Click);
             // 
             // каркасныйToolStripMenuItem
             // 
             this.каркасныйToolStripMenuItem.Name = "каркасныйToolStripMenuItem";
-            this.каркасныйToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.каркасныйToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.каркасныйToolStripMenuItem.Text = "Каркасный";
             this.каркасныйToolStripMenuItem.Click += new System.EventHandler(this.КаркасныйToolStripMenuItem_Click);
             // 
@@ -172,6 +180,7 @@
             this.загрузитьToolStripMenuItem.Name = "загрузитьToolStripMenuItem";
             this.загрузитьToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.загрузитьToolStripMenuItem.Text = "Загрузить";
+            this.загрузитьToolStripMenuItem.Click += new System.EventHandler(this.ЗагрузитьToolStripMenuItem_Click);
             // 
             // видыToolStripMenuItem
             // 
@@ -187,32 +196,106 @@
             // сверхуToolStripMenuItem
             // 
             this.сверхуToolStripMenuItem.Name = "сверхуToolStripMenuItem";
-            this.сверхуToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.сверхуToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.сверхуToolStripMenuItem.Text = "Сверху";
             // 
             // снизуToolStripMenuItem
             // 
             this.снизуToolStripMenuItem.Name = "снизуToolStripMenuItem";
-            this.снизуToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.снизуToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.снизуToolStripMenuItem.Text = "Снизу";
             // 
             // слеваToolStripMenuItem
             // 
             this.слеваToolStripMenuItem.Name = "слеваToolStripMenuItem";
-            this.слеваToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.слеваToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.слеваToolStripMenuItem.Text = "Слева";
             // 
             // справаToolStripMenuItem
             // 
             this.справаToolStripMenuItem.Name = "справаToolStripMenuItem";
-            this.справаToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.справаToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.справаToolStripMenuItem.Text = "Справа";
+            // 
+            // openFD
+            // 
+            this.openFD.FileName = "openFileDialog";
+            this.openFD.Filter = "3D model format|*.obj";
+            // 
+            // bUp
+            // 
+            this.bUp.Location = new System.Drawing.Point(750, 289);
+            this.bUp.Name = "bUp";
+            this.bUp.Size = new System.Drawing.Size(39, 23);
+            this.bUp.TabIndex = 8;
+            this.bUp.Text = "↑";
+            this.bUp.UseVisualStyleBackColor = true;
+            this.bUp.Click += new System.EventHandler(this.bUp_Click);
+            // 
+            // bDown
+            // 
+            this.bDown.Location = new System.Drawing.Point(750, 318);
+            this.bDown.Name = "bDown";
+            this.bDown.Size = new System.Drawing.Size(39, 23);
+            this.bDown.TabIndex = 9;
+            this.bDown.Text = "↓";
+            this.bDown.UseVisualStyleBackColor = true;
+            this.bDown.Click += new System.EventHandler(this.bDown_Click);
+            // 
+            // bRight
+            // 
+            this.bRight.Location = new System.Drawing.Point(795, 305);
+            this.bRight.Name = "bRight";
+            this.bRight.Size = new System.Drawing.Size(39, 23);
+            this.bRight.TabIndex = 10;
+            this.bRight.Text = "→";
+            this.bRight.UseVisualStyleBackColor = true;
+            this.bRight.Click += new System.EventHandler(this.bRight_Click);
+            // 
+            // bLeft
+            // 
+            this.bLeft.Location = new System.Drawing.Point(705, 305);
+            this.bLeft.Name = "bLeft";
+            this.bLeft.Size = new System.Drawing.Size(39, 23);
+            this.bLeft.TabIndex = 11;
+            this.bLeft.Text = "←";
+            this.bLeft.UseVisualStyleBackColor = true;
+            this.bLeft.Click += new System.EventHandler(this.bLeft_Click);
+            // 
+            // ScaleUpDown
+            // 
+            this.ScaleUpDown.DecimalPlaces = 2;
+            this.ScaleUpDown.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            131072});
+            this.ScaleUpDown.Location = new System.Drawing.Point(802, 351);
+            this.ScaleUpDown.Minimum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            131072});
+            this.ScaleUpDown.Name = "ScaleUpDown";
+            this.ScaleUpDown.Size = new System.Drawing.Size(62, 20);
+            this.ScaleUpDown.TabIndex = 12;
+            this.ScaleUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.ScaleUpDown.ValueChanged += new System.EventHandler(this.ScaleUpDown_ValueChanged);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(876, 481);
+            this.Controls.Add(this.ScaleUpDown);
+            this.Controls.Add(this.bLeft);
+            this.Controls.Add(this.bRight);
+            this.Controls.Add(this.bDown);
+            this.Controls.Add(this.bUp);
             this.Controls.Add(this.bAdd);
             this.Controls.Add(this.bDel);
             this.Controls.Add(this.lboxObj);
@@ -224,6 +307,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.PBox)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ScaleUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -251,6 +335,12 @@
         private System.Windows.Forms.ToolStripMenuItem снизуToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem слеваToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem справаToolStripMenuItem;
+        private System.Windows.Forms.OpenFileDialog openFD;
+        private System.Windows.Forms.Button bUp;
+        private System.Windows.Forms.Button bDown;
+        private System.Windows.Forms.Button bRight;
+        private System.Windows.Forms.Button bLeft;
+        private System.Windows.Forms.NumericUpDown ScaleUpDown;
     }
 }
 

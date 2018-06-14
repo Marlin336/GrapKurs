@@ -9,22 +9,61 @@ namespace GrapKurs
 {
     public class Point
     {
-        public float x { get; set; }
-        public float y { get; set; }
-        public float z { get; set; }
-        public Point(float x, float y, float z)
+        public double x { get; set; } = 0;
+        public double y { get; set; } = 0;
+        public double z { get; set; } = 0;
+        private double sx { get; set; } = 0;
+        private double sy { get; set; } = 0;
+        private double sz { get; set; } = 0;
+        private double xsh { get; set; } = 0;
+        private double ysh { get; set; } = 0;
+        private double zsh { get; set; } = 0;
+        public Point() { }
+        public Point(double x, double y, double z)
         {
-            this.x = x;
-            this.y = y;
-            this.z = z;
+            this.x = sx = x;
+            this.y = sy = y;
+            this.z = sz = z;
         }
         public Point(Point pt)
         {
-            this.x = pt.x;
-            this.y = pt.y;
-            this.z = pt.z;
+            x = pt.x;
+            y = pt.y;
+            z = pt.z;
+            sx = pt.sx;
+            sy = pt.sy;
+            sz = pt.sz;
+            xsh = pt.xsh;
+            ysh = pt.ysh;
+            zsh = pt.zsh;
         }
-        public static Point operator *(Point pt1, float dig)
+        public void Reset()
+        {
+            x = sx + xsh;
+            y = sy + ysh;
+            z = sz + zsh;
+        }
+        public void Moving(double x_move, double y_move, double z_move)
+        {
+            Matrix MoveMtx = new Matrix(4);
+            MoveMtx.Elems[0, 3] = x_move;
+            MoveMtx.Elems[1, 3] = y_move;
+            MoveMtx.Elems[2, 3] = z_move;
+            Matrix PointMtx = new Matrix(4, 1);
+            PointMtx.Elems[0, 0] = x;
+            PointMtx.Elems[1, 0] = y;
+            PointMtx.Elems[2, 0] = z;
+            PointMtx.Elems[3, 0] = 1;
+            Matrix res = new Matrix(MoveMtx.Rows, PointMtx.Columns);
+            res = MoveMtx * PointMtx;
+            x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
+            y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
+            z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
+            xsh += x_move;
+            ysh += y_move;
+            zsh += z_move;
+        }
+        public static Point operator *(Point pt1, double dig)
         {
             return new Point((pt1.x * dig), (pt1.y * dig), (pt1.z * dig));
         }
@@ -92,6 +131,12 @@ namespace GrapKurs
         public Point[] Points { get; } = new Point[3];
         public Point Center { get; }
         public Color Color;
+        public Triangle(Triangle triangle)
+        {
+            triangle.Points.CopyTo(Points, 0);
+            Center = new Point(triangle.Center);
+            Color = triangle.Color;
+        }
         public Triangle(Point pt1, Point pt2, Point pt3, Color color)
         {
             Points = new Point[] { pt1, pt2, pt3 };
@@ -99,7 +144,13 @@ namespace GrapKurs
             Color = color;
         }
         public Triangle(Point[] points, Color col) : this(new Point(points[0]), new Point(points[1]), new Point(points[2]), col) { }
-        public Triangle(int x1, int y1, int z1, int x2, int y2, int z2, int x3, int y3, int z3, Color col) : this(new Point(x1, y1, z1), new Point(x2, y2, z2), new Point(x3, y3, z3), col) { }
+        public void Reset()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                Points[i].Reset();
+            }
+        }
         public void Scale(double x_scale, double y_scale, double z_scale, Point axis)
         {
             if (x_scale <=0 || y_scale <= 0 || z_scale <= 0) 
@@ -186,24 +237,11 @@ namespace GrapKurs
             Transform(Math.Cos(z), Math.Cos(z), 1, -Math.Sin(z), 0, Math.Sin(z), 0, 0, 0);
             Moving(axis.x, axis.y, axis.z);
         }
-        public void Moving(float x_move, float y_move, float z_move)
+        public void Moving(double x_move, double y_move, double z_move)
         {
-            Matrix MoveMtx = new Matrix(4);
-            MoveMtx.Elems[0, 3] = x_move;
-            MoveMtx.Elems[1, 3] = y_move;
-            MoveMtx.Elems[2, 3] = z_move;
             for (int i = 0; i < 3; i++)
             {
-                Matrix PointMtx = new Matrix(4, 1);
-                PointMtx.Elems[0, 0] = Points[i].x;
-                PointMtx.Elems[1, 0] = Points[i].y;
-                PointMtx.Elems[2, 0] = Points[i].z;
-                PointMtx.Elems[3, 0] = 1;
-                Matrix res = new Matrix(MoveMtx.Rows, PointMtx.Columns);
-                res = MoveMtx * PointMtx;
-                Points[i].x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
-                Points[i].y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
-                Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
+                Points[i].Moving(x_move, y_move, z_move);
             }
         }
     }
