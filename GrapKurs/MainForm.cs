@@ -21,23 +21,6 @@ namespace GrapKurs
         {
             InitializeComponent();
             scene = new WorkScene(PBox.Width, PBox.Height);
-            Point[] pa1 = new Point[3];
-            pa1[0] = new Point(-10, 50, 0);
-            pa1[1] = new Point(150, 150, 0);
-            pa1[2] = new Point(110, 50, 0);
-            Triangle tr1 = new Triangle(pa1, System.Drawing.Color.FromArgb(255,r.Next(0,255), r.Next(0, 255), r.Next(0, 255)));
-            lboxObj.Items.Add(tr1);
-            Point[] pa2 = new Point[3];
-            pa2[0] = new Point(30, 70, -10);
-            pa2[1] = new Point(80, 150, 10);
-            pa2[2] = new Point(130, 70, -10);
-            Triangle tr2 = new Triangle(pa2, System.Drawing.Color.FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255)));
-            lboxObj.Items.Add(tr2);
-            Circle crcl1 = new Circle(new Point(0, 0, 0), 30, System.Drawing.Color.Red);
-            lboxObj.Items.Add(crcl1);
-            scene.AddObj(tr1);
-            scene.AddObj(tr2);
-            scene.AddObj(crcl1);
             Redraw();
         }
 
@@ -73,7 +56,7 @@ namespace GrapKurs
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             PBox.Image = scene.bmp;
         }
- 
+
         void Swap(ref double a, ref double b)
         {
             double swap = a;
@@ -96,14 +79,13 @@ namespace GrapKurs
             }
             for (int i = 0; i < obj.FaceList.Count; i++)
             {
-                Point p1 = new Point(VertexList[obj.FaceList[i].VertexIndexList[0]-1]);
-                Point p2 = new Point(VertexList[obj.FaceList[i].VertexIndexList[1]-1]);
-                Point p3 = new Point(VertexList[obj.FaceList[i].VertexIndexList[2]-1]);
+                Point p1 = new Point(VertexList[obj.FaceList[i].VertexIndexList[0] - 1]);
+                Point p2 = new Point(VertexList[obj.FaceList[i].VertexIndexList[1] - 1]);
+                Point p3 = new Point(VertexList[obj.FaceList[i].VertexIndexList[2] - 1]);
                 ret.polygs.Add(new Triangle(p1, p2, p3, color));
             }
             return ret;
         }
-
         void DrawLine(double x1, double y1, double x2, double y2, Bitmap bitmap, System.Drawing.Color color)
         {
             bool steep = false;
@@ -155,15 +137,15 @@ namespace GrapKurs
             if (p1.y > p2.y) Swap(ref p1, ref p2);
             if (p1.y > p3.y) Swap(ref p1, ref p3);
             if (p2.y > p3.y) Swap(ref p2, ref p3);
-            if(!fill)
+            if (!fill)
             {
                 DrawLine(p1.x, p1.y, p2.x, p2.y, bitmap, color);
                 DrawLine(p2.x, p2.y, p3.x, p3.y, bitmap, color);
                 DrawLine(p3.x, p3.y, p1.x, p1.y, bitmap, color);
             }
             else
-            { 
-            int total_height = (int)(p3.y - p1.y);
+            {
+                int total_height = (int)(p3.y - p1.y);
                 for (int i = 0; i < total_height; i++)
                 {
                     bool second_half = i > p2.y - p1.y || p2.y == p1.y;
@@ -219,7 +201,7 @@ namespace GrapKurs
                         lboxObj.Items.Clear();
                         ScaleUpDown.Value = 1;
                         scene = new WorkScene(PBox.Width, PBox.Height);
-                        scene.AddObj(ReadObj3D(obj, System.Drawing.Color.FromArgb(255, r.Next(0,255), r.Next(0,255),r.Next(0,255))));
+                        scene.AddObj(ReadObj3D(obj, System.Drawing.Color.FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255))));
                         Redraw();
                     }
                     catch (Exception ex)
@@ -238,14 +220,18 @@ namespace GrapKurs
                         StreamReader stream = new StreamReader(openFD.FileName);
                         char[] sep = new char[] { '/', '\r' };
                         string[] vertex = stream.ReadToEnd().Split(sep);
-                        for (int i = 0; i < vertex.Length-1; i+=10)
+                        ParamObj paramObj = new ParamObj();
+                        for (int i = 0; i < vertex.Length - 1; i += 10)
                         {
                             Point p1 = new Point(double.Parse(vertex[i]), double.Parse(vertex[i + 1]), double.Parse(vertex[i + 2]));
                             Point p2 = new Point(double.Parse(vertex[i + 3]), double.Parse(vertex[i + 4]), double.Parse(vertex[i + 5]));
                             Point p3 = new Point(double.Parse(vertex[i + 6]), double.Parse(vertex[i + 7]), double.Parse(vertex[i + 8]));
                             System.Drawing.Color color = System.Drawing.Color.FromArgb(int.Parse(vertex[i + 9]));
                             scene.triangles.Add(new Triangle(p1, p2, p3, color));
+                            paramObj.polygs.Add(new Triangle(p1, p2, p3, color));
                         }
+                        scene.objs.Add(paramObj);
+                        lboxObj.Items.Add(paramObj);
                         Redraw();
                     }
                     catch (Exception ex)
@@ -260,7 +246,7 @@ namespace GrapKurs
         {
             if (saveFD.ShowDialog() == DialogResult.OK)
             {
-                StreamWriter stream = new StreamWriter(saveFD.FileName, true, System.Text.Encoding.Default);
+                StreamWriter stream = new StreamWriter(saveFD.FileName, false, System.Text.Encoding.Default);
                 string vertex = "";
                 for (int i = 0; i < scene.triangles.Count; i++)
                 {
@@ -277,11 +263,11 @@ namespace GrapKurs
         private void bUp_Click(object sender, EventArgs e)
         {
             if (lboxObj.SelectedIndex == -1)
-            { 
-                foreach (Triangle item in scene.triangles)
             {
-                item.Moving(0, 15, 0);
-            }
+                foreach (Triangle item in scene.triangles)
+                {
+                    item.Moving(0, 15, 0);
+                }
                 scene.Shifting.Moving(0, -15, 0);
             }
             else
