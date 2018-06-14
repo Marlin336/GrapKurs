@@ -16,9 +16,9 @@ namespace GrapKurs
     public partial class MainForm : Form
     {
         WorkScene scene;
+        Random r = new Random();
         public MainForm()
         {
-            Random r = new Random();
             InitializeComponent();
             scene = new WorkScene(PBox.Width, PBox.Height);
             Point[] pa1 = new Point[3];
@@ -71,22 +71,17 @@ namespace GrapKurs
         {
             scene = new WorkScene(PBox.Width, PBox.Height);
             Matrix World = new Matrix(4);
+            Point[] VertexList = new Point[obj.VertexList.Count];
+            for (int i = 0; i < obj.VertexList.Count; i++)
+            {
+                VertexList[i] = new Point(obj.VertexList[i].X, obj.VertexList[i].Y, obj.VertexList[i].Z);
+            }
             for (int i = 0; i < obj.FaceList.Count; i++)
             {
-                int[] face = obj.FaceList[i].VertexIndexList;
-                for (int j = 0; j < 3; j++)
-                {
-                    Point p1 = new Point();
-                    Point p2 = new Point();
-
-                    p1.x = (obj.VertexList[face[j]].X);
-                    p1.y = (obj.VertexList[face[j]].Y);
-                    p1.z = (obj.VertexList[face[j]].Z);
-
-                    p2.x = obj.VertexList[face[(j + 1) % 3]].X;
-                    p2.y = obj.VertexList[face[(j + 1) % 3]].Y;
-                    p2.z = obj.VertexList[face[(j + 1) % 3]].Z;
-                }
+                Point p1 = new Point(VertexList[obj.FaceList[i].VertexIndexList[0]-1]);
+                Point p2 = new Point(VertexList[obj.FaceList[i].VertexIndexList[1]-1]);
+                Point p3 = new Point(VertexList[obj.FaceList[i].VertexIndexList[2]-1]);
+                scene.triangles.Add(new Triangle(p1, p2, p3, System.Drawing.Color.FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255))));
             }
         }
 
@@ -192,7 +187,6 @@ namespace GrapKurs
             scene.ClearzBuf();
             Redraw();
         }
-
         private void ЗагрузитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (openFD.ShowDialog() == DialogResult.OK)
