@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace GrapKurs
 {
-    class WorkScene
+    public class WorkScene
     {
         public List<Triangle> triangles = new List<Triangle>();
         public List<Object> objs = new List<Object>();
@@ -45,9 +45,15 @@ namespace GrapKurs
                     foreach (Triangle item in circle.polygons)
                         triangles.Add(item);
                     break;
+                case "ParamObj":
+                    ParamObj paramObj = (ParamObj)obj;
+                    foreach (Triangle item in paramObj.polygs)
+                        triangles.Add(item);
+                    break;
                 default:
                     break;
             }
+            objs.Add(obj);
         }
     }
 }

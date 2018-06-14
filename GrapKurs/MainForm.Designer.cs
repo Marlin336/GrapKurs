@@ -87,6 +87,7 @@
             this.bDel.TabIndex = 3;
             this.bDel.Text = "Удалить";
             this.bDel.UseVisualStyleBackColor = true;
+            this.bDel.Click += new System.EventHandler(this.bDel_Click);
             // 
             // bAdd
             // 
@@ -96,6 +97,7 @@
             this.bAdd.TabIndex = 4;
             this.bAdd.Text = "Добавить";
             this.bAdd.UseVisualStyleBackColor = true;
+            this.bAdd.Click += new System.EventHandler(this.bAdd_Click);
             // 
             // PBox
             // 
@@ -184,14 +186,14 @@
             // сохранитьToolStripMenuItem
             // 
             this.сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
-            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.сохранитьToolStripMenuItem.Text = "Сохранить";
             this.сохранитьToolStripMenuItem.Click += new System.EventHandler(this.СохранитьToolStripMenuItem_Click);
             // 
             // загрузитьToolStripMenuItem
             // 
             this.загрузитьToolStripMenuItem.Name = "загрузитьToolStripMenuItem";
-            this.загрузитьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.загрузитьToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.загрузитьToolStripMenuItem.Text = "Загрузить";
             this.загрузитьToolStripMenuItem.Click += new System.EventHandler(this.ЗагрузитьToolStripMenuItem_Click);
             // 
@@ -284,6 +286,11 @@
             0,
             131072});
             this.ScaleUpDown.Location = new System.Drawing.Point(709, 367);
+            this.ScaleUpDown.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
             this.ScaleUpDown.Minimum = new decimal(new int[] {
             5,
             0,

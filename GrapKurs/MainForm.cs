@@ -15,7 +15,7 @@ namespace GrapKurs
 {
     public partial class MainForm : Form
     {
-        WorkScene scene;
+        public WorkScene scene;
         Random r = new Random();
         public MainForm()
         {
@@ -26,35 +26,49 @@ namespace GrapKurs
             pa1[1] = new Point(150, 150, 0);
             pa1[2] = new Point(110, 50, 0);
             Triangle tr1 = new Triangle(pa1, System.Drawing.Color.FromArgb(255,r.Next(0,255), r.Next(0, 255), r.Next(0, 255)));
-            scene.objs.Add(tr1);
             lboxObj.Items.Add(tr1);
             Point[] pa2 = new Point[3];
             pa2[0] = new Point(30, 70, -10);
             pa2[1] = new Point(80, 150, 10);
             pa2[2] = new Point(130, 70, -10);
             Triangle tr2 = new Triangle(pa2, System.Drawing.Color.FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255)));
-            scene.objs.Add(tr2);
             lboxObj.Items.Add(tr2);
             Circle crcl1 = new Circle(new Point(0, 0, 0), 30, System.Drawing.Color.Red);
-            scene.objs.Add(crcl1);
             lboxObj.Items.Add(crcl1);
             scene.AddObj(tr1);
             scene.AddObj(tr2);
             scene.AddObj(crcl1);
-            foreach (Triangle item in scene.triangles)
-            {
-                item.Moving(PBox.Width / 2, PBox.Height / 2, 0);
-            }
-            scene.Shifting.Moving(-PBox.Width / 2, -PBox.Height / 2, 0);
             Redraw();
         }
 
-        void Redraw()
+        public void Redraw()
         {
             scene.bmp = new Bitmap(PBox.Width, PBox.Height);
-            foreach (Triangle item in scene.triangles)
+            foreach (Object item in scene.objs)
             {
-                DrawTriangle(item, scene.bmp, scene.zBuf, scene.fill);
+                switch (item.GetType().Name)
+                {
+                    case "Triangle":
+                        Triangle triangle = (Triangle)item;
+                        DrawTriangle(triangle, scene.bmp, scene.zBuf, scene.fill);
+                        break;
+                    case "Circle":
+                        Circle circle = (Circle)item;
+                        foreach (Triangle tr in circle.polygons)
+                        {
+                            DrawTriangle(tr, scene.bmp, scene.zBuf, scene.fill);
+                        }
+                        break;
+                    case "ParamObj":
+                        ParamObj paramObj = (ParamObj)item;
+                        foreach (Triangle tr in paramObj.polygs)
+                        {
+                            DrawTriangle(tr, scene.bmp, scene.zBuf, scene.fill);
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             PBox.Image = scene.bmp;
@@ -72,9 +86,10 @@ namespace GrapKurs
             a = b;
             b = swap;
         }
-        void ReadObj3D(Obj obj)
+        ParamObj ReadObj3D(Obj obj, System.Drawing.Color color)
         {
             Point[] VertexList = new Point[obj.VertexList.Count];
+            ParamObj ret = new ParamObj();
             for (int i = 0; i < obj.VertexList.Count; i++)
             {
                 VertexList[i] = new Point(obj.VertexList[i].X, obj.VertexList[i].Y, obj.VertexList[i].Z);
@@ -84,8 +99,9 @@ namespace GrapKurs
                 Point p1 = new Point(VertexList[obj.FaceList[i].VertexIndexList[0]-1]);
                 Point p2 = new Point(VertexList[obj.FaceList[i].VertexIndexList[1]-1]);
                 Point p3 = new Point(VertexList[obj.FaceList[i].VertexIndexList[2]-1]);
-                scene.triangles.Add(new Triangle(p1, p2, p3, System.Drawing.Color.Black)); // FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255))
+                ret.polygs.Add(new Triangle(p1, p2, p3, color));
             }
+            return ret;
         }
 
         void DrawLine(double x1, double y1, double x2, double y2, Bitmap bitmap, System.Drawing.Color color)
@@ -203,7 +219,7 @@ namespace GrapKurs
                         lboxObj.Items.Clear();
                         ScaleUpDown.Value = 1;
                         scene = new WorkScene(PBox.Width, PBox.Height);
-                        ReadObj3D(obj);
+                        scene.AddObj(ReadObj3D(obj, System.Drawing.Color.FromArgb(255, r.Next(0,255), r.Next(0,255),r.Next(0,255))));
                         Redraw();
                     }
                     catch (Exception ex)
@@ -284,6 +300,13 @@ namespace GrapKurs
                             item.Moving(0, 15, 0);
                         }
                         break;
+                    case "ParamObj":
+                        ParamObj paramObj = (ParamObj)scene.objs[index];
+                        foreach (Triangle item in paramObj.polygs)
+                        {
+                            item.Moving(0, 15, 0);
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -317,6 +340,13 @@ namespace GrapKurs
                             item.Moving(0, -15, 0);
                         }
                         break;
+                    case "ParamObj":
+                        ParamObj paramObj = (ParamObj)scene.objs[index];
+                        foreach (Triangle item in paramObj.polygs)
+                        {
+                            item.Moving(0, -15, 0);
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -336,7 +366,7 @@ namespace GrapKurs
             }
             else
             {
-                int index = scene.objs.IndexOf(lboxObj.Items[lboxObj.SelectedIndex]);
+                int index = lboxObj.SelectedIndex;
                 switch (scene.objs[index].GetType().Name)
                 {
                     case "Triangle":
@@ -346,6 +376,13 @@ namespace GrapKurs
                     case "Circle":
                         Circle circle = (Circle)scene.objs[index];
                         foreach (Triangle item in circle.polygons)
+                        {
+                            item.Moving(15, 0, 0);
+                        }
+                        break;
+                    case "ParamObj":
+                        ParamObj paramObj = (ParamObj)scene.objs[index];
+                        foreach (Triangle item in paramObj.polygs)
                         {
                             item.Moving(15, 0, 0);
                         }
@@ -379,6 +416,13 @@ namespace GrapKurs
                     case "Circle":
                         Circle circle = (Circle)scene.objs[index];
                         foreach (Triangle item in circle.polygons)
+                        {
+                            item.Moving(-15, 0, 0);
+                        }
+                        break;
+                    case "ParamObj":
+                        ParamObj paramObj = (ParamObj)scene.objs[index];
+                        foreach (Triangle item in paramObj.polygs)
                         {
                             item.Moving(-15, 0, 0);
                         }
@@ -425,6 +469,14 @@ namespace GrapKurs
                     case "Circle":
                         Circle circle = (Circle)scene.objs[index];
                         foreach (Triangle item in circle.polygons)
+                        {
+                            item.Reset();
+                            item.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, axis);
+                        }
+                        break;
+                    case "ParamObj":
+                        ParamObj paramObj = (ParamObj)scene.objs[index];
+                        foreach (Triangle item in paramObj.polygs)
                         {
                             item.Reset();
                             item.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, axis);
@@ -477,6 +529,14 @@ namespace GrapKurs
                             item.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
                         }
                         break;
+                    case "ParamObj":
+                        ParamObj paramObj = (ParamObj)scene.objs[index];
+                        foreach (Triangle item in paramObj.polygs)
+                        {
+                            item.Reset();
+                            item.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -488,6 +548,20 @@ namespace GrapKurs
         {
             tbAxis.Text = (e.X + (int)scene.Shifting.x).ToString() + "," + (PBox.Height - e.Y + (int)scene.Shifting.y) + ",0";
         }
+        public void AddObj(Point state, double scale, System.Drawing.Color color)
+        {
+            Obj obj = new Obj();
+            obj.LoadObj("../../Mar.obj");
+            ScaleUpDown.Value = 1;
+            ParamObj nobj = ReadObj3D(obj, color);
+            scene.AddObj(nobj);
+            lboxObj.Items.Add(nobj);
+            for (int i = 0; i < nobj.polygs.Count; i++)
+                nobj.polygs[i].Scale(scale, scale, scale, new Point());
+            for (int i = 0; i < nobj.polygs.Count; i++)
+                nobj.polygs[i].Moving(state.x, state.y, state.z);
+            Redraw();
+        }
 
         private void lboxObj_MouseDown(object sender, MouseEventArgs e)
         {
@@ -495,6 +569,22 @@ namespace GrapKurs
             {
                 lboxObj.SelectedIndex = -1;
             }
-        }        
+        }
+
+        private void bAdd_Click(object sender, EventArgs e)
+        {
+            AddForm addForm = new AddForm(this);
+            addForm.ShowDialog();
+        }
+
+        private void bDel_Click(object sender, EventArgs e)
+        {
+            if (lboxObj.SelectedIndex == -1)
+                return;
+            scene.objs.RemoveAt(lboxObj.SelectedIndex);
+            lboxObj.Items.RemoveAt(lboxObj.SelectedIndex);
+            scene.ClearzBuf();
+            Redraw();
+        }
     }
 }
