@@ -81,7 +81,7 @@ namespace GrapKurs
                 Point p1 = new Point(VertexList[obj.FaceList[i].VertexIndexList[0]-1]);
                 Point p2 = new Point(VertexList[obj.FaceList[i].VertexIndexList[1]-1]);
                 Point p3 = new Point(VertexList[obj.FaceList[i].VertexIndexList[2]-1]);
-                scene.triangles.Add(new Triangle(p1, p2, p3, System.Drawing.Color.FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255))));
+                scene.triangles.Add(new Triangle(p1, p2, p3, System.Drawing.Color.Brown)); // FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255))
             }
         }
 
@@ -343,12 +343,24 @@ namespace GrapKurs
 
         private void ScaleUpDown_ValueChanged(object sender, EventArgs e)
         {
+            Point axis;
+            try
+            {
+                char[] sep = new char[] { ',' };
+                string[] axis_str = tbAxis.Text.Split(sep);
+                axis = new Point(double.Parse(axis_str[0]), double.Parse(axis_str[1]), double.Parse(axis_str[2]));
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Не удалось найти осевую точку масштабирования");
+                throw;
+            }
             if (lboxObj.SelectedIndex == -1)
             {
                 foreach (Triangle item in scene.triangles)
                 {
                     item.Reset();
-                    item.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, scene.Center);
+                    item.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, axis);
                 }
             }
             else
@@ -437,7 +449,7 @@ namespace GrapKurs
 
         private void PBox_Click(object sender, EventArgs e)
         {
-            tbAxis.Text = MousePosition.X.ToString() + "," + MousePosition.Y + ",0";
+            tbAxis.Text = MousePosition.X.ToString() + "," + (Height - MousePosition.Y) + ",0";
         }
     }
 }
