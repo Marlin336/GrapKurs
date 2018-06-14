@@ -54,9 +54,19 @@
             this.bRight = new System.Windows.Forms.Button();
             this.bLeft = new System.Windows.Forms.Button();
             this.ScaleUpDown = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.Rotate_x = new System.Windows.Forms.NumericUpDown();
+            this.Rotate_y = new System.Windows.Forms.NumericUpDown();
+            this.Rotate_z = new System.Windows.Forms.NumericUpDown();
+            this.bRotate = new System.Windows.Forms.Button();
+            this.tbAxis = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.PBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ScaleUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Rotate_x)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Rotate_y)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Rotate_z)).BeginInit();
             this.SuspendLayout();
             // 
             // lboxObj
@@ -94,6 +104,7 @@
             this.PBox.Size = new System.Drawing.Size(650, 450);
             this.PBox.TabIndex = 0;
             this.PBox.TabStop = false;
+            this.PBox.Click += new System.EventHandler(this.PBox_Click);
             // 
             // menuStrip1
             // 
@@ -103,7 +114,7 @@
             this.видыToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(876, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(997, 24);
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -172,13 +183,14 @@
             // сохранитьToolStripMenuItem
             // 
             this.сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
-            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.сохранитьToolStripMenuItem.Text = "Сохранить";
+            this.сохранитьToolStripMenuItem.Click += new System.EventHandler(this.СохранитьToolStripMenuItem_Click);
             // 
             // загрузитьToolStripMenuItem
             // 
             this.загрузитьToolStripMenuItem.Name = "загрузитьToolStripMenuItem";
-            this.загрузитьToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.загрузитьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.загрузитьToolStripMenuItem.Text = "Загрузить";
             this.загрузитьToolStripMenuItem.Click += new System.EventHandler(this.ЗагрузитьToolStripMenuItem_Click);
             // 
@@ -224,9 +236,9 @@
             // 
             // bUp
             // 
-            this.bUp.Location = new System.Drawing.Point(750, 289);
+            this.bUp.Location = new System.Drawing.Point(729, 406);
             this.bUp.Name = "bUp";
-            this.bUp.Size = new System.Drawing.Size(39, 23);
+            this.bUp.Size = new System.Drawing.Size(30, 30);
             this.bUp.TabIndex = 8;
             this.bUp.Text = "↑";
             this.bUp.UseVisualStyleBackColor = true;
@@ -234,9 +246,9 @@
             // 
             // bDown
             // 
-            this.bDown.Location = new System.Drawing.Point(750, 318);
+            this.bDown.Location = new System.Drawing.Point(729, 442);
             this.bDown.Name = "bDown";
-            this.bDown.Size = new System.Drawing.Size(39, 23);
+            this.bDown.Size = new System.Drawing.Size(30, 30);
             this.bDown.TabIndex = 9;
             this.bDown.Text = "↓";
             this.bDown.UseVisualStyleBackColor = true;
@@ -244,9 +256,9 @@
             // 
             // bRight
             // 
-            this.bRight.Location = new System.Drawing.Point(795, 305);
+            this.bRight.Location = new System.Drawing.Point(765, 425);
             this.bRight.Name = "bRight";
-            this.bRight.Size = new System.Drawing.Size(39, 23);
+            this.bRight.Size = new System.Drawing.Size(30, 30);
             this.bRight.TabIndex = 10;
             this.bRight.Text = "→";
             this.bRight.UseVisualStyleBackColor = true;
@@ -254,9 +266,9 @@
             // 
             // bLeft
             // 
-            this.bLeft.Location = new System.Drawing.Point(705, 305);
+            this.bLeft.Location = new System.Drawing.Point(693, 425);
             this.bLeft.Name = "bLeft";
-            this.bLeft.Size = new System.Drawing.Size(39, 23);
+            this.bLeft.Size = new System.Drawing.Size(30, 30);
             this.bLeft.TabIndex = 11;
             this.bLeft.Text = "←";
             this.bLeft.UseVisualStyleBackColor = true;
@@ -270,14 +282,14 @@
             0,
             0,
             131072});
-            this.ScaleUpDown.Location = new System.Drawing.Point(802, 351);
+            this.ScaleUpDown.Location = new System.Drawing.Point(709, 367);
             this.ScaleUpDown.Minimum = new decimal(new int[] {
             5,
             0,
             0,
             131072});
             this.ScaleUpDown.Name = "ScaleUpDown";
-            this.ScaleUpDown.Size = new System.Drawing.Size(62, 20);
+            this.ScaleUpDown.Size = new System.Drawing.Size(77, 20);
             this.ScaleUpDown.TabIndex = 12;
             this.ScaleUpDown.Value = new decimal(new int[] {
             1,
@@ -286,11 +298,108 @@
             0});
             this.ScaleUpDown.ValueChanged += new System.EventHandler(this.ScaleUpDown_ValueChanged);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(706, 390);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(80, 13);
+            this.label1.TabIndex = 13;
+            this.label1.Text = "Перемещение";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(718, 351);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(53, 13);
+            this.label2.TabIndex = 14;
+            this.label2.Text = "Масштаб";
+            // 
+            // Rotate_x
+            // 
+            this.Rotate_x.DecimalPlaces = 1;
+            this.Rotate_x.Location = new System.Drawing.Point(818, 362);
+            this.Rotate_x.Maximum = new decimal(new int[] {
+            3599,
+            0,
+            0,
+            65536});
+            this.Rotate_x.Minimum = new decimal(new int[] {
+            3599,
+            0,
+            0,
+            -2147418112});
+            this.Rotate_x.Name = "Rotate_x";
+            this.Rotate_x.Size = new System.Drawing.Size(55, 20);
+            this.Rotate_x.TabIndex = 15;
+            // 
+            // Rotate_y
+            // 
+            this.Rotate_y.DecimalPlaces = 1;
+            this.Rotate_y.Location = new System.Drawing.Point(818, 388);
+            this.Rotate_y.Maximum = new decimal(new int[] {
+            3599,
+            0,
+            0,
+            65536});
+            this.Rotate_y.Minimum = new decimal(new int[] {
+            3599,
+            0,
+            0,
+            -2147418112});
+            this.Rotate_y.Name = "Rotate_y";
+            this.Rotate_y.Size = new System.Drawing.Size(55, 20);
+            this.Rotate_y.TabIndex = 16;
+            // 
+            // Rotate_z
+            // 
+            this.Rotate_z.DecimalPlaces = 1;
+            this.Rotate_z.Location = new System.Drawing.Point(818, 414);
+            this.Rotate_z.Maximum = new decimal(new int[] {
+            3599,
+            0,
+            0,
+            65536});
+            this.Rotate_z.Minimum = new decimal(new int[] {
+            3599,
+            0,
+            0,
+            -2147418112});
+            this.Rotate_z.Name = "Rotate_z";
+            this.Rotate_z.Size = new System.Drawing.Size(55, 20);
+            this.Rotate_z.TabIndex = 17;
+            // 
+            // bRotate
+            // 
+            this.bRotate.Location = new System.Drawing.Point(818, 442);
+            this.bRotate.Name = "bRotate";
+            this.bRotate.Size = new System.Drawing.Size(75, 23);
+            this.bRotate.TabIndex = 18;
+            this.bRotate.Text = "Вращать";
+            this.bRotate.UseVisualStyleBackColor = true;
+            this.bRotate.Click += new System.EventHandler(this.bRotate_Click);
+            // 
+            // tbAxis
+            // 
+            this.tbAxis.Location = new System.Drawing.Point(885, 361);
+            this.tbAxis.Name = "tbAxis";
+            this.tbAxis.Size = new System.Drawing.Size(100, 20);
+            this.tbAxis.TabIndex = 19;
+            this.tbAxis.Text = "0,0,0";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(876, 481);
+            this.ClientSize = new System.Drawing.Size(997, 481);
+            this.Controls.Add(this.tbAxis);
+            this.Controls.Add(this.bRotate);
+            this.Controls.Add(this.Rotate_z);
+            this.Controls.Add(this.Rotate_y);
+            this.Controls.Add(this.Rotate_x);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.ScaleUpDown);
             this.Controls.Add(this.bLeft);
             this.Controls.Add(this.bRight);
@@ -308,6 +417,9 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ScaleUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Rotate_x)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Rotate_y)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Rotate_z)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -341,6 +453,13 @@
         private System.Windows.Forms.Button bRight;
         private System.Windows.Forms.Button bLeft;
         private System.Windows.Forms.NumericUpDown ScaleUpDown;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.NumericUpDown Rotate_x;
+        private System.Windows.Forms.NumericUpDown Rotate_y;
+        private System.Windows.Forms.NumericUpDown Rotate_z;
+        private System.Windows.Forms.Button bRotate;
+        private System.Windows.Forms.TextBox tbAxis;
     }
 }
 

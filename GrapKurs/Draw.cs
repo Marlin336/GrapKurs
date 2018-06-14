@@ -63,6 +63,94 @@ namespace GrapKurs
             ysh += y_move;
             zsh += z_move;
         }
+        public void Rotate(double x_angle, double y_angle, double z_angle, Point axis)
+        {
+            double x = x_angle * (Math.PI / 180);//Градусы -> радианы
+            double y = y_angle * (Math.PI / 180);
+            double z = z_angle * (Math.PI / 180);
+            Moving(-axis.x, -axis.y, -axis.z);
+            Transform(1, Math.Cos(x), Math.Cos(x), 0, 0, 0, -Math.Sin(x), 0, Math.Sin(x));
+            Transform(Math.Cos(y), 1, Math.Cos(y), 0, Math.Sin(y), 0, 0, -Math.Sin(y), 0);
+            Transform(Math.Cos(z), Math.Cos(z), 1, -Math.Sin(z), 0, Math.Sin(z), 0, 0, 0);
+            Moving(axis.x, axis.y, axis.z);
+        }
+        public void Scale(double x_scale, double y_scale, double z_scale, Point axis)
+        {
+            if (x_scale <= 0 || y_scale <= 0 || z_scale <= 0)
+                return;
+            Matrix TMtx = new Matrix(4);
+            TMtx.Elems[0, 0] = x_scale;
+            TMtx.Elems[1, 1] = y_scale;
+            TMtx.Elems[2, 2] = z_scale;
+            Moving(-axis.x, -axis.y, -axis.z);
+            Matrix PMtx = new Matrix(4, 1);
+            PMtx.Elems[0, 0] = x;
+            PMtx.Elems[1, 0] = y;
+            PMtx.Elems[2, 0] = z;
+            PMtx.Elems[3, 0] = 1;
+            Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
+            res = TMtx * PMtx;
+            x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
+            y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
+            z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
+            Moving(axis.x, axis.y, axis.z);
+        }
+        public void Slip(double xy, double xz, double yx, double yz, double zx, double zy, Point axis)
+        {
+            Matrix TMtx = new Matrix(4);
+            TMtx.Elems[0, 1] = xy;
+            TMtx.Elems[0, 2] = xz;
+            TMtx.Elems[1, 0] = yx;
+            TMtx.Elems[1, 2] = yz;
+            TMtx.Elems[2, 0] = zx;
+            TMtx.Elems[2, 1] = zy;
+            Moving(-axis.x, -axis.y, -axis.z);
+            Matrix PMtx = new Matrix(4, 1);
+            PMtx.Elems[0, 0] = x;
+            PMtx.Elems[1, 0] = y;
+            PMtx.Elems[2, 0] = z;
+            PMtx.Elems[3, 0] = 1;
+            Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
+            res = TMtx * PMtx;
+            x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
+            y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
+            z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
+            Moving(-axis.x, -axis.y, -axis.z);
+        }
+        private void Transform(double x_scale, double y_scale, double z_scale, double xy, double xz, double yx, double yz, double zx, double zy)
+        {
+            Matrix TMtx = new Matrix(4);
+            TMtx.Elems[0, 0] = x_scale;
+            TMtx.Elems[1, 1] = y_scale;
+            TMtx.Elems[2, 2] = z_scale;
+            TMtx.Elems[0, 1] = xy;
+            TMtx.Elems[0, 2] = xz;
+            TMtx.Elems[1, 0] = yx;
+            TMtx.Elems[1, 2] = yz;
+            TMtx.Elems[2, 0] = zx;
+            TMtx.Elems[2, 1] = zy;
+            Matrix PMtx = new Matrix(4, 1);
+            PMtx.Elems[0, 0] = x;
+            PMtx.Elems[1, 0] = y;
+            PMtx.Elems[2, 0] = z;
+            PMtx.Elems[3, 0] = 1;
+            Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
+            res = TMtx * PMtx;
+            x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
+            y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
+            z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
+
+            PMtx.Elems[0, 0] = sx;
+            PMtx.Elems[1, 0] = sy;
+            PMtx.Elems[2, 0] = sz;
+            PMtx.Elems[3, 0] = 1;
+            res = new Matrix(TMtx.Rows, PMtx.Columns);
+            res = TMtx * PMtx;
+            sx = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
+            sy = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
+            sz = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
+
+        }
         public static Point operator *(Point pt1, double dig)
         {
             return new Point((pt1.x * dig), (pt1.y * dig), (pt1.z * dig));
@@ -228,14 +316,10 @@ namespace GrapKurs
         }
         public void Rotate(double x_angle, double y_angle, double z_angle, Point axis)
         {
-            double x = x_angle * (Math.PI / 180);//Градусы -> радианы
-            double y = y_angle * (Math.PI / 180);
-            double z = z_angle * (Math.PI / 180);
-            Moving(-axis.x, -axis.y, -axis.z);
-            Transform(1, Math.Cos(x), Math.Cos(x), 0, 0, 0, -Math.Sin(x), 0, Math.Sin(x));
-            Transform(Math.Cos(y), 1, Math.Cos(y), 0, Math.Sin(y), 0, 0, -Math.Sin(y), 0);
-            Transform(Math.Cos(z), Math.Cos(z), 1, -Math.Sin(z), 0, Math.Sin(z), 0, 0, 0);
-            Moving(axis.x, axis.y, axis.z);
+            for (int i = 0; i < 3; i++)
+            {
+                Points[i].Rotate(x_angle, y_angle, z_angle, axis);
+            }
         }
         public void Moving(double x_move, double y_move, double z_move)
         {

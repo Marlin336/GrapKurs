@@ -195,6 +195,8 @@ namespace GrapKurs
                 {
                     Obj obj = new Obj();
                     obj.LoadObj(openFD.FileName);
+                    lboxObj.Items.Clear();
+                    ScaleUpDown.Value = 1;
                     ReadObj3D(obj);
                     Redraw();
                 }
@@ -239,7 +241,6 @@ namespace GrapKurs
             scene.ClearzBuf();
             Redraw();
         }
-
         private void bDown_Click(object sender, EventArgs e)
         {
             if (lboxObj.SelectedIndex == -1)
@@ -273,7 +274,6 @@ namespace GrapKurs
             scene.ClearzBuf();
             Redraw();
         }
-
         private void bRight_Click(object sender, EventArgs e)
         {
             if (lboxObj.SelectedIndex == -1)
@@ -307,7 +307,6 @@ namespace GrapKurs
             scene.ClearzBuf();
             Redraw();
         }
-
         private void bLeft_Click(object sender, EventArgs e)
         {
             if (lboxObj.SelectedIndex == -1)
@@ -384,6 +383,61 @@ namespace GrapKurs
             {
                 lboxObj.SelectedIndex = -1;
             }
+        }
+
+        private void СохранитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void bRotate_Click(object sender, EventArgs e)
+        {
+            Point axis;
+            try
+            {
+                char[] sep = new char[] { ',' };
+                string[] axis_str = tbAxis.Text.Split(sep);
+                axis = new Point(double.Parse(axis_str[0]), double.Parse(axis_str[1]), double.Parse(axis_str[2]));
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Не удалось найти осевую точку вращения");
+                throw;
+            }
+            if (lboxObj.SelectedIndex == -1)
+            {
+                foreach (Triangle item in scene.triangles)
+                {
+                    item.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, axis);
+                }
+            }
+            else
+            {
+                int index = scene.objs.IndexOf(lboxObj.Items[lboxObj.SelectedIndex]);
+                switch (scene.objs[index].GetType().Name)
+                {
+                    case "Triangle":
+                        Triangle triangle = (Triangle)scene.objs[index];
+                        triangle.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, axis);
+                        break;
+                    case "Circle":
+                        Circle circle = (Circle)scene.objs[index];
+                        foreach (Triangle item in circle.polygons)
+                        {
+                            item.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, axis);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            scene.ClearzBuf();
+            Redraw();
+        }
+
+        private void PBox_Click(object sender, EventArgs e)
+        {
+            tbAxis.Text = MousePosition.X.ToString() + "," + MousePosition.Y + ",0";
         }
     }
 }
