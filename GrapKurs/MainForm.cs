@@ -69,8 +69,6 @@ namespace GrapKurs
         }
         void ReadObj3D(Obj obj)
         {
-            scene = new WorkScene(PBox.Width, PBox.Height);
-            Matrix World = new Matrix(4);
             Point[] VertexList = new Point[obj.VertexList.Count];
             for (int i = 0; i < obj.VertexList.Count; i++)
             {
@@ -81,7 +79,7 @@ namespace GrapKurs
                 Point p1 = new Point(VertexList[obj.FaceList[i].VertexIndexList[0]-1]);
                 Point p2 = new Point(VertexList[obj.FaceList[i].VertexIndexList[1]-1]);
                 Point p3 = new Point(VertexList[obj.FaceList[i].VertexIndexList[2]-1]);
-                scene.triangles.Add(new Triangle(p1, p2, p3, System.Drawing.Color.Brown)); // FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255))
+                scene.triangles.Add(new Triangle(p1, p2, p3, System.Drawing.Color.Black)); // FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255))
             }
         }
 
@@ -191,19 +189,49 @@ namespace GrapKurs
         {
             if (openFD.ShowDialog() == DialogResult.OK)
             {
-                try
+                if (openFD.FileName.Substring(openFD.FileName.Length - 4) == ".obj")
                 {
-                    Obj obj = new Obj();
-                    obj.LoadObj(openFD.FileName);
-                    lboxObj.Items.Clear();
-                    ScaleUpDown.Value = 1;
-                    ReadObj3D(obj);
-                    Redraw();
+                    try
+                    {
+                        Obj obj = new Obj();
+                        obj.LoadObj(openFD.FileName);
+                        lboxObj.Items.Clear();
+                        ScaleUpDown.Value = 1;
+                        scene = new WorkScene(PBox.Width, PBox.Height);
+                        ReadObj3D(obj);
+                        Redraw();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Не удалось открыть файл.\r\n" + ex.Message, "Ошибка окрытия файла", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        throw;
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show("Не удалось открыть файл.\r\n"+ex.Message, "Ошибка окрытия файла", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    throw;
+                    try
+                    {
+                        lboxObj.Items.Clear();
+                        ScaleUpDown.Value = 1;
+                        scene = new WorkScene(PBox.Width, PBox.Height);
+                        StreamReader stream = new StreamReader(openFD.FileName);
+                        char[] sep = new char[] { '/', '\r' };
+                        string[] vertex = stream.ReadToEnd().Split(sep);
+                        for (int i = 0; i < vertex.Length-1; i+=10)
+                        {
+                            Point p1 = new Point(double.Parse(vertex[i]), double.Parse(vertex[i + 1]), double.Parse(vertex[i + 2]));
+                            Point p2 = new Point(double.Parse(vertex[i + 3]), double.Parse(vertex[i + 4]), double.Parse(vertex[i + 5]));
+                            Point p3 = new Point(double.Parse(vertex[i + 6]), double.Parse(vertex[i + 7]), double.Parse(vertex[i + 8]));
+                            System.Drawing.Color color = System.Drawing.Color.FromArgb(int.Parse(vertex[i + 9]));
+                            scene.triangles.Add(new Triangle(p1, p2, p3, color));
+                        }
+                        Redraw();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Не удалось открыть файл.\r\n" + ex.Message, "Ошибка окрытия файла", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        throw;
+                    }
                 }
             }
         }
@@ -217,6 +245,7 @@ namespace GrapKurs
                 item.Moving(0, 15, 0);
             }
                 scene.CenterPos(0, 15, 0);
+                scene.Shifting.Moving(0, -15, 0);
             }
             else
             {
@@ -250,6 +279,7 @@ namespace GrapKurs
                     item.Moving(0, -15, 0);
                 }
                 scene.CenterPos(0, -15, 0);
+                scene.Shifting.Moving(0, 15, 0);
             }
             else
             {
@@ -283,6 +313,7 @@ namespace GrapKurs
                     item.Moving(15, 0, 0);
                 }
                 scene.CenterPos(15, 0, 0);
+                scene.Shifting.Moving(-15, 0, 0);
             }
             else
             {
@@ -316,6 +347,7 @@ namespace GrapKurs
                     item.Moving(-15, 0, 0);
                 }
                 scene.CenterPos(-15, 0, 0);
+                scene.Shifting.Moving(15, 0, 0);
             }
             else
             {
@@ -399,7 +431,20 @@ namespace GrapKurs
 
         private void СохранитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            if(saveFD.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter stream = new StreamWriter(saveFD.FileName, true, System.Text.Encoding.Default);
+                string vertex = "";
+                for (int i = 0; i < scene.triangles.Count; i++)
+                {
+                    vertex = scene.triangles[i].Points[0].x + "/" + scene.triangles[i].Points[0].y + "/" + scene.triangles[i].Points[0].z + "\r";
+                    vertex += scene.triangles[i].Points[1].x + "/" + scene.triangles[i].Points[1].y + "/" + scene.triangles[i].Points[1].z + "\r";
+                    vertex += scene.triangles[i].Points[2].x + "/" + scene.triangles[i].Points[2].y + "/" + scene.triangles[i].Points[2].z + "\r";
+                    vertex += scene.triangles[i].Color.ToArgb() + "\r";
+                    stream.Write(vertex);
+                }
+                stream.Close();
+            }
         }
 
         private void bRotate_Click(object sender, EventArgs e)
@@ -447,9 +492,9 @@ namespace GrapKurs
             Redraw();
         }
 
-        private void PBox_Click(object sender, EventArgs e)
+        private void PBox_MouseDown(object sender, MouseEventArgs e)
         {
-            tbAxis.Text = MousePosition.X.ToString() + "," + (Height - MousePosition.Y) + ",0";
+            tbAxis.Text = (e.X + (int)scene.Shifting.x).ToString() + "," + (PBox.Height - e.Y + (int)scene.Shifting.y) + ",0";
         }
     }
 }

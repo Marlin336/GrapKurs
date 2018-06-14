@@ -61,6 +61,7 @@
             this.Rotate_z = new System.Windows.Forms.NumericUpDown();
             this.bRotate = new System.Windows.Forms.Button();
             this.tbAxis = new System.Windows.Forms.TextBox();
+            this.saveFD = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.PBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ScaleUpDown)).BeginInit();
@@ -104,7 +105,7 @@
             this.PBox.Size = new System.Drawing.Size(650, 450);
             this.PBox.TabIndex = 0;
             this.PBox.TabStop = false;
-            this.PBox.Click += new System.EventHandler(this.PBox_Click);
+            this.PBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PBox_MouseDown);
             // 
             // menuStrip1
             // 
@@ -232,7 +233,7 @@
             // openFD
             // 
             this.openFD.FileName = "openFileDialog";
-            this.openFD.Filter = "3D model format|*.obj";
+            this.openFD.Filter = "3D model format|*.obj|Scene save|*.scn";
             // 
             // bUp
             // 
@@ -388,6 +389,10 @@
             this.tbAxis.TabIndex = 19;
             this.tbAxis.Text = "0,0,0";
             // 
+            // saveFD
+            // 
+            this.saveFD.Filter = "Scene save|*.scn";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -460,6 +465,7 @@
         private System.Windows.Forms.NumericUpDown Rotate_z;
         private System.Windows.Forms.Button bRotate;
         private System.Windows.Forms.TextBox tbAxis;
+        private System.Windows.Forms.SaveFileDialog saveFD;
     }
 }
 

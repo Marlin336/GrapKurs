@@ -12,6 +12,7 @@ namespace GrapKurs
     {
         public List<Triangle> triangles = new List<Triangle>();
         public List<Object> objs = new List<Object>();
+        public Point Shifting = new Point();
         Point eye = new Point(100, 100, 100);
         public Point Center { get; set; }
         public double pos_cam_x = 180, pos_cam_y = 0;

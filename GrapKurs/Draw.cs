@@ -56,9 +56,9 @@ namespace GrapKurs
             PointMtx.Elems[3, 0] = 1;
             Matrix res = new Matrix(MoveMtx.Rows, PointMtx.Columns);
             res = MoveMtx * PointMtx;
-            x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
-            y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
-            z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
+            x = res.Elems[0, 0] / res.Elems[3, 0];
+            y = res.Elems[1, 0] / res.Elems[3, 0];
+            z = res.Elems[2, 0] / res.Elems[3, 0];
             xsh += x_move;
             ysh += y_move;
             zsh += z_move;
@@ -90,9 +90,9 @@ namespace GrapKurs
             PMtx.Elems[3, 0] = 1;
             Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
             res = TMtx * PMtx;
-            x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
-            y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
-            z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
+            x = res.Elems[0, 0] / res.Elems[3, 0];
+            y = res.Elems[1, 0] / res.Elems[3, 0];
+            z = res.Elems[2, 0] / res.Elems[3, 0];
             Moving(axis.x, axis.y, axis.z);
         }
         public void Slip(double xy, double xz, double yx, double yz, double zx, double zy, Point axis)
@@ -112,9 +112,9 @@ namespace GrapKurs
             PMtx.Elems[3, 0] = 1;
             Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
             res = TMtx * PMtx;
-            x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
-            y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
-            z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
+            x = res.Elems[0, 0] / res.Elems[3, 0];
+            y = res.Elems[1, 0] / res.Elems[3, 0];
+            z = res.Elems[2, 0] / res.Elems[3, 0];
             Moving(-axis.x, -axis.y, -axis.z);
         }
         private void Transform(double x_scale, double y_scale, double z_scale, double xy, double xz, double yx, double yz, double zx, double zy)
@@ -146,9 +146,9 @@ namespace GrapKurs
             PMtx.Elems[3, 0] = 1;
             res = new Matrix(TMtx.Rows, PMtx.Columns);
             res = TMtx * PMtx;
-            sx = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
-            sy = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
-            sz = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
+            sx = res.Elems[0, 0] / res.Elems[3, 0];
+            sy = res.Elems[1, 0] / res.Elems[3, 0];
+            sz = res.Elems[2, 0] / res.Elems[3, 0];
 
         }
         public static Point operator *(Point pt1, double dig)
