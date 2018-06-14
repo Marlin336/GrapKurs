@@ -90,9 +90,9 @@ namespace GrapKurs
             PMtx.Elems[3, 0] = 1;
             Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
             res = TMtx * PMtx;
-            x = res.Elems[0, 0] / res.Elems[3, 0];
-            y = res.Elems[1, 0] / res.Elems[3, 0];
-            z = res.Elems[2, 0] / res.Elems[3, 0];
+            x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
+            y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
+            z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
             Moving(axis.x, axis.y, axis.z);
         }
         public void Slip(double xy, double xz, double yx, double yz, double zx, double zy, Point axis)
@@ -117,7 +117,7 @@ namespace GrapKurs
             z = res.Elems[2, 0] / res.Elems[3, 0];
             Moving(-axis.x, -axis.y, -axis.z);
         }
-        private void Transform(double x_scale, double y_scale, double z_scale, double xy, double xz, double yx, double yz, double zx, double zy)
+        public void Transform(double x_scale, double y_scale, double z_scale, double xy, double xz, double yx, double yz, double zx, double zy)
         {
             Matrix TMtx = new Matrix(4);
             TMtx.Elems[0, 0] = x_scale;
@@ -241,92 +241,28 @@ namespace GrapKurs
         }
         public void Scale(double x_scale, double y_scale, double z_scale, Point axis)
         {
-            if (x_scale <=0 || y_scale <= 0 || z_scale <= 0) 
-                return;
-            Matrix TMtx = new Matrix(4);
-            TMtx.Elems[0, 0] = x_scale;
-            TMtx.Elems[1, 1] = y_scale;
-            TMtx.Elems[2, 2] = z_scale;
-            Moving(-axis.x, -axis.y, -axis.z);
             for (int i = 0; i < 3; i++)
-            {
-                Matrix PMtx = new Matrix(4, 1);
-                PMtx.Elems[0, 0] = Points[i].x;
-                PMtx.Elems[1, 0] = Points[i].y;
-                PMtx.Elems[2, 0] = Points[i].z;
-                PMtx.Elems[3, 0] = 1;
-                Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
-                res = TMtx * PMtx;
-                Points[i].x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
-                Points[i].y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
-                Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
-            }
-            Moving(axis.x, axis.y, axis.z);
+                Points[i].Scale(x_scale, y_scale, z_scale, axis);
         }
         public void Slip(double xy, double xz, double yx, double yz, double zx, double zy, Point axis)
         {
-            Matrix TMtx = new Matrix(4);
-            TMtx.Elems[0, 1] = xy;
-            TMtx.Elems[0, 2] = xz;
-            TMtx.Elems[1, 0] = yx;
-            TMtx.Elems[1, 2] = yz;
-            TMtx.Elems[2, 0] = zx;
-            TMtx.Elems[2, 1] = zy;
-            Moving(-axis.x, -axis.y, -axis.z);
             for (int i = 0; i < 3; i++)
-            {
-                Matrix PMtx = new Matrix(4, 1);
-                PMtx.Elems[0, 0] = Points[i].x;
-                PMtx.Elems[1, 0] = Points[i].y;
-                PMtx.Elems[2, 0] = Points[i].z;
-                PMtx.Elems[3, 0] = 1;
-                Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
-                res = TMtx * PMtx;
-                Points[i].x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
-                Points[i].y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
-                Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
-            }
-            Moving(-axis.x, -axis.y, -axis.z);
+                Points[i].Slip(xy, xz, yx, yz, zx, zy, axis);
         }
         private void Transform(double x_scale, double y_scale, double z_scale, double xy, double xz, double yx, double yz, double zx, double zy)
         {
-            Matrix TMtx = new Matrix(4);
-            TMtx.Elems[0, 0] = x_scale;
-            TMtx.Elems[1, 1] = y_scale;
-            TMtx.Elems[2, 2] = z_scale;
-            TMtx.Elems[0, 1] = xy;
-            TMtx.Elems[0, 2] = xz;
-            TMtx.Elems[1, 0] = yx;
-            TMtx.Elems[1, 2] = yz;
-            TMtx.Elems[2, 0] = zx;
-            TMtx.Elems[2, 1] = zy;
             for (int i = 0; i < 3; i++)
-            {
-                Matrix PMtx = new Matrix(4, 1);
-                PMtx.Elems[0, 0] = Points[i].x;
-                PMtx.Elems[1, 0] = Points[i].y;
-                PMtx.Elems[2, 0] = Points[i].z;
-                PMtx.Elems[3, 0] = 1;
-                Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
-                res = TMtx * PMtx;
-                Points[i].x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
-                Points[i].y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
-                Points[i].z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
-            }
+                Points[i].Transform(x_scale, y_scale, z_scale, xy, xz, yx, yz, zx, zy);
         }
         public void Rotate(double x_angle, double y_angle, double z_angle, Point axis)
         {
             for (int i = 0; i < 3; i++)
-            {
                 Points[i].Rotate(x_angle, y_angle, z_angle, axis);
-            }
         }
         public void Moving(double x_move, double y_move, double z_move)
         {
             for (int i = 0; i < 3; i++)
-            {
                 Points[i].Moving(x_move, y_move, z_move);
-            }
         }
     }
     public class Circle

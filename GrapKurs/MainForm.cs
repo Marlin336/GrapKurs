@@ -235,6 +235,23 @@ namespace GrapKurs
                 }
             }
         }
+        private void СохранитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (saveFD.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter stream = new StreamWriter(saveFD.FileName, true, System.Text.Encoding.Default);
+                string vertex = "";
+                for (int i = 0; i < scene.triangles.Count; i++)
+                {
+                    vertex = scene.triangles[i].Points[0].x + "/" + scene.triangles[i].Points[0].y + "/" + scene.triangles[i].Points[0].z + "\r";
+                    vertex += scene.triangles[i].Points[1].x + "/" + scene.triangles[i].Points[1].y + "/" + scene.triangles[i].Points[1].z + "\r";
+                    vertex += scene.triangles[i].Points[2].x + "/" + scene.triangles[i].Points[2].y + "/" + scene.triangles[i].Points[2].z + "\r";
+                    vertex += scene.triangles[i].Color.ToArgb() + "\r";
+                    stream.Write(vertex);
+                }
+                stream.Close();
+            }
+        }
 
         private void bUp_Click(object sender, EventArgs e)
         {
@@ -372,7 +389,6 @@ namespace GrapKurs
             scene.ClearzBuf();
             Redraw();
         }
-
         private void ScaleUpDown_ValueChanged(object sender, EventArgs e)
         {
             Point axis;
@@ -403,14 +419,14 @@ namespace GrapKurs
                     case "Triangle":
                         Triangle triangle = (Triangle)scene.objs[index];
                         triangle.Reset();
-                        triangle.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, triangle.Center);
+                        triangle.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, axis);
                         break;
                     case "Circle":
                         Circle circle = (Circle)scene.objs[index];
                         foreach (Triangle item in circle.polygons)
                         {
                             item.Reset();
-                            item.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, circle.Center);
+                            item.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, axis);
                         }
                         break;
                     default:
@@ -420,33 +436,6 @@ namespace GrapKurs
             scene.ClearzBuf();
             Redraw();
         }
-
-        private void lboxObj_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                lboxObj.SelectedIndex = -1;
-            }
-        }
-
-        private void СохранитьToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if(saveFD.ShowDialog() == DialogResult.OK)
-            {
-                StreamWriter stream = new StreamWriter(saveFD.FileName, true, System.Text.Encoding.Default);
-                string vertex = "";
-                for (int i = 0; i < scene.triangles.Count; i++)
-                {
-                    vertex = scene.triangles[i].Points[0].x + "/" + scene.triangles[i].Points[0].y + "/" + scene.triangles[i].Points[0].z + "\r";
-                    vertex += scene.triangles[i].Points[1].x + "/" + scene.triangles[i].Points[1].y + "/" + scene.triangles[i].Points[1].z + "\r";
-                    vertex += scene.triangles[i].Points[2].x + "/" + scene.triangles[i].Points[2].y + "/" + scene.triangles[i].Points[2].z + "\r";
-                    vertex += scene.triangles[i].Color.ToArgb() + "\r";
-                    stream.Write(vertex);
-                }
-                stream.Close();
-            }
-        }
-
         private void bRotate_Click(object sender, EventArgs e)
         {
             Point axis;
@@ -491,10 +480,17 @@ namespace GrapKurs
             scene.ClearzBuf();
             Redraw();
         }
-
         private void PBox_MouseDown(object sender, MouseEventArgs e)
         {
             tbAxis.Text = (e.X + (int)scene.Shifting.x).ToString() + "," + (PBox.Height - e.Y + (int)scene.Shifting.y) + ",0";
         }
+
+        private void lboxObj_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                lboxObj.SelectedIndex = -1;
+            }
+        }        
     }
 }
