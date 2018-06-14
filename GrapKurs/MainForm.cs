@@ -35,12 +35,17 @@ namespace GrapKurs
             Triangle tr2 = new Triangle(pa2, System.Drawing.Color.FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255)));
             scene.objs.Add(tr2);
             lboxObj.Items.Add(tr2);
-            Circle crcl1 = new Circle(new Point(200, 200, 0), 50, System.Drawing.Color.Red);
+            Circle crcl1 = new Circle(new Point(0, 0, 0), 30, System.Drawing.Color.Red);
             scene.objs.Add(crcl1);
             lboxObj.Items.Add(crcl1);
             scene.AddObj(tr1);
             scene.AddObj(tr2);
             scene.AddObj(crcl1);
+            foreach (Triangle item in scene.triangles)
+            {
+                item.Moving(PBox.Width / 2, PBox.Height / 2, 0);
+            }
+            scene.Shifting.Moving(-PBox.Width / 2, -PBox.Height / 2, 0);
             Redraw();
         }
 
@@ -261,7 +266,6 @@ namespace GrapKurs
             {
                 item.Moving(0, 15, 0);
             }
-                scene.CenterPos(0, 15, 0);
                 scene.Shifting.Moving(0, -15, 0);
             }
             else
@@ -295,7 +299,6 @@ namespace GrapKurs
                 {
                     item.Moving(0, -15, 0);
                 }
-                scene.CenterPos(0, -15, 0);
                 scene.Shifting.Moving(0, 15, 0);
             }
             else
@@ -329,7 +332,6 @@ namespace GrapKurs
                 {
                     item.Moving(15, 0, 0);
                 }
-                scene.CenterPos(15, 0, 0);
                 scene.Shifting.Moving(-15, 0, 0);
             }
             else
@@ -363,7 +365,6 @@ namespace GrapKurs
                 {
                     item.Moving(-15, 0, 0);
                 }
-                scene.CenterPos(-15, 0, 0);
                 scene.Shifting.Moving(15, 0, 0);
             }
             else
@@ -454,7 +455,8 @@ namespace GrapKurs
             {
                 foreach (Triangle item in scene.triangles)
                 {
-                    item.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, axis);
+                    item.Reset();
+                    item.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
                 }
             }
             else
@@ -464,13 +466,15 @@ namespace GrapKurs
                 {
                     case "Triangle":
                         Triangle triangle = (Triangle)scene.objs[index];
-                        triangle.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, axis);
+                        triangle.Reset();
+                        triangle.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
                         break;
                     case "Circle":
                         Circle circle = (Circle)scene.objs[index];
                         foreach (Triangle item in circle.polygons)
                         {
-                            item.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, axis);
+                            item.Reset();
+                            item.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
                         }
                         break;
                     default:
