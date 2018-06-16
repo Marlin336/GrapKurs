@@ -13,18 +13,18 @@ namespace GrapKurs
         public List<Triangle> triangles = new List<Triangle>();
         public List<Object> objs = new List<Object>();
         public Point Shifting = new Point();
-        public Point eye = new Point();
-        public double pos_cam_x = 180, pos_cam_y = 0;
-        public double pos_center_x { get; set; }
-        public double pos_center_y { get; set; }
-        public bool projection_centr = false;
+        public Point eye;
+        public Point focus;
         public bool fill = true;
+        public bool cenoutl = true;
         public Bitmap bmp;
         public int[] zBuf;
         public WorkScene(int width, int height)
         {
             bmp = new Bitmap(width, height);
             zBuf = new int[bmp.Width * bmp.Height];
+            eye = new Point(width/2, height/2,200);
+            focus = new Point(width / 2, height / 2, 0);
             ClearzBuf();
         }
         public void ClearzBuf()

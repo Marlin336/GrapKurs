@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using ObjParser;
+using System;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using ObjParser;
-using ObjParser.Types;
 
 namespace GrapKurs
 {
@@ -33,20 +26,20 @@ namespace GrapKurs
                 {
                     case "Triangle":
                         Triangle triangle = (Triangle)item;
-                        DrawTriangle(triangle, scene.bmp, scene.zBuf, scene.fill);
+                        DrawTriangle(triangle, scene);
                         break;
                     case "Circle":
                         Circle circle = (Circle)item;
                         foreach (Triangle tr in circle.polygons)
                         {
-                            DrawTriangle(tr, scene.bmp, scene.zBuf, scene.fill);
+                            DrawTriangle(tr, scene);
                         }
                         break;
                     case "ParamObj":
                         ParamObj paramObj = (ParamObj)item;
                         foreach (Triangle tr in paramObj.polygs)
                         {
-                            DrawTriangle(tr, scene.bmp, scene.zBuf, scene.fill);
+                            DrawTriangle(tr, scene);
                         }
                         break;
                     default:
@@ -69,7 +62,7 @@ namespace GrapKurs
             a = b;
             b = swap;
         }
-        ParamObj ReadObj3D(Obj obj, System.Drawing.Color color)
+        ParamObj ReadObj3D(Obj obj, Color color)
         {
             Point[] VertexList = new Point[obj.VertexList.Count];
             ParamObj ret = new ParamObj();
@@ -86,8 +79,18 @@ namespace GrapKurs
             }
             return ret;
         }
-        void DrawLine(double x1, double y1, double x2, double y2, Bitmap bitmap, System.Drawing.Color color)
+        void DrawLine(Point p1, Point p2, WorkScene scene, Color color)
         {
+            if (scene.cenoutl)
+            {
+                p1.Outlook(Math.Abs(scene.focus.z - scene.eye.z));
+                p1.Outlook(Math.Abs(scene.focus.z - scene.eye.z));
+            }
+            double x1 = p1.x;
+            double y1 = p1.y;
+            double x2 = p2.x;
+            double y2 = p2.y;
+
             bool steep = false;
             if (Math.Abs(x1 - x2) < Math.Abs(y1 - y2))
             {
@@ -111,7 +114,7 @@ namespace GrapKurs
                 {
                     try
                     {
-                        bitmap.SetPixel(y, x, color);
+                        scene.bmp.SetPixel(y, x, color);
                     }
                     catch { }
                 }
@@ -119,7 +122,7 @@ namespace GrapKurs
                 {
                     try
                     {
-                        bitmap.SetPixel(x, y, color);
+                        scene.bmp.SetPixel(x, y, color);
                     }
                     catch { }
                 }
@@ -132,19 +135,29 @@ namespace GrapKurs
                 }
             }
         }
-        void DrawTriangle(Point p1, Point p2, Point p3, Bitmap bitmap, System.Drawing.Color color, int[] zbuffer, bool fill)
+        void DrawLine(double x1, double y1, double x2, double y2, WorkScene scene, Color color)
+        {
+            DrawLine(new Point(x1, y1, 0), new Point(x2, y2, 0), scene, color);
+        }
+        void DrawTriangle(Point p1, Point p2, Point p3, WorkScene scene, Color color)
         {
             if (p1.y > p2.y) Swap(ref p1, ref p2);
             if (p1.y > p3.y) Swap(ref p1, ref p3);
             if (p2.y > p3.y) Swap(ref p2, ref p3);
-            if (!fill)
+            if (!scene.fill)
             {
-                DrawLine(p1.x, p1.y, p2.x, p2.y, bitmap, color);
-                DrawLine(p2.x, p2.y, p3.x, p3.y, bitmap, color);
-                DrawLine(p3.x, p3.y, p1.x, p1.y, bitmap, color);
+                DrawLine(p1.x, p1.y, p2.x, p2.y, scene, color);
+                DrawLine(p2.x, p2.y, p3.x, p3.y, scene, color);
+                DrawLine(p3.x, p3.y, p1.x, p1.y, scene, color);
             }
             else
             {
+                if (scene.cenoutl)
+                {
+                    p1 = p1.Outlook(Math.Abs(scene.focus.z - scene.eye.z));
+                    p2 = p2.Outlook(Math.Abs(scene.focus.z - scene.eye.z));
+                    p3 = p3.Outlook(Math.Abs(scene.focus.z - scene.eye.z));
+                }
                 int total_height = (int)(p3.y - p1.y);
                 for (int i = 0; i < total_height; i++)
                 {
@@ -160,20 +173,20 @@ namespace GrapKurs
                         double phi = B.x == A.x ? 1 : (j - A.x) / (B.x - A.x);
                         Point P = new Point(A) + new Point(B - A) * phi;
                         P.x = j; P.y = p1.y + i;
-                        int idx = (int)(P.x + P.y * bitmap.Width);
-                        if (P.x >= bitmap.Width || P.x < 0 || P.y >= bitmap.Height || P.y < 0) continue;
-                        if (zbuffer[idx] < P.z)
+                        int idx = (int)(P.x + P.y * scene.bmp.Width);
+                        if (P.x >= scene.bmp.Width || P.x < 0 || P.y >= scene.bmp.Height || P.y < 0) continue;
+                        if (scene.zBuf[idx] < P.z)
                         {
-                            zbuffer[idx] = (int)P.z;
-                            bitmap.SetPixel((int)P.x, (int)P.y, color);
+                            scene.zBuf[idx] = (int)P.z;
+                            scene.bmp.SetPixel((int)P.x, (int)P.y, color);
                         }
                     }
                 }
             }
         }
-        void DrawTriangle(Triangle triangle, Bitmap bitmap, int[] zbuffer, bool fill)
+        void DrawTriangle(Triangle triangle, WorkScene scene)
         {
-            DrawTriangle(triangle.Points[0], triangle.Points[1], triangle.Points[2], bitmap, triangle.Color, zbuffer, fill);
+            DrawTriangle(triangle.Points[0], triangle.Points[1], triangle.Points[2], scene, triangle.Color);
         }
 
         private void РеалистичныйToolStripMenuItem_Click(object sender, EventArgs e)
@@ -269,6 +282,8 @@ namespace GrapKurs
                     item.Moving(0, 15, 0);
                 }
                 scene.Shifting.Moving(0, -15, 0);
+                scene.eye.Moving(0, -15, 0);
+                scene.focus.Moving(0, -15, 0);
             }
             else
             {
@@ -309,6 +324,8 @@ namespace GrapKurs
                     item.Moving(0, -15, 0);
                 }
                 scene.Shifting.Moving(0, 15, 0);
+                scene.eye.Moving(0, 15, 0);
+                scene.focus.Moving(0, 15, 0);
             }
             else
             {
@@ -349,6 +366,8 @@ namespace GrapKurs
                     item.Moving(15, 0, 0);
                 }
                 scene.Shifting.Moving(-15, 0, 0);
+                scene.eye.Moving(-15, 0, 0);
+                scene.focus.Moving(-15, 0, 0);
             }
             else
             {
@@ -389,6 +408,8 @@ namespace GrapKurs
                     item.Moving(-15, 0, 0);
                 }
                 scene.Shifting.Moving(15, 0, 0);
+                scene.eye.Moving(15, 0, 0);
+                scene.focus.Moving(15, 0, 0);
             }
             else
             {
@@ -569,6 +590,20 @@ namespace GrapKurs
                 return;
             scene.objs.RemoveAt(lboxObj.SelectedIndex);
             lboxObj.Items.RemoveAt(lboxObj.SelectedIndex);
+            scene.ClearzBuf();
+            Redraw();
+        }
+
+        private void ПараллельнаяToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            scene.cenoutl = false;
+            scene.ClearzBuf();
+            Redraw();
+        }
+
+        private void ЦентральнаяToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            scene.cenoutl = true;
             scene.ClearzBuf();
             Redraw();
         }
