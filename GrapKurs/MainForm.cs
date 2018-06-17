@@ -154,9 +154,9 @@ namespace GrapKurs
             {
                 if (scene.cenoutl)
                 {
-                    p1 = p1.Outlook(Math.Abs(scene.focus.z - scene.eye.z));
-                    p2 = p2.Outlook(Math.Abs(scene.focus.z - scene.eye.z));
-                    p3 = p3.Outlook(Math.Abs(scene.focus.z - scene.eye.z));
+                    p1 = p1.Outlook(Math.Abs(p1.z - scene.eye.z));
+                    p2 = p2.Outlook(Math.Abs(p2.z - scene.eye.z));
+                    p3 = p3.Outlook(Math.Abs(p3.z - scene.eye.z));
                 }
                 int total_height = (int)(p3.y - p1.y);
                 for (int i = 0; i < total_height; i++)
@@ -175,11 +175,15 @@ namespace GrapKurs
                         P.x = j; P.y = p1.y + i;
                         int idx = (int)(P.x + P.y * scene.bmp.Width);
                         if (P.x >= scene.bmp.Width || P.x < 0 || P.y >= scene.bmp.Height || P.y < 0) continue;
-                        if (scene.zBuf[idx] < P.z)
+                        try
                         {
-                            scene.zBuf[idx] = (int)P.z;
-                            scene.bmp.SetPixel((int)P.x, (int)P.y, color);
+                            if (scene.zBuf[idx] < P.z)
+                            {
+                                scene.zBuf[idx] = (int)P.z;
+                                scene.bmp.SetPixel((int)P.x, (int)P.y, color);
+                            }
                         }
+                        catch { }
                     }
                 }
             }

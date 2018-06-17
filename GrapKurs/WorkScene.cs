@@ -23,7 +23,7 @@ namespace GrapKurs
         {
             bmp = new Bitmap(width, height);
             zBuf = new int[bmp.Width * bmp.Height];
-            eye = new Point(width/2, height/2,200);
+            eye = new Point(width/2, height/2,-1000);
             focus = new Point(width / 2, height / 2, 0);
             ClearzBuf();
         }
