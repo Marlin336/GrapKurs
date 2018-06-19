@@ -330,8 +330,8 @@ namespace GrapKurs
         public Triangle[] polygons = new Triangle[2];
         public Rectangle(Point pt1, Point pt2, Color color)
         {
-            polygons[0] = new Triangle(pt1, pt2, new Point(pt2.x, pt1.y, 0), color);
-            polygons[1] = new Triangle(pt1, pt2, new Point(pt1.x, pt2.y, 0), color);
+            polygons[0] = new Triangle(new Point(pt1), new Point(pt2), new Point(pt1.x, pt2.y, pt2.z), color);
+            polygons[1] = new Triangle(new Point(pt1), new Point(pt2), new Point(pt2.x, pt1.y, pt1.z), color);
         }
     }
     public class Box
@@ -340,12 +340,12 @@ namespace GrapKurs
         public Box(Point pt1, Point pt2, Color color)
         {
             Rectangle[] faces = new Rectangle[6];
-            faces[0] = new Rectangle(pt1, new Point(pt2.x, pt1.y, pt2.z), color);
-            faces[1] = new Rectangle(pt1, new Point(pt1.x, pt2.y, pt2.z), color);
-            faces[2] = new Rectangle(pt1, new Point(pt2.x, pt2.y, pt1.z), color);
-            faces[3] = new Rectangle(pt2, new Point(pt2.x, pt1.y, pt1.z), color);
-            faces[4] = new Rectangle(pt2, new Point(pt1.x, pt2.y, pt1.z), color);
-            faces[5] = new Rectangle(pt2, new Point(pt1.x, pt1.y, pt2.z), color);
+            faces[0] = new Rectangle(new Point(pt1), new Point(pt2.x, pt1.y, pt2.z), color);
+            faces[1] = new Rectangle(new Point(pt1), new Point(pt1.x, pt2.y, pt2.z), color);
+            faces[2] = new Rectangle(new Point(pt1), new Point(pt2.x, pt2.y, pt1.z), color);
+            faces[3] = new Rectangle(new Point(pt2), new Point(pt2.x, pt1.y, pt1.z), color);
+            faces[4] = new Rectangle(new Point(pt2), new Point(pt1.x, pt2.y, pt1.z), color);
+            faces[5] = new Rectangle(new Point(pt2), new Point(pt1.x, pt1.y, pt2.z), color);
             int k = 0;
             for (int i = 0; i < 6; i++)
             {

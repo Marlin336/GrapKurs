@@ -14,10 +14,12 @@ namespace GrapKurs
         {
             InitializeComponent();
             scene = new WorkScene(PBox.Width, PBox.Height);
-            //scene.AddObj(new Box(new Point(), new Point(25, 25, 25), Color.Orange));
-            scene.AddObj(new Triangle(new Point(), new Point(30, 0, 0), new Point(0, 0, 30), Color.Purple));
-            scene.AddObj(new Circle(new Point(100, 100, 0), 25, Color.LightBlue));
-            //scene.AddObj(new Rectangle(new Point(), new Point(20, 20, 0), Color.LawnGreen));
+            scene.AddObj(new Box(new Point(), new Point(100, 100, 100), Color.Orange));
+            scene.AddObj(new Triangle(new Point(0, 0, 0), new Point(0, 0, 100), new Point(0, 100, 100), Color.Purple));
+            //scene.AddObj(new Circle(new Point(100, 100, 0), 25, Color.LightBlue));
+            //scene.AddObj(new Rectangle(new Point(), new Point(20, 20, 20), Color.LawnGreen));
+            //scene.AddObj(new Triangle(new Point(0, 0, 0), new Point(20, 20, 20), new Point(0, 20, 20), Color.Violet));
+            //scene.AddObj(new Triangle(new Point(0, 0, 0), new Point(20, 20, 20), new Point(20, 0, 0), Color.Purple));
             Redraw();
         }
 
