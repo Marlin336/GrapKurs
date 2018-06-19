@@ -14,9 +14,8 @@ namespace GrapKurs
         public List<Object> objs = new List<Object>();
         public Point Shifting = new Point();
         public Point eye;
-        public Point focus;
         public bool fill = true;
-        public bool cenoutl = true;
+        public bool cenoutl = false;
         public Bitmap bmp;
         public int[] zBuf;
         public WorkScene(int width, int height)
@@ -24,7 +23,6 @@ namespace GrapKurs
             bmp = new Bitmap(width, height);
             zBuf = new int[bmp.Width * bmp.Height];
             eye = new Point(width/2, height/2,-1000);
-            focus = new Point(width / 2, height / 2, 0);
             ClearzBuf();
         }
         public void ClearzBuf()
@@ -44,10 +42,20 @@ namespace GrapKurs
                     Circle circle = (Circle)obj;
                     foreach (Triangle item in circle.polygons)
                         triangles.Add(item);
-                    break;
+                    break;                   
                 case "ParamObj":
                     ParamObj paramObj = (ParamObj)obj;
                     foreach (Triangle item in paramObj.polygs)
+                        triangles.Add(item);
+                    break;
+                case "Rectangle":
+                    Rectangle rectangle = (Rectangle)obj;
+                    foreach (Triangle item in rectangle.polygons)
+                        triangles.Add(item);
+                    break;
+                case "Box":
+                    Box box = (Box)obj;
+                    foreach (Triangle item in box.polygons)
                         triangles.Add(item);
                     break;
                 default:

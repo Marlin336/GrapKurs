@@ -14,12 +14,17 @@ namespace GrapKurs
         {
             InitializeComponent();
             scene = new WorkScene(PBox.Width, PBox.Height);
+            //scene.AddObj(new Box(new Point(), new Point(25, 25, 25), Color.Orange));
+            scene.AddObj(new Triangle(new Point(), new Point(30, 0, 0), new Point(0, 0, 30), Color.Purple));
+            scene.AddObj(new Circle(new Point(100, 100, 0), 25, Color.LightBlue));
+            //scene.AddObj(new Rectangle(new Point(), new Point(20, 20, 0), Color.LawnGreen));
             Redraw();
         }
 
         public void Redraw()
         {
             scene.bmp = new Bitmap(PBox.Width, PBox.Height);
+            scene.ClearzBuf();
             foreach (Object item in scene.objs)
             {
                 switch (item.GetType().Name)
@@ -38,6 +43,20 @@ namespace GrapKurs
                     case "ParamObj":
                         ParamObj paramObj = (ParamObj)item;
                         foreach (Triangle tr in paramObj.polygs)
+                        {
+                            DrawTriangle(tr, scene);
+                        }
+                        break;
+                    case "Rectangle":
+                        Rectangle rectangle = (Rectangle)item;
+                        foreach (Triangle tr in rectangle.polygons)
+                        {
+                            DrawTriangle(tr, scene);
+                        }
+                        break;
+                    case "Box":
+                        Box box = (Box)item;
+                        foreach (Triangle tr in box.polygons)
                         {
                             DrawTriangle(tr, scene);
                         }
@@ -83,8 +102,8 @@ namespace GrapKurs
         {
             if (scene.cenoutl)
             {
-                p1.Outlook(Math.Abs(scene.focus.z - scene.eye.z));
-                p1.Outlook(Math.Abs(scene.focus.z - scene.eye.z));
+                p1.Outlook(new Line(p1,scene.eye).Length);
+                p2.Outlook(new Line(p2, scene.eye).Length);
             }
             double x1 = p1.x;
             double y1 = p1.y;
@@ -154,9 +173,9 @@ namespace GrapKurs
             {
                 if (scene.cenoutl)
                 {
-                    p1 = p1.Outlook(Math.Abs(p1.z - scene.eye.z));
-                    p2 = p2.Outlook(Math.Abs(p2.z - scene.eye.z));
-                    p3 = p3.Outlook(Math.Abs(p3.z - scene.eye.z));
+                    p1 = p1.Outlook(new Line(p1, scene.eye).Length);
+                    p2 = p2.Outlook(new Line(p2, scene.eye).Length);
+                    p3 = p3.Outlook(new Line(p3, scene.eye).Length);
                 }
                 int total_height = (int)(p3.y - p1.y);
                 for (int i = 0; i < total_height; i++)
@@ -196,13 +215,11 @@ namespace GrapKurs
         private void РеалистичныйToolStripMenuItem_Click(object sender, EventArgs e)
         {
             scene.fill = true;
-            scene.ClearzBuf();
             Redraw();
         }
         private void КаркасныйToolStripMenuItem_Click(object sender, EventArgs e)
         {
             scene.fill = false;
-            scene.ClearzBuf();
             Redraw();
         }
         private void ЗагрузитьToolStripMenuItem_Click(object sender, EventArgs e)
@@ -287,7 +304,6 @@ namespace GrapKurs
                 }
                 scene.Shifting.Moving(0, -15, 0);
                 scene.eye.Moving(0, -15, 0);
-                scene.focus.Moving(0, -15, 0);
             }
             else
             {
@@ -316,7 +332,6 @@ namespace GrapKurs
                         break;
                 }
             }
-            scene.ClearzBuf();
             Redraw();
         }
         private void bDown_Click(object sender, EventArgs e)
@@ -329,7 +344,6 @@ namespace GrapKurs
                 }
                 scene.Shifting.Moving(0, 15, 0);
                 scene.eye.Moving(0, 15, 0);
-                scene.focus.Moving(0, 15, 0);
             }
             else
             {
@@ -358,7 +372,6 @@ namespace GrapKurs
                         break;
                 }
             }
-            scene.ClearzBuf();
             Redraw();
         }
         private void bRight_Click(object sender, EventArgs e)
@@ -371,7 +384,6 @@ namespace GrapKurs
                 }
                 scene.Shifting.Moving(-15, 0, 0);
                 scene.eye.Moving(-15, 0, 0);
-                scene.focus.Moving(-15, 0, 0);
             }
             else
             {
@@ -400,7 +412,6 @@ namespace GrapKurs
                         break;
                 }
             }
-            scene.ClearzBuf();
             Redraw();
         }
         private void bLeft_Click(object sender, EventArgs e)
@@ -413,7 +424,6 @@ namespace GrapKurs
                 }
                 scene.Shifting.Moving(15, 0, 0);
                 scene.eye.Moving(15, 0, 0);
-                scene.focus.Moving(15, 0, 0);
             }
             else
             {
@@ -442,7 +452,6 @@ namespace GrapKurs
                         break;
                 }
             }
-            scene.ClearzBuf();
             Redraw();
         }
         private void ScaleUpDown_ValueChanged(object sender, EventArgs e)
@@ -497,7 +506,6 @@ namespace GrapKurs
                         break;
                 }
             }
-            scene.ClearzBuf();
             Redraw();
         }
         private void bRotate_Click(object sender, EventArgs e)
@@ -552,7 +560,7 @@ namespace GrapKurs
                         break;
                 }
             }
-            scene.ClearzBuf();
+            ScaleUpDown_ValueChanged(null, null);
             Redraw();
         }
         private void PBox_MouseDown(object sender, MouseEventArgs e)
@@ -594,21 +602,18 @@ namespace GrapKurs
                 return;
             scene.objs.RemoveAt(lboxObj.SelectedIndex);
             lboxObj.Items.RemoveAt(lboxObj.SelectedIndex);
-            scene.ClearzBuf();
             Redraw();
         }
 
         private void ПараллельнаяToolStripMenuItem_Click(object sender, EventArgs e)
         {
             scene.cenoutl = false;
-            scene.ClearzBuf();
             Redraw();
         }
 
         private void ЦентральнаяToolStripMenuItem_Click(object sender, EventArgs e)
         {
             scene.cenoutl = true;
-            scene.ClearzBuf();
             Redraw();
         }
     }

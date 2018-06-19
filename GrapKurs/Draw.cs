@@ -9,15 +9,15 @@ namespace GrapKurs
 {
     public class Point
     {
-        public double x { get; set; } = 0;
-        public double y { get; set; } = 0;
-        public double z { get; set; } = 0;
-        private double sx { get; set; } = 0;
-        private double sy { get; set; } = 0;
-        private double sz { get; set; } = 0;
-        private double xsh { get; set; } = 0;
-        private double ysh { get; set; } = 0;
-        private double zsh { get; set; } = 0;
+        public double x = 0;
+        public double y = 0;
+        public double z = 0;
+        private double sx = 0;
+        private double sy = 0;
+        private double sz = 0;
+        private double xsh = 0;
+        private double ysh = 0;
+        private double zsh = 0;
         public Point() { }
         public Point(double x, double y, double z)
         {
@@ -322,6 +322,37 @@ namespace GrapKurs
             for (int i = 0; i < polygons.Length; i++)
             {
                 polygons[i].Moving(x_move, y_move, z_move);
+            }
+        }
+    }
+    public class Rectangle
+    {
+        public Triangle[] polygons = new Triangle[2];
+        public Rectangle(Point pt1, Point pt2, Color color)
+        {
+            polygons[0] = new Triangle(pt1, pt2, new Point(pt2.x, pt1.y, 0), color);
+            polygons[1] = new Triangle(pt1, pt2, new Point(pt1.x, pt2.y, 0), color);
+        }
+    }
+    public class Box
+    {
+        public Triangle[] polygons = new Triangle[12];
+        public Box(Point pt1, Point pt2, Color color)
+        {
+            Rectangle[] faces = new Rectangle[6];
+            faces[0] = new Rectangle(pt1, new Point(pt2.x, pt1.y, pt2.z), color);
+            faces[1] = new Rectangle(pt1, new Point(pt1.x, pt2.y, pt2.z), color);
+            faces[2] = new Rectangle(pt1, new Point(pt2.x, pt2.y, pt1.z), color);
+            faces[3] = new Rectangle(pt2, new Point(pt2.x, pt1.y, pt1.z), color);
+            faces[4] = new Rectangle(pt2, new Point(pt1.x, pt2.y, pt1.z), color);
+            faces[5] = new Rectangle(pt2, new Point(pt1.x, pt1.y, pt2.z), color);
+            int k = 0;
+            for (int i = 0; i < 6; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    polygons[k++] = faces[i].polygons[j];
+                }
             }
         }
     }
