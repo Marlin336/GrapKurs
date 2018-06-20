@@ -285,6 +285,7 @@ namespace GrapKurs
         {
             for (int i = 0; i < 3; i++)
                 Points[i].Moving(x_move, y_move, z_move);
+            Center.Moving(x_move, y_move, z_move);
         }
     }
     public class Circle
@@ -332,6 +333,7 @@ namespace GrapKurs
             {
                 polygons[i].Moving(x_move, y_move, z_move);
             }
+            Center.Moving(x_move, y_move, z_move);
         }
     }
     public class Rectangle
@@ -369,6 +371,37 @@ namespace GrapKurs
                 for (int j = 0; j < 2; j++)
                 {
                     polygons[k++] = faces[i].polygons[j];
+                }
+            }
+        }
+    }
+    public class Cylinder
+    {
+        public Triangle[] polygons = new Triangle[80];
+        public Circle Bottom;
+        public Circle Top;
+        public Rectangle[] Sides = new Rectangle[20];
+        public Cylinder(Point bottom_center, double radius, double height, Color color)
+        {
+            int k = 0;
+            Bottom = new Circle(bottom_center, radius, color);
+            Bottom.Rotate(-90, 0, 0, Bottom.Center);
+            for (int i = 0; i < 20; i++)
+            {
+                polygons[k++] = Bottom.polygons[i];
+            }
+            Top = new Circle(new Point(bottom_center.x, bottom_center.y+height, bottom_center.z), radius, color);
+            Top.Rotate(90, 0, 0, Top.Center);
+            for (int i = 0; i < 20; i++)
+            {
+                polygons[k++] = Top.polygons[i];
+            }
+            for (int i = 0; i < 20; i++)
+            {
+                Sides[i] = new Rectangle(new Point(Bottom.polygons[i].Points[1]), new Point(Top.polygons[i].Points[2]), color);
+                for (int j = 0; j < 2; j++)
+                {
+                    polygons[k++] = Sides[i].polygons[j];
                 }
             }
         }

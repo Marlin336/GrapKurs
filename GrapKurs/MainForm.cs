@@ -14,11 +14,8 @@ namespace GrapKurs
         {
             InitializeComponent();
             scene = new WorkScene(PBox.Width, PBox.Height);
-            scene.AddObj(new Box(new Point(), new Point(100, 100, 100), Color.Orange));
-            //scene.AddObj(new Circle(new Point(100, 100, 0), 25, Color.LightBlue));
-            //scene.AddObj(new Rectangle(new Point(), new Point(20, 20, 20), Color.LawnGreen));
-            //scene.AddObj(new Triangle(new Point(0, 0, 0), new Point(20, 20, 20), new Point(0, 20, 20), Color.Violet));
-            //scene.AddObj(new Triangle(new Point(0, 0, 0), new Point(20, 20, 20), new Point(20, 0, 0), Color.Purple));
+            //scene.AddObj(new Box(new Point(), new Point(100, 100, 100), Color.Orange));
+            scene.AddObj(new Cylinder(new Point(100, 100, 0), 30, 50, Color.Red));
             Redraw();
         }
 
@@ -62,12 +59,31 @@ namespace GrapKurs
                             DrawTriangle(tr, scene);
                         }
                         break;
+                    case "Cylinder":
+                        Cylinder cylinder = (Cylinder)item;
+                        foreach (Triangle tr in cylinder.polygons)
+                        {
+                            DrawTriangle(tr, scene);
+                        }
+                        break;
                     default:
                         break;
                 }
             }
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             PBox.Image = scene.bmp;
+
+
+
+            /* ПОЗЖЕ УДАЛИТЬ ЭТОТ ФРАГМЕНТ */
+            lboxObj.Items.Clear();
+            foreach (Object item in scene.objs)
+            {
+                lboxObj.Items.Add(item);
+            }
+
+
+
         }
 
         void Swap(ref double a, ref double b)

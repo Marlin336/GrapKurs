@@ -58,6 +58,11 @@ namespace GrapKurs
                     foreach (Triangle item in box.polygons)
                         triangles.Add(item);
                     break;
+                case "Cylinder":
+                    Cylinder cylinder = (Cylinder)obj;
+                    foreach (Triangle item in cylinder.polygons)
+                        triangles.Add(item);
+                    break;
                 default:
                     break;
             }
