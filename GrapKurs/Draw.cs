@@ -240,6 +240,15 @@ namespace GrapKurs
         }
         public Triangle(Point pt1, Point pt2, Point pt3, Color color)
         {
+            double[] side = new double[3];
+            side[0] = new Line(pt1, pt2).Length;
+            side[1] = new Line(pt2, pt3).Length;
+            side[2] = new Line(pt3, pt1).Length;
+            double p = side.Sum() / 2;
+            if (Math.Sqrt(p*(p-side[0])*(p-side[1])*(p-side[2]))==0)
+            {
+                throw new Exception("Площадь равна нулю");
+            }
             Points = new Point[] { pt1, pt2, pt3 };
             Center = new Point((Points[0].x + Points[1].x + Points[2].x) / 3, (Points[0].y + Points[1].y + Points[2].y) / 3, (Points[0].z + Points[1].z + Points[2].z) / 3);
             Color = color;
@@ -330,8 +339,16 @@ namespace GrapKurs
         public Triangle[] polygons = new Triangle[2];
         public Rectangle(Point pt1, Point pt2, Color color)
         {
-            polygons[0] = new Triangle(new Point(pt1), new Point(pt2), new Point(pt1.x, pt2.y, pt2.z), color);
-            polygons[1] = new Triangle(new Point(pt1), new Point(pt2), new Point(pt2.x, pt1.y, pt1.z), color);
+            try
+            {
+                polygons[0] = new Triangle(new Point(pt1), new Point(pt2), new Point(pt1.x, pt2.y, pt1.z), color);
+                polygons[1] = new Triangle(new Point(pt1), new Point(pt2), new Point(pt2.x, pt1.y, pt2.z), color);
+            }
+            catch
+            {
+                polygons[0] = new Triangle(new Point(pt1), new Point(pt2), new Point(pt1.x, pt2.y, pt2.z), color);
+                polygons[1] = new Triangle(new Point(pt1), new Point(pt2), new Point(pt2.x, pt1.y, pt1.z), color);
+            }
         }
     }
     public class Box

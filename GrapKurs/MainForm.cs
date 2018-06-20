@@ -15,7 +15,6 @@ namespace GrapKurs
             InitializeComponent();
             scene = new WorkScene(PBox.Width, PBox.Height);
             scene.AddObj(new Box(new Point(), new Point(100, 100, 100), Color.Orange));
-            scene.AddObj(new Triangle(new Point(0, 0, 0), new Point(0, 0, 100), new Point(0, 100, 100), Color.Purple));
             //scene.AddObj(new Circle(new Point(100, 100, 0), 25, Color.LightBlue));
             //scene.AddObj(new Rectangle(new Point(), new Point(20, 20, 20), Color.LawnGreen));
             //scene.AddObj(new Triangle(new Point(0, 0, 0), new Point(20, 20, 20), new Point(0, 20, 20), Color.Violet));
