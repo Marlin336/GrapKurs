@@ -14,8 +14,13 @@ namespace GrapKurs
         {
             InitializeComponent();
             scene = new WorkScene(PBox.Width, PBox.Height);
-            //scene.AddObj(new Box(new Point(), new Point(100, 100, 100), Color.Orange));
-            scene.AddObj(new Cylinder(new Point(100, 100, 0), 30, 50, Color.Red));
+            scene.AddObj(new Circle(new Point(200, 150, 0), 20, Color.Black));
+            scene.AddObj(new Box(new Point(50,50,50), new Point(100, 100, 100), Color.Orange));
+            scene.AddObj(new Cylinder(new Point(0, 0, 0), 30, 100, Color.Red));
+            foreach (Object item in scene.objs)
+            {
+                lboxObj.Items.Add(item);
+            }
             Redraw();
         }
 
@@ -72,18 +77,6 @@ namespace GrapKurs
             }
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             PBox.Image = scene.bmp;
-
-
-
-            /* ПОЗЖЕ УДАЛИТЬ ЭТОТ ФРАГМЕНТ */
-            lboxObj.Items.Clear();
-            foreach (Object item in scene.objs)
-            {
-                lboxObj.Items.Add(item);
-            }
-
-
-
         }
 
         void Swap(ref double a, ref double b)
@@ -333,10 +326,7 @@ namespace GrapKurs
                         break;
                     case "Circle":
                         Circle circle = (Circle)scene.objs[index];
-                        foreach (Triangle item in circle.polygons)
-                        {
-                            item.Moving(0, 15, 0);
-                        }
+                        circle.Moving(0, 15, 0);
                         break;
                     case "ParamObj":
                         ParamObj paramObj = (ParamObj)scene.objs[index];
@@ -344,6 +334,18 @@ namespace GrapKurs
                         {
                             item.Moving(0, 15, 0);
                         }
+                        break;
+                    case "Rectangle":
+                        Rectangle rectangle = (Rectangle)scene.objs[index];
+                        rectangle.Moving(0, 15, 0);
+                        break;
+                    case "Box":
+                        Box box = (Box)scene.objs[index];
+                        box.Moving(0, 15, 0);
+                        break;
+                    case "Cylinder":
+                        Cylinder cylinder = (Cylinder)scene.objs[index];
+                        cylinder.Moving(0, 15, 0);
                         break;
                     default:
                         break;
@@ -373,10 +375,7 @@ namespace GrapKurs
                         break;
                     case "Circle":
                         Circle circle = (Circle)scene.objs[index];
-                        foreach (Triangle item in circle.polygons)
-                        {
-                            item.Moving(0, -15, 0);
-                        }
+                        circle.Moving(0, -15, 0);
                         break;
                     case "ParamObj":
                         ParamObj paramObj = (ParamObj)scene.objs[index];
@@ -384,6 +383,18 @@ namespace GrapKurs
                         {
                             item.Moving(0, -15, 0);
                         }
+                        break;
+                    case "Rectangle":
+                        Rectangle rectangle = (Rectangle)scene.objs[index];
+                        rectangle.Moving(0, -15, 0);
+                        break;
+                    case "Box":
+                        Box box = (Box)scene.objs[index];
+                        box.Moving(0, -15, 0);
+                        break;
+                    case "Cylinder":
+                        Cylinder cylinder = (Cylinder)scene.objs[index];
+                        cylinder.Moving(0, -15, 0);
                         break;
                     default:
                         break;
@@ -413,10 +424,7 @@ namespace GrapKurs
                         break;
                     case "Circle":
                         Circle circle = (Circle)scene.objs[index];
-                        foreach (Triangle item in circle.polygons)
-                        {
-                            item.Moving(15, 0, 0);
-                        }
+                        circle.Moving(15, 0, 0);
                         break;
                     case "ParamObj":
                         ParamObj paramObj = (ParamObj)scene.objs[index];
@@ -424,6 +432,18 @@ namespace GrapKurs
                         {
                             item.Moving(15, 0, 0);
                         }
+                        break;
+                    case "Rectangle":
+                        Rectangle rectangle = (Rectangle)scene.objs[index];
+                        rectangle.Moving(15, 0, 0);
+                        break;
+                    case "Box":
+                        Box box = (Box)scene.objs[index];
+                        box.Moving(15, 0, 0);
+                        break;
+                    case "Cylinder":
+                        Cylinder cylinder = (Cylinder)scene.objs[index];
+                        cylinder.Moving(15, 0, 0);
                         break;
                     default:
                         break;
@@ -453,10 +473,7 @@ namespace GrapKurs
                         break;
                     case "Circle":
                         Circle circle = (Circle)scene.objs[index];
-                        foreach (Triangle item in circle.polygons)
-                        {
-                            item.Moving(-15, 0, 0);
-                        }
+                        circle.Moving(-15, 0, 0);
                         break;
                     case "ParamObj":
                         ParamObj paramObj = (ParamObj)scene.objs[index];
@@ -464,6 +481,18 @@ namespace GrapKurs
                         {
                             item.Moving(-15, 0, 0);
                         }
+                        break;
+                    case "Rectangle":
+                        Rectangle rectangle = (Rectangle)scene.objs[index];
+                        rectangle.Moving(-15, 0, 0);
+                        break;
+                    case "Box":
+                        Box box = (Box)scene.objs[index];
+                        box.Moving(-15, 0, 0);
+                        break;
+                    case "Cylinder":
+                        Cylinder cylinder = (Cylinder)scene.objs[index];
+                        cylinder.Moving(-15, 0, 0);
                         break;
                     default:
                         break;
@@ -559,11 +588,8 @@ namespace GrapKurs
                         break;
                     case "Circle":
                         Circle circle = (Circle)scene.objs[index];
-                        foreach (Triangle item in circle.polygons)
-                        {
-                            item.Reset();
-                            item.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
-                        }
+                        circle.Reset();
+                        circle.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
                         break;
                     case "ParamObj":
                         ParamObj paramObj = (ParamObj)scene.objs[index];
@@ -573,11 +599,16 @@ namespace GrapKurs
                             item.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
                         }
                         break;
+                    case "Cylinder":
+                        Cylinder cylinder = (Cylinder)scene.objs[index];
+                        cylinder.Reset();
+                        cylinder.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
+                        break;
                     default:
                         break;
                 }
             }
-            ScaleUpDown_ValueChanged(null, null);
+            ScaleUpDown_ValueChanged(sender, e);
             Redraw();
         }
         private void PBox_MouseDown(object sender, MouseEventArgs e)
