@@ -63,6 +63,11 @@ namespace GrapKurs
                     foreach (Triangle item in cylinder.polygons)
                         triangles.Add(item);
                     break;
+                case "Cone":
+                    Cone cone = (Cone)obj;
+                    foreach (Triangle item in cone.polygons)
+                        triangles.Add(item);
+                    break;
                 default:
                     break;
             }
