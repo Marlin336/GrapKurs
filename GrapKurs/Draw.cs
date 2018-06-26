@@ -358,6 +358,12 @@ namespace GrapKurs
             }
             Area = polygons[0].Area + polygons[1].Area;
         }
+        public Rectangle(Point pt1, Point pt2, Point pt3, Point pt4, Color color)
+        {
+            polygons[0] = new Triangle(new Point(pt1), new Point(pt2), new Point(pt3), color);
+            polygons[1] = new Triangle(new Point(pt3), new Point(pt4), new Point(pt1), color);
+            Area = polygons[0].Area + polygons[1].Area;
+        }
         public void Reset()
         {
             for (int i = 0; i < polygons.Length; i++)
@@ -614,7 +620,7 @@ namespace GrapKurs
             }
             for (int i = 0; i < 20; i++)
             {
-                Sides[i] = new Rectangle(new Point(Bottom.polygons[i].Points[1]), new Point(Top.polygons[i].Points[2]), color);
+                Sides[i] = new Rectangle(new Point(Bottom.polygons[i].Points[1]), new Point(Bottom.polygons[i].Points[2]), new Point(Top.polygons[i].Points[2]), new Point(Top.polygons[i].Points[1]), color);
                 for (int j = 0; j < 2; j++)
                 {
                     polygons[k++] = Sides[i].polygons[j];
