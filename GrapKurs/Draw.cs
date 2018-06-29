@@ -451,23 +451,23 @@ namespace GrapKurs
                 polygons[i].Moving(x_move, y_move, z_move);
         }
     }
-    public class Cylinder
+    public class Cone
     {
         public Triangle[] polygons = new Triangle[80];
         public Circle Bottom;
         public Circle Top;
         public Rectangle[] Sides = new Rectangle[20];
-        public Cylinder(Point bottom_center, double radius, double height, Color color)
+        public Cone(Point bottom_center, double bottom_radius, double top_radius, double height, Color color)
         {
             int k = 0;
-            Bottom = new Circle(bottom_center, radius, color);
+            Bottom = new Circle(bottom_center, bottom_radius, color);
             Bottom.Rotate(-90, 0, 0, Bottom.Center);
             Bottom.Resave();
             for (int i = 0; i < 20; i++)
             {
                 polygons[k++] = Bottom.polygons[i];
             }
-            Top = new Circle(new Point(bottom_center.x, bottom_center.y + height, bottom_center.z), radius, color);
+            Top = new Circle(new Point(bottom_center.x, bottom_center.y + height, bottom_center.z), top_radius, color);
             Top.Rotate(-90, 0, 0, Top.Center);
             Top.Resave();
             for (int i = 0; i < 20; i++)
@@ -476,7 +476,7 @@ namespace GrapKurs
             }
             for (int i = 0; i < 20; i++)
             {
-                Sides[i] = new Rectangle(new Point(Bottom.polygons[i].Points[1]), new Point(Top.polygons[i].Points[2]), color);
+                Sides[i] = new Rectangle(new Point(Bottom.polygons[i].Points[1]), new Point(Bottom.polygons[i].Points[2]), new Point(Top.polygons[i].Points[2]), new Point(Top.polygons[i].Points[1]), color);
                 for (int j = 0; j < 2; j++)
                 {
                     polygons[k++] = Sides[i].polygons[j];
@@ -599,33 +599,8 @@ namespace GrapKurs
             }
         }
     }
-    public class Cone : Cylinder
+    public class Cylinder:Cone
     {
-        public Cone(Point bottom_center, double bottom_radius, double top_radius, double height, Color color):base(bottom_center,bottom_radius,height,color)
-        {
-            int k = 0;
-            Bottom = new Circle(bottom_center, bottom_radius, color);
-            Bottom.Rotate(-90, 0, 0, Bottom.Center);
-            Bottom.Resave();
-            for (int i = 0; i < 20; i++)
-            {
-                polygons[k++] = Bottom.polygons[i];
-            }
-            Top = new Circle(new Point(bottom_center.x, bottom_center.y + height, bottom_center.z), top_radius, color);
-            Top.Rotate(-90, 0, 0, Top.Center);
-            Top.Resave();
-            for (int i = 0; i < 20; i++)
-            {
-                polygons[k++] = Top.polygons[i];
-            }
-            for (int i = 0; i < 20; i++)
-            {
-                Sides[i] = new Rectangle(new Point(Bottom.polygons[i].Points[1]), new Point(Bottom.polygons[i].Points[2]), new Point(Top.polygons[i].Points[2]), new Point(Top.polygons[i].Points[1]), color);
-                for (int j = 0; j < 2; j++)
-                {
-                    polygons[k++] = Sides[i].polygons[j];
-                }
-            }
-        }
+        public Cylinder(Point bottom_center, double radius, double height, Color color) : base(bottom_center, radius, radius, height, color) { }
     }
 }

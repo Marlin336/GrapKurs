@@ -16,7 +16,7 @@ namespace GrapKurs
             scene = new WorkScene(PBox.Width, PBox.Height);
             //scene.AddObj(new Circle(new Point(200, 150, 0), 20, Color.Black));
             //scene.AddObj(new Box(new Point(50,50,50), new Point(100, 100, 100), Color.Orange));
-            //scene.AddObj(new Cylinder(new Point(0, 0, 0), 30, 100, Color.Red));
+            scene.AddObj(new Cylinder(new Point(100, 100, 10), 30, 100, Color.Red));
             scene.AddObj(new Cone(new Point(0, 0, 0), 30, 0, 100, Color.Aqua));
             foreach (Object item in scene.objs)
             {
