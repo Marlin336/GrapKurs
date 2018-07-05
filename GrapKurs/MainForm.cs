@@ -17,7 +17,8 @@ namespace GrapKurs
             //scene.AddObj(new Circle(new Point(200, 150, 0), 20, Color.Black));
             //scene.AddObj(new Box(new Point(50,50,50), new Point(100, 100, 100), Color.Orange));
             scene.AddObj(new Cylinder(new Point(100, 100, 10), 30, 100, Color.Red));
-            scene.AddObj(new Cone(new Point(0, 0, 0), 30, 0, 100, Color.Aqua));
+            scene.AddObj(new Ring(new Point(0, 0, 0),30 , 20, Color.Aqua));
+            scene.AddObj(new Cone(new Point(200, 200, 0), 40, 20, 35, Color.RosyBrown));
             foreach (Object item in scene.objs)
             {
                 lboxObj.Items.Add(item);
@@ -75,6 +76,13 @@ namespace GrapKurs
                     case "Cone":
                         Cone cone = (Cone)item;
                         foreach (Triangle tr in cone.polygons)
+                        {
+                            DrawTriangle(tr, scene);
+                        }
+                        break;
+                    case "Ring":
+                        Ring ring = (Ring)item;
+                        foreach (Triangle tr in ring.polygons)
                         {
                             DrawTriangle(tr, scene);
                         }
@@ -562,6 +570,7 @@ namespace GrapKurs
             }
             Redraw();
         }
+        //Добавить вращение всех типов объектов
         private void bRotate_Click(object sender, EventArgs e)
         {
             Point axis;

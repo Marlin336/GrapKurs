@@ -603,4 +603,144 @@ namespace GrapKurs
     {
         public Cylinder(Point bottom_center, double radius, double height, Color color) : base(bottom_center, radius, radius, height, color) { }
     }
+    public class Ring
+    {
+        public Triangle[] polygons = new Triangle[40];
+        public Circle Bottom;
+        public Circle Top;
+        public Rectangle[] Sides = new Rectangle[20];
+        public Ring(Point center, double first_radius, double second_radius, Color color)
+        {
+            int k = 0;
+            Bottom = new Circle(center, first_radius, color);
+            Bottom.Rotate(-90, 0, 0, Bottom.Center);
+            Bottom.Resave();
+            Top = new Circle(center, second_radius, color);
+            Top.Rotate(-90, 0, 0, Top.Center);
+            Top.Resave();
+            for (int i = 0; i < Sides.Length; i++)
+            {
+                Sides[i] = new Rectangle(new Point(Bottom.polygons[i].Points[1]), new Point(Bottom.polygons[i].Points[2]), new Point(Top.polygons[i].Points[2]), new Point(Top.polygons[i].Points[1]), color);
+                for (int j = 0; j < 2; j++)
+                {
+                    polygons[k++] = Sides[i].polygons[j];
+                }
+            }
+        }
+        public void Reset()
+        {
+            Bottom.Reset();
+            Top.Reset();
+            for (int i = 0; i < Sides.Length; i++)
+                Sides[i].Reset();
+            int k = 0;
+            for (int i = 0; i < Bottom.polygons.Length; i++)
+            {
+                polygons[k++] = Bottom.polygons[i];
+            }
+            for (int i = 0; i < Top.polygons.Length; i++)
+            {
+                polygons[k++] = Top.polygons[i];
+            }
+            for (int i = 0; i < Sides.Length; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    polygons[k++] = Sides[i].polygons[j];
+                }
+            }
+        }
+        public void Scale(double x_scale, double y_scale, double z_scale, Point axis)
+        {
+            Bottom.Scale(x_scale, y_scale, z_scale, axis);
+            Top.Scale(x_scale, y_scale, z_scale, axis);
+            for (int i = 0; i < Sides.Length; i++)
+                Sides[i].Scale(x_scale, y_scale, z_scale, axis);
+            int k = 0;
+            for (int i = 0; i < Bottom.polygons.Length; i++)
+            {
+                polygons[k++] = Bottom.polygons[i];
+            }
+            for (int i = 0; i < Top.polygons.Length; i++)
+            {
+                polygons[k++] = Top.polygons[i];
+            }
+            for (int i = 0; i < Sides.Length; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    polygons[k++] = Sides[i].polygons[j];
+                }
+            }
+        }
+        public void Slip(double xy, double xz, double yx, double yz, double zx, double zy, Point axis)
+        {
+            Bottom.Slip(xy, xz, yx, yz, zx, zy, axis);
+            Top.Slip(xy, xz, yx, yz, zx, zy, axis);
+            for (int i = 0; i < Sides.Length; i++)
+                Sides[i].Slip(xy, xz, yx, yz, zx, zy, axis);
+            int k = 0;
+            for (int i = 0; i < Bottom.polygons.Length; i++)
+            {
+                polygons[k++] = Bottom.polygons[i];
+            }
+            for (int i = 0; i < Top.polygons.Length; i++)
+            {
+                polygons[k++] = Top.polygons[i];
+            }
+            for (int i = 0; i < Sides.Length; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    polygons[k++] = Sides[i].polygons[j];
+                }
+            }
+        }
+        public void Rotate(double x_angle, double y_angle, double z_angle, Point axis)
+        {
+            Bottom.Rotate(x_angle, y_angle, z_angle, axis);
+            Top.Rotate(x_angle, y_angle, z_angle, axis);
+            for (int i = 0; i < Sides.Length; i++)
+                Sides[i].Rotate(x_angle, y_angle, z_angle, axis);
+            int k = 0;
+            for (int i = 0; i < Bottom.polygons.Length; i++)
+            {
+                polygons[k++] = Bottom.polygons[i];
+            }
+            for (int i = 0; i < Top.polygons.Length; i++)
+            {
+                polygons[k++] = Top.polygons[i];
+            }
+            for (int i = 0; i < Sides.Length; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    polygons[k++] = Sides[i].polygons[j];
+                }
+            }
+        }
+        public void Moving(double x_move, double y_move, double z_move)
+        {
+            Bottom.Moving(x_move, y_move, z_move);
+            Top.Moving(x_move, y_move, z_move);
+            for (int i = 0; i < Sides.Length; i++)
+                Sides[i].Moving(x_move, y_move, z_move);
+            int k = 0;
+            for (int i = 0; i < Bottom.polygons.Length; i++)
+            {
+                polygons[k++] = Bottom.polygons[i];
+            }
+            for (int i = 0; i < Top.polygons.Length; i++)
+            {
+                polygons[k++] = Top.polygons[i];
+            }
+            for (int i = 0; i < Sides.Length; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    polygons[k++] = Sides[i].polygons[j];
+                }
+            }
+        }
+    }
 }
