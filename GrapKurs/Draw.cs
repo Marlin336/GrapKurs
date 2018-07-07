@@ -608,16 +608,13 @@ namespace GrapKurs
         public Triangle[] polygons = new Triangle[40];
         public Circle Bottom;
         public Circle Top;
+        public Point Center { get; set; }
         public Rectangle[] Sides = new Rectangle[20];
         public Ring(Point center, double first_radius, double second_radius, Color color)
         {
             int k = 0;
             Bottom = new Circle(center, first_radius, color);
-            Bottom.Rotate(-90, 0, 0, Bottom.Center);
-            Bottom.Resave();
             Top = new Circle(center, second_radius, color);
-            Top.Rotate(-90, 0, 0, Top.Center);
-            Top.Resave();
             for (int i = 0; i < Sides.Length; i++)
             {
                 Sides[i] = new Rectangle(new Point(Bottom.polygons[i].Points[1]), new Point(Bottom.polygons[i].Points[2]), new Point(Top.polygons[i].Points[2]), new Point(Top.polygons[i].Points[1]), color);
@@ -626,6 +623,7 @@ namespace GrapKurs
                     polygons[k++] = Sides[i].polygons[j];
                 }
             }
+            Center = new Point(Bottom.Center);
         }
         public void Reset()
         {
@@ -703,14 +701,14 @@ namespace GrapKurs
             for (int i = 0; i < Sides.Length; i++)
                 Sides[i].Rotate(x_angle, y_angle, z_angle, axis);
             int k = 0;
-            for (int i = 0; i < Bottom.polygons.Length; i++)
+            /*for (int i = 0; i < Bottom.polygons.Length; i++)
             {
                 polygons[k++] = Bottom.polygons[i];
             }
             for (int i = 0; i < Top.polygons.Length; i++)
             {
                 polygons[k++] = Top.polygons[i];
-            }
+            }*/
             for (int i = 0; i < Sides.Length; i++)
             {
                 for (int j = 0; j < 2; j++)
@@ -736,6 +734,46 @@ namespace GrapKurs
             }
             for (int i = 0; i < Sides.Length; i++)
             {
+                for (int j = 0; j < 2; j++)
+                {
+                    polygons[k++] = Sides[i].polygons[j];
+                }
+            }
+        }
+        public void Resave()
+        {
+            for (int i = 0; i < polygons.Length; i++)
+            {
+                polygons[i].Resave();
+            }
+        }
+    }
+    public class Tube
+    {
+        public Triangle[] polygons = new Triangle[160];
+        public Ring Bottom;
+        public Ring Top;
+        public Rectangle[] Sides = new Rectangle[40];
+        public Tube(Point bottom_center, double first_radius, double second_radius, double height, Color color)
+        {
+            int k = 0;
+            Bottom = new Ring(new Point(bottom_center), first_radius, second_radius, color);
+            Bottom.Rotate(-90, 0, 0, Bottom.Center);
+            Bottom.Resave();
+            for (int i = 0; i < 40; i++)
+            {
+                polygons[k++] = Bottom.polygons[i];
+            }
+            Top = new Ring(new Point(bottom_center.x, bottom_center.y + height, bottom_center.z), first_radius, second_radius, color);
+            Top.Rotate(-90, 0, 0, Top.Center);
+            Top.Resave();
+            for (int i = 0; i < 40; i++)
+            {
+                polygons[k++] = Top.polygons[i];
+            }
+            for (int i = 0; i < Sides.Length; i++)
+            {
+                Sides[i] = new Rectangle(new Point(Bottom.polygons[i].Points[2]), new Point(Top.polygons[i].Points[2]), new Point(Bottom.polygons[i].Points[0]), new Point(Top.polygons[i].Points[0]), color);
                 for (int j = 0; j < 2; j++)
                 {
                     polygons[k++] = Sides[i].polygons[j];

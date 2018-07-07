@@ -73,6 +73,11 @@ namespace GrapKurs
                     foreach (Triangle item in ring.polygons)
                         triangles.Add(item);
                     break;
+                case "Tube":
+                    Tube tube = (Tube)obj;
+                    foreach (Triangle item in tube.polygons)
+                        triangles.Add(item);
+                    break;
                 default:
                     break;
             }
