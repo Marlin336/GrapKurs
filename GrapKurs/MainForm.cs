@@ -14,11 +14,10 @@ namespace GrapKurs
         {
             InitializeComponent();
             scene = new WorkScene(PBox.Width, PBox.Height);
-            //scene.AddObj(new Circle(new Point(200, 150, 0), 20, Color.Black));
-            //scene.AddObj(new Box(new Point(50,50,50), new Point(100, 100, 100), Color.Orange));
-            scene.AddObj(new Cylinder(new Point(100, 100, 10), 30, 100, Color.Red));
-            scene.AddObj(new Ring(new Point(0, 0, 0), 30, 35, Color.Aqua));
-            scene.AddObj(new Tube(new Point(50, 50, 0), 20, 25, 30, Color.AliceBlue));
+            /*scene.AddObj(new Tube(new Point(100, 100, 0), 4, 3.5, 100, Color.Blue));
+            scene.AddObj(new Tube(new Point(100, 50, 0), 4, 3.5, 100, Color.Red));*/
+            //scene.AddObj(new Box(new Point(100, 100, -2.5), new Point(200, 150, 2.5), Color.Red));
+            scene.AddObj(new ParamObj(new Point(100, 100, 0), 10, 20, 10, 10, 10, 10, 10, 10, 10, 10));
             foreach (Object item in scene.objs)
             {
                 lboxObj.Items.Add(item);
@@ -117,7 +116,7 @@ namespace GrapKurs
         ParamObj ReadObj3D(Obj obj, Color color)
         {
             Point[] VertexList = new Point[obj.VertexList.Count];
-            ParamObj ret = new ParamObj();
+            ParamObj ret = new ParamObj(new Point(100,100,0),100,100,100,100,100,100,100,100,100,100);
             for (int i = 0; i < obj.VertexList.Count; i++)
             {
                 VertexList[i] = new Point(obj.VertexList[i].X, obj.VertexList[i].Y, obj.VertexList[i].Z);
@@ -257,57 +256,7 @@ namespace GrapKurs
         }
         private void ЗагрузитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (openFD.ShowDialog() == DialogResult.OK)
-            {
-                if (openFD.FileName.Substring(openFD.FileName.Length - 4) == ".obj")
-                {
-                    try
-                    {
-                        Obj obj = new Obj();
-                        obj.LoadObj(openFD.FileName);
-                        lboxObj.Items.Clear();
-                        ScaleUpDown.Value = 1;
-                        scene = new WorkScene(PBox.Width, PBox.Height);
-                        scene.AddObj(ReadObj3D(obj, System.Drawing.Color.FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255))));
-                        Redraw();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Не удалось открыть файл.\r\n" + ex.Message, "Ошибка окрытия файла", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        throw;
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        lboxObj.Items.Clear();
-                        ScaleUpDown.Value = 1;
-                        scene = new WorkScene(PBox.Width, PBox.Height);
-                        StreamReader stream = new StreamReader(openFD.FileName);
-                        char[] sep = new char[] { '/', '\r' };
-                        string[] vertex = stream.ReadToEnd().Split(sep);
-                        ParamObj paramObj = new ParamObj();
-                        for (int i = 0; i < vertex.Length - 1; i += 10)
-                        {
-                            Point p1 = new Point(double.Parse(vertex[i]), double.Parse(vertex[i + 1]), double.Parse(vertex[i + 2]));
-                            Point p2 = new Point(double.Parse(vertex[i + 3]), double.Parse(vertex[i + 4]), double.Parse(vertex[i + 5]));
-                            Point p3 = new Point(double.Parse(vertex[i + 6]), double.Parse(vertex[i + 7]), double.Parse(vertex[i + 8]));
-                            System.Drawing.Color color = System.Drawing.Color.FromArgb(int.Parse(vertex[i + 9]));
-                            scene.triangles.Add(new Triangle(p1, p2, p3, color));
-                            paramObj.polygs.Add(new Triangle(p1, p2, p3, color));
-                        }
-                        scene.objs.Add(paramObj);
-                        lboxObj.Items.Add(paramObj);
-                        Redraw();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Не удалось открыть файл.\r\n" + ex.Message, "Ошибка окрытия файла", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        throw;
-                    }
-                }
-            }
+            
         }
         private void СохранитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -370,6 +319,18 @@ namespace GrapKurs
                         Cylinder cylinder = (Cylinder)scene.objs[index];
                         cylinder.Moving(0, 15, 0);
                         break;
+                    case "Cone":
+                        Cone cone = (Cone)scene.objs[index];
+                        cone.Moving(0, 15, 0);
+                        break;
+                    case "Ring":
+                        Ring ring = (Ring)scene.objs[index];
+                        ring.Moving(0, 15, 0);
+                        break;
+                    case "Tube":
+                        Tube tube = (Tube)scene.objs[index];
+                        tube.Moving(0, 15, 0);
+                        break;
                     default:
                         break;
                 }
@@ -418,6 +379,18 @@ namespace GrapKurs
                     case "Cylinder":
                         Cylinder cylinder = (Cylinder)scene.objs[index];
                         cylinder.Moving(0, -15, 0);
+                        break;
+                    case "Cone":
+                        Cone cone = (Cone)scene.objs[index];
+                        cone.Moving(0, -15, 0);
+                        break;
+                    case "Ring":
+                        Ring ring = (Ring)scene.objs[index];
+                        ring.Moving(0, -15, 0);
+                        break;
+                    case "Tube":
+                        Tube tube = (Tube)scene.objs[index];
+                        tube.Moving(0, -15, 0);
                         break;
                     default:
                         break;
@@ -468,6 +441,18 @@ namespace GrapKurs
                         Cylinder cylinder = (Cylinder)scene.objs[index];
                         cylinder.Moving(15, 0, 0);
                         break;
+                    case "Cone":
+                        Cone cone = (Cone)scene.objs[index];
+                        cone.Moving(15, 0, 0);
+                        break;
+                    case "Ring":
+                        Ring ring = (Ring)scene.objs[index];
+                        ring.Moving(15, 0, 0);
+                        break;
+                    case "Tube":
+                        Tube tube = (Tube)scene.objs[index];
+                        tube.Moving(15, 0, 0);
+                        break;
                     default:
                         break;
                 }
@@ -516,6 +501,18 @@ namespace GrapKurs
                     case "Cylinder":
                         Cylinder cylinder = (Cylinder)scene.objs[index];
                         cylinder.Moving(-15, 0, 0);
+                        break;
+                    case "Cone":
+                        Cone cone = (Cone)scene.objs[index];
+                        cone.Moving(-15, 0, 0);
+                        break;
+                    case "Ring":
+                        Ring ring = (Ring)scene.objs[index];
+                        ring.Moving(-15, 0, 0);
+                        break;
+                    case "Tube":
+                        Tube tube = (Tube)scene.objs[index];
+                        tube.Moving(-15, 0, 0);
                         break;
                     default:
                         break;
@@ -623,10 +620,35 @@ namespace GrapKurs
                             item.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
                         }
                         break;
+                    case "Rectangle":
+                        Rectangle rectangle = (Rectangle)scene.objs[index];
+                        rectangle.Reset();
+                        rectangle.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
+                        break;
+                    case "Box":
+                        Box box = (Box)scene.objs[index];
+                        box.Reset();
+                        box.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
+                        break;
                     case "Cylinder":
                         Cylinder cylinder = (Cylinder)scene.objs[index];
                         cylinder.Reset();
                         cylinder.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
+                        break;
+                    case "Cone":
+                        Cone cone = (Cone)scene.objs[index];
+                        cone.Reset();
+                        cone.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
+                        break;
+                    case "Ring":
+                        Ring ring = (Ring)scene.objs[index];
+                        ring.Reset();
+                        ring.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
+                        break;
+                    case "Tube":
+                        Tube tube = (Tube)scene.objs[index];
+                        tube.Reset();
+                        tube.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
                         break;
                     default:
                         break;

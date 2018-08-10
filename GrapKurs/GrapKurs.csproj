@@ -62,6 +62,12 @@
     <Compile Include="Matrix.cs" />
     <Compile Include="Mtl.cs" />
     <Compile Include="Obj.cs" />
+    <Compile Include="ParamForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ParamForm.Designer.cs">
+      <DependentUpon>ParamForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ParamObj.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -77,6 +83,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ParamForm.resx">
+      <DependentUpon>ParamForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
