@@ -17,7 +17,34 @@ namespace GrapKurs
             /*scene.AddObj(new Tube(new Point(100, 100, 0), 4, 3.5, 100, Color.Blue));
             scene.AddObj(new Tube(new Point(100, 50, 0), 4, 3.5, 100, Color.Red));*/
             //scene.AddObj(new Box(new Point(100, 100, -2.5), new Point(200, 150, 2.5), Color.Red));
-            scene.AddObj(new ParamObj(new Point(100, 100, 0), 10, 20, 10, 10, 10, 10, 10, 10, 10, 10));
+            //scene.AddObj(new ParamObj(new Point(100, 100, 0), 10, 20, 10, 10, 10, 10, 10, 10, 10, 10));
+
+            /*Ствол*/
+            Point Start = new Point(250, 250, 0);
+            Tube barrel = new Tube(Start, 3, 2.5, 200, Color.Red);
+            barrel.Rotate(0, 0, 90, Start);
+            scene.AddObj(barrel);
+            /*Магазин*/
+            Cylinder magazine = new Cylinder(Start, 3, 180, Color.Brown);
+            magazine.Rotate(0, 0, 90, Start);
+            magazine.Moving(0, -3, 0);
+            scene.AddObj(magazine);
+            /*Цевьё*/
+            Cylinder cev = new Cylinder(Start, 4, 170, Color.Azure);
+            cev.Rotate(0, 0, 90, Start);
+            cev.Scale(1, 1.2, 1, Start);
+            cev.Moving(0, -3, 0);
+            scene.AddObj(cev);
+            /*Затворная коробка*/
+            Point box1 = new Point(Start.x, Start.y + 10, Start.z + 10);
+            Point box2 = new Point(Start.x + 80, Start.y - (3 + 5), Start.z - 10);
+            Box box = new Box(box1, box2, Color.Beige);
+            scene.AddObj(box);
+            /*Целик*/
+            Box cel = new Box(new Point(box1), new Point(box1.x + 25, box1.y + 1, box1.z - 20), Color.Black);
+            cel.Rotate(0, 0, 15, box1);
+            scene.AddObj(cel);
+
             foreach (Object item in scene.objs)
             {
                 lboxObj.Items.Add(item);
@@ -686,8 +713,8 @@ namespace GrapKurs
 
         private void bAdd_Click(object sender, EventArgs e)
         {
-            AddForm addForm = new AddForm(this);
-            addForm.ShowDialog();
+            ParamForm Form = new ParamForm(this);
+            Form.ShowDialog();
         }
 
         private void bDel_Click(object sender, EventArgs e)

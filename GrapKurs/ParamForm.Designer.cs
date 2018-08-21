@@ -48,8 +48,8 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.bOK = new System.Windows.Forms.Button();
+            this.bCancel = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
@@ -218,35 +218,37 @@
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(12, 250);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(195, 13);
+            this.label10.Size = new System.Drawing.Size(198, 13);
             this.label10.TabIndex = 19;
-            this.label10.Text = "Растояние затвоная коробка - целик";
+            this.label10.Text = "Растояние: затвоная коробка - целик";
             // 
-            // button1
+            // bOK
             // 
-            this.button1.Location = new System.Drawing.Point(35, 292);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(107, 37);
-            this.button1.TabIndex = 20;
-            this.button1.Text = "Принять";
-            this.button1.UseVisualStyleBackColor = true;
+            this.bOK.Location = new System.Drawing.Point(12, 283);
+            this.bOK.Name = "bOK";
+            this.bOK.Size = new System.Drawing.Size(161, 37);
+            this.bOK.TabIndex = 20;
+            this.bOK.Text = "Принять";
+            this.bOK.UseVisualStyleBackColor = true;
+            this.bOK.Click += new System.EventHandler(this.bOK_Click);
             // 
-            // button2
+            // bCancel
             // 
-            this.button2.Location = new System.Drawing.Point(221, 292);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(107, 37);
-            this.button2.TabIndex = 21;
-            this.button2.Text = "Отменить";
-            this.button2.UseVisualStyleBackColor = true;
+            this.bCancel.Location = new System.Drawing.Point(180, 283);
+            this.bCancel.Name = "bCancel";
+            this.bCancel.Size = new System.Drawing.Size(161, 37);
+            this.bCancel.TabIndex = 21;
+            this.bCancel.Text = "Отменить";
+            this.bCancel.UseVisualStyleBackColor = true;
+            this.bCancel.Click += new System.EventHandler(this.bCancel_Click);
             // 
             // ParamForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(368, 353);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(349, 327);
+            this.Controls.Add(this.bCancel);
+            this.Controls.Add(this.bOK);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
@@ -306,7 +308,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button bOK;
+        private System.Windows.Forms.Button bCancel;
     }
 }
