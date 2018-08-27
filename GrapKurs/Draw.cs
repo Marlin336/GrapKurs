@@ -829,14 +829,6 @@ namespace GrapKurs
             Top.Rotate(x_angle, y_angle, z_angle, axis);
             for (int i = 0; i < Sides.Length; i++)
                 Sides[i].Rotate(x_angle, y_angle, z_angle, axis);
-            int k = 0;
-            for (int i = 0; i < Sides.Length; i++)
-            {
-                for (int j = 0; j < 2; j++)
-                {
-                    polygons[k++] = Sides[i].polygons[j];
-                }
-            }
         }
         public void Moving(double x_move, double y_move, double z_move)
         {

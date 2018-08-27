@@ -55,13 +55,14 @@
             this.Rotate_y = new System.Windows.Forms.NumericUpDown();
             this.Rotate_z = new System.Windows.Forms.NumericUpDown();
             this.bRotate = new System.Windows.Forms.Button();
-            this.tbAxis = new System.Windows.Forms.TextBox();
             this.saveFD = new System.Windows.Forms.SaveFileDialog();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.radNC = new System.Windows.Forms.RadioButton();
+            this.radObjCen = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.PBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ScaleUpDown)).BeginInit();
@@ -107,7 +108,6 @@
             this.PBox.Size = new System.Drawing.Size(650, 450);
             this.PBox.TabIndex = 0;
             this.PBox.TabStop = false;
-            this.PBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PBox_MouseDown);
             // 
             // menuStrip1
             // 
@@ -251,7 +251,7 @@
             0,
             0,
             131072});
-            this.ScaleUpDown.Location = new System.Drawing.Point(171, 514);
+            this.ScaleUpDown.Location = new System.Drawing.Point(328, 514);
             this.ScaleUpDown.Maximum = new decimal(new int[] {
             10,
             0,
@@ -284,7 +284,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(168, 493);
+            this.label2.Location = new System.Drawing.Point(325, 493);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(101, 13);
             this.label2.TabIndex = 14;
@@ -293,7 +293,7 @@
             // Rotate_x
             // 
             this.Rotate_x.DecimalPlaces = 1;
-            this.Rotate_x.Location = new System.Drawing.Point(493, 514);
+            this.Rotate_x.Location = new System.Drawing.Point(477, 514);
             this.Rotate_x.Maximum = new decimal(new int[] {
             3599,
             0,
@@ -311,7 +311,7 @@
             // Rotate_y
             // 
             this.Rotate_y.DecimalPlaces = 1;
-            this.Rotate_y.Location = new System.Drawing.Point(493, 540);
+            this.Rotate_y.Location = new System.Drawing.Point(477, 540);
             this.Rotate_y.Maximum = new decimal(new int[] {
             3599,
             0,
@@ -329,7 +329,7 @@
             // Rotate_z
             // 
             this.Rotate_z.DecimalPlaces = 1;
-            this.Rotate_z.Location = new System.Drawing.Point(493, 564);
+            this.Rotate_z.Location = new System.Drawing.Point(477, 564);
             this.Rotate_z.Maximum = new decimal(new int[] {
             3599,
             0,
@@ -346,21 +346,13 @@
             // 
             // bRotate
             // 
-            this.bRotate.Location = new System.Drawing.Point(473, 590);
+            this.bRotate.Location = new System.Drawing.Point(538, 513);
             this.bRotate.Name = "bRotate";
-            this.bRotate.Size = new System.Drawing.Size(75, 23);
+            this.bRotate.Size = new System.Drawing.Size(61, 71);
             this.bRotate.TabIndex = 18;
             this.bRotate.Text = "Вращать";
             this.bRotate.UseVisualStyleBackColor = true;
             this.bRotate.Click += new System.EventHandler(this.bRotate_Click);
-            // 
-            // tbAxis
-            // 
-            this.tbAxis.Location = new System.Drawing.Point(309, 514);
-            this.tbAxis.Name = "tbAxis";
-            this.tbAxis.Size = new System.Drawing.Size(100, 20);
-            this.tbAxis.TabIndex = 19;
-            this.tbAxis.Text = "0,0,0";
             // 
             // saveFD
             // 
@@ -369,7 +361,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(306, 493);
+            this.label3.Location = new System.Drawing.Point(159, 493);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(120, 13);
             this.label3.TabIndex = 20;
@@ -378,7 +370,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(470, 516);
+            this.label4.Location = new System.Drawing.Point(454, 516);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(17, 13);
             this.label4.TabIndex = 21;
@@ -387,7 +379,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(470, 542);
+            this.label5.Location = new System.Drawing.Point(454, 542);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(17, 13);
             this.label5.TabIndex = 22;
@@ -396,7 +388,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(470, 566);
+            this.label6.Location = new System.Drawing.Point(454, 566);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(17, 13);
             this.label6.TabIndex = 23;
@@ -405,23 +397,46 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(489, 493);
+            this.label7.Location = new System.Drawing.Point(473, 493);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(59, 13);
             this.label7.TabIndex = 24;
             this.label7.Text = "Вращение";
             // 
+            // radNC
+            // 
+            this.radNC.AutoSize = true;
+            this.radNC.Checked = true;
+            this.radNC.Location = new System.Drawing.Point(162, 516);
+            this.radNC.Name = "radNC";
+            this.radNC.Size = new System.Drawing.Size(118, 17);
+            this.radNC.TabIndex = 25;
+            this.radNC.TabStop = true;
+            this.radNC.Text = "Начало координат";
+            this.radNC.UseVisualStyleBackColor = true;
+            // 
+            // radObjCen
+            // 
+            this.radObjCen.AutoSize = true;
+            this.radObjCen.Location = new System.Drawing.Point(162, 538);
+            this.radObjCen.Name = "radObjCen";
+            this.radObjCen.Size = new System.Drawing.Size(101, 17);
+            this.radObjCen.TabIndex = 26;
+            this.radObjCen.Text = "Центр объекта";
+            this.radObjCen.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(883, 614);
+            this.ClientSize = new System.Drawing.Size(883, 591);
+            this.Controls.Add(this.radObjCen);
+            this.Controls.Add(this.radNC);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.tbAxis);
             this.Controls.Add(this.bRotate);
             this.Controls.Add(this.Rotate_z);
             this.Controls.Add(this.Rotate_y);
@@ -480,7 +495,6 @@
         private System.Windows.Forms.NumericUpDown Rotate_y;
         private System.Windows.Forms.NumericUpDown Rotate_z;
         private System.Windows.Forms.Button bRotate;
-        private System.Windows.Forms.TextBox tbAxis;
         private System.Windows.Forms.SaveFileDialog saveFD;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
@@ -490,6 +504,8 @@
         private System.Windows.Forms.ToolStripMenuItem перспективаToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem параллельнаяToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem центральнаяToolStripMenuItem;
+        private System.Windows.Forms.RadioButton radNC;
+        private System.Windows.Forms.RadioButton radObjCen;
     }
 }
 

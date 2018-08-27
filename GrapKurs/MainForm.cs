@@ -10,40 +10,116 @@ namespace GrapKurs
     {
         public WorkScene scene;
         Random r = new Random();
+        Point Start;
         public MainForm()
         {
             InitializeComponent();
             scene = new WorkScene(PBox.Width, PBox.Height);
-            /*scene.AddObj(new Tube(new Point(100, 100, 0), 4, 3.5, 100, Color.Blue));
-            scene.AddObj(new Tube(new Point(100, 50, 0), 4, 3.5, 100, Color.Red));*/
-            //scene.AddObj(new Box(new Point(100, 100, -2.5), new Point(200, 150, 2.5), Color.Red));
-            //scene.AddObj(new ParamObj(new Point(100, 100, 0), 10, 20, 10, 10, 10, 10, 10, 10, 10, 10));
 
             /*Ствол*/
-            Point Start = new Point(250, 250, 0);
-            Tube barrel = new Tube(Start, 3, 2.5, 200, Color.Red);
+            Start = new Point(250, 250, 0);
+            Tube barrel = new Tube(Start, 4, 2.5, 200, Color.Red);
             barrel.Rotate(0, 0, 90, Start);
+            barrel.Resave();
             scene.AddObj(barrel);
             /*Магазин*/
-            Cylinder magazine = new Cylinder(Start, 3, 180, Color.Brown);
+            Cylinder magazine = new Cylinder(Start, 4, 180, Color.Brown);
             magazine.Rotate(0, 0, 90, Start);
-            magazine.Moving(0, -3, 0);
+            magazine.Moving(0, -4, 0);
+            magazine.Resave();
             scene.AddObj(magazine);
             /*Цевьё*/
-            Cylinder cev = new Cylinder(Start, 4, 170, Color.Azure);
+            Cylinder cev = new Cylinder(Start, 5.5, 170, Color.RoyalBlue);
             cev.Rotate(0, 0, 90, Start);
-            cev.Scale(1, 1.2, 1, Start);
-            cev.Moving(0, -3, 0);
+            cev.Scale(1, 1.3, 1, Start);
+            cev.Moving(0, -2, 0);
+            cev.Resave();
             scene.AddObj(cev);
             /*Затворная коробка*/
-            Point box1 = new Point(Start.x, Start.y + 10, Start.z + 10);
-            Point box2 = new Point(Start.x + 80, Start.y - (3 + 5), Start.z - 10);
+            Point box1 = new Point(Start.x, Start.y + 10, Start.z + 3);
+            Point box2 = new Point(Start.x + 80, Start.y - (3 + 5), Start.z - 3);
             Box box = new Box(box1, box2, Color.Beige);
+            box.Resave();
             scene.AddObj(box);
             /*Целик*/
-            Box cel = new Box(new Point(box1), new Point(box1.x + 25, box1.y + 1, box1.z - 20), Color.Black);
-            cel.Rotate(0, 0, 15, box1);
+            Point celStart = new Point(box1.x - 10, box1.y - 2, box1.z);
+            Box cel = new Box(celStart, new Point((celStart.x) + 25, (celStart.y) + 2, celStart.z - 6), Color.Black);
+            cel.Rotate(0, 0, 8, celStart);
+            cel.Resave();
             scene.AddObj(cel);
+            /*Рукоять*/
+            Point handStart = new Point((box1.x + 80)-10, Start.y, Start.z);
+            Cylinder hand = new Cylinder(handStart, 5, 50, Color.Brown);
+            hand.Scale(1.3, 1, 1, handStart);
+            hand.Rotate(0, 0, -100, handStart);
+            hand.Resave();
+            scene.AddObj(hand);
+            /*Приклад*/
+            Point buttStart = new Point((box1.x + 80) + 35, Start.y - 7, Start.z);
+            Cone butt = new Cone(buttStart, 5, 12, 70, Color.RosyBrown);
+            butt.Scale(1.5, 1, 0.7, buttStart);
+            butt.Rotate(0, 0, -100, buttStart);
+            butt.Resave();
+            scene.AddObj(butt);
+            /*Рычаг*/
+            Point cirStart = new Point(buttStart.x - 50, buttStart.y - 3, buttStart.z);
+            Tube cir_trig = new Tube(cirStart, 6, 7, 5, Color.Violet);
+            cir_trig.Rotate(90, 0, 0, cirStart);
+            cir_trig.Moving(0, 0, -2.5); ;
+            cir_trig.Resave();
+            scene.AddObj(cir_trig);
+
+            Point leverStart = new Point(cirStart.x + 25, cirStart.y - 5, cirStart.z);
+            Tube lever = new Tube(leverStart, 7, 8, 5, Color.AliceBlue);
+            lever.Scale(1, 1, 2.5, leverStart);
+            lever.Rotate(90, 0, 75, leverStart);
+            lever.Moving(0, 0, -2.5);
+            lever.Resave();
+            scene.AddObj(lever);
+            /*Спуск*/
+            Point trigStart = new Point(cirStart.x + 2, cirStart.y + 2, cirStart.z);
+            Cone trig = new Cone(trigStart, 3, 1, -7, Color.Chartreuse);
+            trig.Scale(0.7, 1, 1, trigStart);
+            trig.Rotate(0, 0, -20, trigStart);//Угол спускового крючка 
+            trig.Resave();
+            scene.AddObj(trig);
+            /*Кольца*/
+            Tube ring_1 = new Tube(new Point(Start.x - 60, Start.y+1, Start.z), 7, 8, 5, Color.Chocolate);
+            ring_1.Scale(1.2, 1, 1, ring_1.Bottom.Center);
+            ring_1.Rotate(0, 0, 90, ring_1.Bottom.Center);
+            ring_1.Resave();
+            scene.AddObj(ring_1);
+            Tube ring_2 = new Tube(new Point(Start.x - 100, Start.y + 1, Start.z), 7, 8, 5, Color.Chocolate);
+            ring_2.Scale(1.2, 1, 1, ring_2.Bottom.Center);
+            ring_2.Rotate(0, 0, 90, ring_2.Bottom.Center);
+            ring_2.Resave();
+            scene.AddObj(ring_2);
+            Tube ring_3 = new Tube(new Point(Start.x - 140, Start.y + 1, Start.z), 7, 8, 5, Color.Chocolate);
+            ring_3.Scale(1.2, 1, 1, ring_3.Bottom.Center);
+            ring_3.Rotate(0, 0, 90, ring_3.Bottom.Center);
+            ring_3.Resave();
+            scene.AddObj(ring_3);
+            /*Насечки*/
+            Cylinder scr_1 = new Cylinder(new Point(buttStart.x + 30, buttStart.y - 5, buttStart.z), 9, 1, Color.Red);
+            scr_1.Rotate(0, 0, 90, new Point(buttStart.x + 30, buttStart.y - 5, buttStart.z));
+            scr_1.Scale(1, 1, 0.75, new Point(buttStart.x + 30, buttStart.y - 5, buttStart.z));
+            scr_1.Resave();
+            scene.AddObj(scr_1);
+            Cylinder scr_2 = new Cylinder(new Point(buttStart.x + 35, buttStart.y - 5, buttStart.z), 10, 1, Color.Red);
+            scr_2.Rotate(0, 0, 90, new Point(buttStart.x + 35, buttStart.y - 5, buttStart.z));
+            scr_2.Scale(1, 1, 0.75, new Point(buttStart.x + 35, buttStart.y - 5, buttStart.z));
+            scr_2.Resave();
+            scene.AddObj(scr_2);
+            Cylinder scr_3 = new Cylinder(new Point(buttStart.x + 40, buttStart.y - 5, buttStart.z), 11, 1, Color.Red);
+            scr_3.Rotate(0, 0, 90, new Point(buttStart.x + 40, buttStart.y - 5, buttStart.z));
+            scr_3.Scale(1, 1, 0.75, new Point(buttStart.x + 40, buttStart.y - 5, buttStart.z));
+            scr_3.Resave();
+            scene.AddObj(scr_3);
+            Cylinder scr_4 = new Cylinder(new Point(buttStart.x + 45, buttStart.y - 5, buttStart.z), 11, 1, Color.Red);
+            scr_4.Rotate(0, 0, 90, new Point(buttStart.x + 45, buttStart.y - 5, buttStart.z));
+            scr_4.Scale(1, 1, 0.75, new Point(buttStart.x + 45, buttStart.y - 5, buttStart.z));
+            scr_4.Resave();
+            scene.AddObj(scr_4);
 
             foreach (Object item in scene.objs)
             {
@@ -553,8 +629,7 @@ namespace GrapKurs
             try
             {
                 char[] sep = new char[] { ',' };
-                string[] axis_str = tbAxis.Text.Split(sep);
-                axis = new Point(double.Parse(axis_str[0]), double.Parse(axis_str[1]), double.Parse(axis_str[2]));
+                axis = radNC.Checked ? new Point() : new Point(Start);//вместо null взять центр объекта
             }
             catch (Exception)
             {
@@ -608,8 +683,7 @@ namespace GrapKurs
             try
             {
                 char[] sep = new char[] { ',' };
-                string[] axis_str = tbAxis.Text.Split(sep);
-                axis = new Point(double.Parse(axis_str[0]), double.Parse(axis_str[1]), double.Parse(axis_str[2]));
+                axis = radNC.Checked ? new Point() : new Point(Start);//вместо null взять центр объекта
             }
             catch (Exception)
             {
@@ -684,10 +758,7 @@ namespace GrapKurs
             ScaleUpDown_ValueChanged(sender, e);
             Redraw();
         }
-        private void PBox_MouseDown(object sender, MouseEventArgs e)
-        {
-            tbAxis.Text = (e.X + (int)scene.Shifting.x).ToString() + "," + (PBox.Height - e.Y + (int)scene.Shifting.y) + ",0";
-        }
+
         public void AddObj(Point state, double scale, System.Drawing.Color color)
         {
             Obj obj = new Obj();
