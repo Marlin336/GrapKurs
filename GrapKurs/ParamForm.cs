@@ -26,7 +26,21 @@ namespace GrapKurs
 
         private void bOK_Click(object sender, EventArgs e)
         {
-            main.scene.AddObj(new ParamObj(new Point(150, 150, 0), (double)numericUpDown1.Value, (double)numericUpDown2.Value, (double)numericUpDown3.Value, (double)numericUpDown4.Value, (double)numericUpDown5.Value, (double)numericUpDown6.Value, (int)numericUpDown7.Value, (int)numericUpDown8.Value, (double)numericUpDown9.Value, (double)numericUpDown10.Value));
+            try
+            {
+                ParamObj obj = new ParamObj(new Point(150, 150, 0), (double)numericUpDown1.Value, (double)numericUpDown2.Value, (double)numericUpDown3.Value, (double)numericUpDown4.Value, (double)numericUpDown5.Value, (double)numericUpDown6.Value, (int)numericUpDown7.Value, (int)numericUpDown8.Value, (double)numericUpDown9.Value, (double)numericUpDown10.Value);
+                main.scene.AddObj(obj);
+                main.lboxObj.Items.Add(obj);
+                main.Redraw();
+            }
+            catch
+            {
+                MessageBox.Show("Не удалось создать объект");
+            }
+            finally
+            {
+                Close();
+            }
         }
     }
 }

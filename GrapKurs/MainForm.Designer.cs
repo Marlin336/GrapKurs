@@ -78,6 +78,7 @@
             this.lboxObj.Name = "lboxObj";
             this.lboxObj.Size = new System.Drawing.Size(203, 420);
             this.lboxObj.TabIndex = 1;
+            this.lboxObj.SelectedIndexChanged += new System.EventHandler(this.lboxObj_SelectedIndexChanged);
             this.lboxObj.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lboxObj_MouseDown);
             // 
             // bDel
@@ -418,6 +419,7 @@
             // radObjCen
             // 
             this.radObjCen.AutoSize = true;
+            this.radObjCen.Enabled = false;
             this.radObjCen.Location = new System.Drawing.Point(162, 538);
             this.radObjCen.Name = "radObjCen";
             this.radObjCen.Size = new System.Drawing.Size(101, 17);
@@ -470,8 +472,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.ListBox lboxObj;
         private System.Windows.Forms.Button bDel;
         private System.Windows.Forms.Button bAdd;
         private System.Windows.Forms.PictureBox PBox;
@@ -506,6 +506,7 @@
         private System.Windows.Forms.ToolStripMenuItem центральнаяToolStripMenuItem;
         private System.Windows.Forms.RadioButton radNC;
         private System.Windows.Forms.RadioButton radObjCen;
+        public System.Windows.Forms.ListBox lboxObj;
     }
 }
 
