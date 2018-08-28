@@ -36,8 +36,8 @@ namespace GrapKurs
             foreach (Triangle item in cev.polygons)
                 polygs.Add(item);
             /*Затворная коробка*/
-            Point box1 = new Point(Start.x, Start.y + 10 + bar_diam, Start.z + box_width / 2); //box_width = 6
-            Point box2 = new Point(Start.x + 80, Start.y - bar_diam, Start.z - box_width / 2);
+            Point box1 = new Point(Start.x, Start.y + 7 + bar_diam, Start.z + box_width / 2); //box_width = 6
+            Point box2 = new Point(Start.x + 80, Start.y - (bar_diam + 3), Start.z - box_width / 2);
             Box box = new Box(box1, box2, Color.DarkGray);
             box.Resave();
             foreach (Triangle item in box.polygons)
@@ -83,8 +83,8 @@ namespace GrapKurs
             foreach (Triangle item in lever.polygons)
                 polygs.Add(item);
             /*Спуск*/
-            Point trigStart = new Point(cirStart.x + 2, cirStart.y + 2, cirStart.z);
-            Cone trig = new Cone(trigStart, 3, 1, -7, Color.DarkGray);
+            Point trigStart = new Point(cirStart.x + 2, cirStart.y + 3, cirStart.z);
+            Cone trig = new Cone(trigStart, 3, 1, -8, Color.DarkGray);
             trig.Scale(0.7, 1, 1, trigStart);
             trig.Rotate(0, 0, -sp_ang, trigStart);//sp_ang = 20
             trig.Resave();
