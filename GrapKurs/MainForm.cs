@@ -14,10 +14,10 @@ namespace GrapKurs
         {
             InitializeComponent();
             scene = new WorkScene(PBox.Width, PBox.Height);
-            foreach (Object item in scene.objs)
+            /*foreach (Object item in scene.objs)
             {
                 lboxObj.Items.Add(item);
-            }
+            }*/
             Redraw();
         }
 
@@ -252,22 +252,54 @@ namespace GrapKurs
         }
         private void ЗагрузитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+
+            if (openFD.ShowDialog() == DialogResult.OK)
+            {
+                char[] sep = { '/', ':' };
+                StreamReader stream = new StreamReader(openFD.FileName, System.Text.Encoding.Default, false);
+                ParamObj paramObj = null;
+                while (!stream.EndOfStream)
+                {
+                    string service = stream.ReadLine();
+                    if (service == "[Obj]")
+                    {
+                        if(paramObj != null)
+                        {
+                            scene.AddObj(paramObj);
+                            lboxObj.Items.Add(paramObj);
+                        }
+                        paramObj = new ParamObj();
+                        stream.ReadLine();
+                        continue;
+                    }
+                    string[] line = service.Split(sep);
+                    Triangle polygon = new Triangle(new Point(double.Parse(line[0]), double.Parse(line[1]), double.Parse(line[2])), new Point(double.Parse(line[3]), double.Parse(line[4]), double.Parse(line[5])), new Point(double.Parse(line[6]), double.Parse(line[7]), double.Parse(line[8])), Color.FromArgb(int.Parse(line[9])));
+                    paramObj.polygs.Add(polygon);
+                }
+                scene.AddObj(paramObj);
+                lboxObj.Items.Add(paramObj);
+                Redraw();
+            }
         }
         private void СохранитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (saveFD.ShowDialog() == DialogResult.OK)
             {
                 StreamWriter stream = new StreamWriter(saveFD.FileName, false, System.Text.Encoding.Default);
-                string vertex = "";
-                for (int i = 0; i < scene.triangles.Count; i++)
+                string vertex = null;
+                for (int i = 0; i < scene.objs.Count; i++)
                 {
-                    vertex = scene.triangles[i].Points[0].x + "/" + scene.triangles[i].Points[0].y + "/" + scene.triangles[i].Points[0].z + "\r";
-                    vertex += scene.triangles[i].Points[1].x + "/" + scene.triangles[i].Points[1].y + "/" + scene.triangles[i].Points[1].z + "\r";
-                    vertex += scene.triangles[i].Points[2].x + "/" + scene.triangles[i].Points[2].y + "/" + scene.triangles[i].Points[2].z + "\r";
-                    vertex += scene.triangles[i].Color.ToArgb() + "\r";
-                    stream.Write(vertex);
+                    vertex += "[Obj]\n";
+                    for (int j = 0; j < scene.objs[i].polygs.Count; j++)
+                    {
+                        for (int k = 0; k < 3; k++)
+                        {
+                            vertex += scene.objs[i].polygs[j].Points[k].x + "/" + scene.objs[i].polygs[j].Points[k].y + "/" + scene.objs[i].polygs[j].Points[k].z+":";
+                        }
+                        vertex += scene.objs[i].polygs[j].Color.ToArgb().ToString() + "\n";
+                    }
                 }
+                stream.Write(vertex);
                 stream.Close();
             }
         }
@@ -285,51 +317,10 @@ namespace GrapKurs
             }
             else
             {
-                int index = scene.objs.IndexOf(lboxObj.Items[lboxObj.SelectedIndex]);
-                switch (scene.objs[index].GetType().Name)
-                {
-                    case "Triangle":
-                        Triangle triangle = (Triangle)scene.objs[index];
-                        triangle.Moving(0, 15, 0);
-                        break;
-                    case "Circle":
-                        Circle circle = (Circle)scene.objs[index];
-                        circle.Moving(0, 15, 0);
-                        break;
-                    case "ParamObj":
-                        ParamObj paramObj = (ParamObj)scene.objs[index];
-                        foreach (Triangle item in paramObj.polygs)
-                        {
-                            item.Moving(0, 15, 0);
-                        }
-                        break;
-                    case "Rectangle":
-                        Rectangle rectangle = (Rectangle)scene.objs[index];
-                        rectangle.Moving(0, 15, 0);
-                        break;
-                    case "Box":
-                        Box box = (Box)scene.objs[index];
-                        box.Moving(0, 15, 0);
-                        break;
-                    case "Cylinder":
-                        Cylinder cylinder = (Cylinder)scene.objs[index];
-                        cylinder.Moving(0, 15, 0);
-                        break;
-                    case "Cone":
-                        Cone cone = (Cone)scene.objs[index];
-                        cone.Moving(0, 15, 0);
-                        break;
-                    case "Ring":
-                        Ring ring = (Ring)scene.objs[index];
-                        ring.Moving(0, 15, 0);
-                        break;
-                    case "Tube":
-                        Tube tube = (Tube)scene.objs[index];
-                        tube.Moving(0, 15, 0);
-                        break;
-                    default:
-                        break;
-                }
+                int index = lboxObj.SelectedIndex;
+                ParamObj paramObj = scene.objs[index];
+                foreach (Triangle item in paramObj.polygs)
+                    item.Moving(0, 15, 0);
             }
             Redraw();
         }
@@ -346,51 +337,10 @@ namespace GrapKurs
             }
             else
             {
-                int index = scene.objs.IndexOf(lboxObj.Items[lboxObj.SelectedIndex]);
-                switch (scene.objs[index].GetType().Name)
-                {
-                    case "Triangle":
-                        Triangle triangle = (Triangle)scene.objs[index];
-                        triangle.Moving(0, -15, 0);
-                        break;
-                    case "Circle":
-                        Circle circle = (Circle)scene.objs[index];
-                        circle.Moving(0, -15, 0);
-                        break;
-                    case "ParamObj":
-                        ParamObj paramObj = (ParamObj)scene.objs[index];
-                        foreach (Triangle item in paramObj.polygs)
-                        {
-                            item.Moving(0, -15, 0);
-                        }
-                        break;
-                    case "Rectangle":
-                        Rectangle rectangle = (Rectangle)scene.objs[index];
-                        rectangle.Moving(0, -15, 0);
-                        break;
-                    case "Box":
-                        Box box = (Box)scene.objs[index];
-                        box.Moving(0, -15, 0);
-                        break;
-                    case "Cylinder":
-                        Cylinder cylinder = (Cylinder)scene.objs[index];
-                        cylinder.Moving(0, -15, 0);
-                        break;
-                    case "Cone":
-                        Cone cone = (Cone)scene.objs[index];
-                        cone.Moving(0, -15, 0);
-                        break;
-                    case "Ring":
-                        Ring ring = (Ring)scene.objs[index];
-                        ring.Moving(0, -15, 0);
-                        break;
-                    case "Tube":
-                        Tube tube = (Tube)scene.objs[index];
-                        tube.Moving(0, -15, 0);
-                        break;
-                    default:
-                        break;
-                }
+                int index = lboxObj.SelectedIndex;
+                ParamObj paramObj = scene.objs[index];
+                foreach (Triangle item in paramObj.polygs)
+                    item.Moving(0, -15, 0);
             }
             Redraw();
         }
@@ -408,50 +358,9 @@ namespace GrapKurs
             else
             {
                 int index = lboxObj.SelectedIndex;
-                switch (scene.objs[index].GetType().Name)
-                {
-                    case "Triangle":
-                        Triangle triangle = (Triangle)scene.objs[index];
-                        triangle.Moving(15, 0, 0);
-                        break;
-                    case "Circle":
-                        Circle circle = (Circle)scene.objs[index];
-                        circle.Moving(15, 0, 0);
-                        break;
-                    case "ParamObj":
-                        ParamObj paramObj = (ParamObj)scene.objs[index];
-                        foreach (Triangle item in paramObj.polygs)
-                        {
-                            item.Moving(15, 0, 0);
-                        }
-                        break;
-                    case "Rectangle":
-                        Rectangle rectangle = (Rectangle)scene.objs[index];
-                        rectangle.Moving(15, 0, 0);
-                        break;
-                    case "Box":
-                        Box box = (Box)scene.objs[index];
-                        box.Moving(15, 0, 0);
-                        break;
-                    case "Cylinder":
-                        Cylinder cylinder = (Cylinder)scene.objs[index];
-                        cylinder.Moving(15, 0, 0);
-                        break;
-                    case "Cone":
-                        Cone cone = (Cone)scene.objs[index];
-                        cone.Moving(15, 0, 0);
-                        break;
-                    case "Ring":
-                        Ring ring = (Ring)scene.objs[index];
-                        ring.Moving(15, 0, 0);
-                        break;
-                    case "Tube":
-                        Tube tube = (Tube)scene.objs[index];
-                        tube.Moving(15, 0, 0);
-                        break;
-                    default:
-                        break;
-                }
+                ParamObj paramObj = scene.objs[index];
+                foreach (Triangle item in paramObj.polygs)
+                    item.Moving(15, 0, 0);
             }
             Redraw();
         }
@@ -468,67 +377,16 @@ namespace GrapKurs
             }
             else
             {
-                int index = scene.objs.IndexOf(lboxObj.Items[lboxObj.SelectedIndex]);
-                switch (scene.objs[index].GetType().Name)
-                {
-                    case "Triangle":
-                        Triangle triangle = (Triangle)scene.objs[index];
-                        triangle.Moving(-15, 0, 0);
-                        break;
-                    case "Circle":
-                        Circle circle = (Circle)scene.objs[index];
-                        circle.Moving(-15, 0, 0);
-                        break;
-                    case "ParamObj":
-                        ParamObj paramObj = (ParamObj)scene.objs[index];
-                        foreach (Triangle item in paramObj.polygs)
-                        {
-                            item.Moving(-15, 0, 0);
-                        }
-                        break;
-                    case "Rectangle":
-                        Rectangle rectangle = (Rectangle)scene.objs[index];
-                        rectangle.Moving(-15, 0, 0);
-                        break;
-                    case "Box":
-                        Box box = (Box)scene.objs[index];
-                        box.Moving(-15, 0, 0);
-                        break;
-                    case "Cylinder":
-                        Cylinder cylinder = (Cylinder)scene.objs[index];
-                        cylinder.Moving(-15, 0, 0);
-                        break;
-                    case "Cone":
-                        Cone cone = (Cone)scene.objs[index];
-                        cone.Moving(-15, 0, 0);
-                        break;
-                    case "Ring":
-                        Ring ring = (Ring)scene.objs[index];
-                        ring.Moving(-15, 0, 0);
-                        break;
-                    case "Tube":
-                        Tube tube = (Tube)scene.objs[index];
-                        tube.Moving(-15, 0, 0);
-                        break;
-                    default:
-                        break;
-                }
+                int index = lboxObj.SelectedIndex;
+                ParamObj paramObj = scene.objs[index];
+                foreach (Triangle item in paramObj.polygs)
+                    item.Moving(-15, 0, 0);
             }
             Redraw();
         }
         private void ScaleUpDown_ValueChanged(object sender, EventArgs e)
         {
-            Point axis;
-            try
-            {
-                char[] sep = new char[] { ',' };
-                axis = radNC.Checked ? new Point() : new Point();//вместо null взять центр объекта
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Не удалось найти осевую точку масштабирования");
-                throw;
-            }
+            Point axis = new Point();
             if (lboxObj.SelectedIndex == -1)
             {
                 foreach (Triangle item in scene.triangles)
@@ -539,32 +397,12 @@ namespace GrapKurs
             }
             else
             {
-                int index = scene.objs.IndexOf(lboxObj.Items[lboxObj.SelectedIndex]);
-                switch (scene.objs[index].GetType().Name)
+                int index = lboxObj.SelectedIndex;
+                ParamObj paramObj = (ParamObj)scene.objs[index];
+                foreach (Triangle item in paramObj.polygs)
                 {
-                    case "Triangle":
-                        Triangle triangle = (Triangle)scene.objs[index];
-                        triangle.Reset();
-                        triangle.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, axis);
-                        break;
-                    case "Circle":
-                        Circle circle = (Circle)scene.objs[index];
-                        foreach (Triangle item in circle.polygons)
-                        {
-                            item.Reset();
-                            item.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, axis);
-                        }
-                        break;
-                    case "ParamObj":
-                        ParamObj paramObj = (ParamObj)scene.objs[index];
-                        foreach (Triangle item in paramObj.polygs)
-                        {
-                            item.Reset();
-                            item.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, axis);
-                        }
-                        break;
-                    default:
-                        break;
+                    item.Reset();
+                    item.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, axis);
                 }
             }
             Redraw();
@@ -572,17 +410,7 @@ namespace GrapKurs
         //Добавить вращение всех типов объектов
         private void bRotate_Click(object sender, EventArgs e)
         {
-            Point axis;
-            try
-            {
-                char[] sep = new char[] { ',' };
-                axis = radNC.Checked ? new Point() : new Point();//вместо null взять центр объекта
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Не удалось найти осевую точку вращения");
-                throw;
-            }
+            Point axis = new Point();
             if (lboxObj.SelectedIndex == -1)
             {
                 foreach (Triangle item in scene.triangles)
@@ -593,59 +421,12 @@ namespace GrapKurs
             }
             else
             {
-                int index = scene.objs.IndexOf(lboxObj.Items[lboxObj.SelectedIndex]);
-                switch (scene.objs[index].GetType().Name)
+                int index = lboxObj.SelectedIndex;
+                ParamObj paramObj = (ParamObj)scene.objs[index];
+                foreach (Triangle item in paramObj.polygs)
                 {
-                    case "Triangle":
-                        Triangle triangle = (Triangle)scene.objs[index];
-                        triangle.Reset();
-                        triangle.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
-                        break;
-                    case "Circle":
-                        Circle circle = (Circle)scene.objs[index];
-                        circle.Reset();
-                        circle.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
-                        break;
-                    case "ParamObj":
-                        ParamObj paramObj = (ParamObj)scene.objs[index];
-                        foreach (Triangle item in paramObj.polygs)
-                        {
-                            item.Reset();
-                            item.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
-                        }
-                        break;
-                    case "Rectangle":
-                        Rectangle rectangle = (Rectangle)scene.objs[index];
-                        rectangle.Reset();
-                        rectangle.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
-                        break;
-                    case "Box":
-                        Box box = (Box)scene.objs[index];
-                        box.Reset();
-                        box.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
-                        break;
-                    case "Cylinder":
-                        Cylinder cylinder = (Cylinder)scene.objs[index];
-                        cylinder.Reset();
-                        cylinder.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
-                        break;
-                    case "Cone":
-                        Cone cone = (Cone)scene.objs[index];
-                        cone.Reset();
-                        cone.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
-                        break;
-                    case "Ring":
-                        Ring ring = (Ring)scene.objs[index];
-                        ring.Reset();
-                        ring.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
-                        break;
-                    case "Tube":
-                        Tube tube = (Tube)scene.objs[index];
-                        tube.Reset();
-                        tube.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
-                        break;
-                    default:
-                        break;
+                    item.Reset();
+                    item.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
                 }
             }
             ScaleUpDown_ValueChanged(sender, e);
@@ -700,19 +481,6 @@ namespace GrapKurs
         {
             scene.cenoutl = true;
             Redraw();
-        }
-
-        private void lboxObj_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if(lboxObj.SelectedIndex == -1)
-            {
-                radObjCen.Enabled = false;
-                radNC.Checked = true;
-            }
-            else
-            {
-                radObjCen.Enabled = true;
-            }
         }
     }
 }

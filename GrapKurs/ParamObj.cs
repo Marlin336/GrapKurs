@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace GrapKurs
 {
-    class ParamObj
+    public class ParamObj
     {
         public Point Start { set; get; }
         public List<Triangle> polygs = new List<Triangle>();
+        public ParamObj(){  }
         public ParamObj(Point start_point, double bar_len, double bar_diam, double mag_len, double box_width, double cev_len, double targ_ang, int nas, int rings, double sp_ang, double dist)
         {
             Start = new Point(start_point);
