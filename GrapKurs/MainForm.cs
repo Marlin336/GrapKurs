@@ -14,10 +14,6 @@ namespace GrapKurs
         {
             InitializeComponent();
             scene = new WorkScene(PBox.Width, PBox.Height);
-            /*foreach (Object item in scene.objs)
-            {
-                lboxObj.Items.Add(item);
-            }*/
             Redraw();
         }
 
@@ -108,23 +104,6 @@ namespace GrapKurs
             Point swap = a;
             a = b;
             b = swap;
-        }
-        ParamObj ReadObj3D(Obj obj, Color color)
-        {
-            Point[] VertexList = new Point[obj.VertexList.Count];
-            ParamObj ret = new ParamObj(new Point(100,100,0),100,100,100,100,100,100,100,100,100,100);
-            for (int i = 0; i < obj.VertexList.Count; i++)
-            {
-                VertexList[i] = new Point(obj.VertexList[i].X, obj.VertexList[i].Y, obj.VertexList[i].Z);
-            }
-            for (int i = 0; i < obj.FaceList.Count; i++)
-            {
-                Point p1 = new Point(VertexList[obj.FaceList[i].VertexIndexList[0] - 1]);
-                Point p2 = new Point(VertexList[obj.FaceList[i].VertexIndexList[1] - 1]);
-                Point p3 = new Point(VertexList[obj.FaceList[i].VertexIndexList[2] - 1]);
-                ret.polygs.Add(new Triangle(p1, p2, p3, color));
-            }
-            return ret;
         }
         void DrawLine(Point p1, Point p2, WorkScene scene, Color color)
         {
@@ -269,12 +248,30 @@ namespace GrapKurs
                             lboxObj.Items.Add(paramObj);
                         }
                         paramObj = new ParamObj();
-                        stream.ReadLine();
+                        //stream.ReadLine();
                         continue;
                     }
                     string[] line = service.Split(sep);
-                    Triangle polygon = new Triangle(new Point(double.Parse(line[0]), double.Parse(line[1]), double.Parse(line[2])), new Point(double.Parse(line[3]), double.Parse(line[4]), double.Parse(line[5])), new Point(double.Parse(line[6]), double.Parse(line[7]), double.Parse(line[8])), Color.FromArgb(int.Parse(line[9])));
-                    paramObj.polygs.Add(polygon);
+                    if (line.Length == 13)
+                    {
+                        paramObj.Start = new Point(double.Parse(line[0]), double.Parse(line[1]), double.Parse(line[2]));
+                        paramObj.bar_len = double.Parse(line[3]);
+                        paramObj.bar_diam = double.Parse(line[4]);
+                        paramObj.mag_len = double.Parse(line[5]);
+                        paramObj.box_width = double.Parse(line[6]);
+                        paramObj.cev_len = double.Parse(line[7]);
+                        paramObj.targ_ang = double.Parse(line[8]);
+                        paramObj.nas = int.Parse(line[9]);
+                        paramObj.rings = int.Parse(line[10]);
+                        paramObj.sp_ang = double.Parse(line[11]);
+                        paramObj.dist = double.Parse(line[12]);
+                    }
+                    else
+                    {
+                        Triangle polygon = new Triangle(new Point(double.Parse(line[0]), double.Parse(line[1]), double.Parse(line[2])), new Point(double.Parse(line[3]), double.Parse(line[4]), double.Parse(line[5])), new Point(double.Parse(line[6]), double.Parse(line[7]), double.Parse(line[8])), Color.FromArgb(int.Parse(line[9])));
+                        paramObj.polygs.Add(polygon);
+                    }
+
                 }
                 scene.AddObj(paramObj);
                 lboxObj.Items.Add(paramObj);
@@ -290,6 +287,7 @@ namespace GrapKurs
                 for (int i = 0; i < scene.objs.Count; i++)
                 {
                     vertex += "[Obj]\n";
+                    vertex += scene.objs[i].Start.x + "/" + scene.objs[i].Start.y + "/" + scene.objs[i].Start.z + "/" + scene.objs[i].bar_len + "/" + scene.objs[i].bar_diam + "/" + scene.objs[i].mag_len + "/" + scene.objs[i].box_width + "/" + scene.objs[i].cev_len + "/" + scene.objs[i].targ_ang + "/" + scene.objs[i].nas + "/" + scene.objs[i].rings + "/" + scene.objs[i].sp_ang + "/" + scene.objs[i].dist + "\n";
                     for (int j = 0; j < scene.objs[i].polygs.Count; j++)
                     {
                         for (int k = 0; k < 3; k++)
@@ -308,9 +306,13 @@ namespace GrapKurs
         {
             if (lboxObj.SelectedIndex == -1)
             {
-                foreach (Triangle item in scene.triangles)
+                foreach (ParamObj item in scene.objs)
                 {
-                    item.Moving(0, 15, 0);
+                    item.Start.Moving(0, 15, 0);
+                    foreach (Triangle initem in item.polygs)
+                    {
+                        initem.Moving(0, 15, 0);
+                    }
                 }
                 scene.Shifting.Moving(0, -15, 0);
                 scene.eye.Moving(0, -15, 0);
@@ -319,6 +321,7 @@ namespace GrapKurs
             {
                 int index = lboxObj.SelectedIndex;
                 ParamObj paramObj = scene.objs[index];
+                paramObj.Start.Moving(0, 15, 0);
                 foreach (Triangle item in paramObj.polygs)
                     item.Moving(0, 15, 0);
             }
@@ -328,9 +331,13 @@ namespace GrapKurs
         {
             if (lboxObj.SelectedIndex == -1)
             {
-                foreach (Triangle item in scene.triangles)
+                foreach (ParamObj item in scene.objs)
                 {
-                    item.Moving(0, -15, 0);
+                    item.Start.Moving(0, -15, 0);
+                    foreach (Triangle initem in item.polygs)
+                    {
+                        initem.Moving(0, -15, 0);
+                    }
                 }
                 scene.Shifting.Moving(0, 15, 0);
                 scene.eye.Moving(0, 15, 0);
@@ -339,6 +346,7 @@ namespace GrapKurs
             {
                 int index = lboxObj.SelectedIndex;
                 ParamObj paramObj = scene.objs[index];
+                paramObj.Start.Moving(0, -15, 0);
                 foreach (Triangle item in paramObj.polygs)
                     item.Moving(0, -15, 0);
             }
@@ -348,9 +356,13 @@ namespace GrapKurs
         {
             if (lboxObj.SelectedIndex == -1)
             {
-                foreach (Triangle item in scene.triangles)
+                foreach (ParamObj item in scene.objs)
                 {
-                    item.Moving(15, 0, 0);
+                    item.Start.Moving(15, 0, 0);
+                    foreach (Triangle initem in item.polygs)
+                    {
+                        initem.Moving(15, 0, 0);
+                    }
                 }
                 scene.Shifting.Moving(-15, 0, 0);
                 scene.eye.Moving(-15, 0, 0);
@@ -359,6 +371,7 @@ namespace GrapKurs
             {
                 int index = lboxObj.SelectedIndex;
                 ParamObj paramObj = scene.objs[index];
+                paramObj.Start.Moving(15, 0, 0);
                 foreach (Triangle item in paramObj.polygs)
                     item.Moving(15, 0, 0);
             }
@@ -368,9 +381,13 @@ namespace GrapKurs
         {
             if (lboxObj.SelectedIndex == -1)
             {
-                foreach (Triangle item in scene.triangles)
+                foreach (ParamObj item in scene.objs)
                 {
-                    item.Moving(-15, 0, 0);
+                    item.Start.Moving(-15, 0, 0);
+                    foreach (Triangle initem in item.polygs)
+                    {
+                        initem.Moving(-15, 0, 0);
+                    }
                 }
                 scene.Shifting.Moving(15, 0, 0);
                 scene.eye.Moving(15, 0, 0);
@@ -379,6 +396,7 @@ namespace GrapKurs
             {
                 int index = lboxObj.SelectedIndex;
                 ParamObj paramObj = scene.objs[index];
+                paramObj.Start.Moving(-15, 0, 0);
                 foreach (Triangle item in paramObj.polygs)
                     item.Moving(-15, 0, 0);
             }
@@ -389,10 +407,14 @@ namespace GrapKurs
             Point axis = new Point();
             if (lboxObj.SelectedIndex == -1)
             {
-                foreach (Triangle item in scene.triangles)
+                foreach (ParamObj item in scene.objs)
                 {
-                    item.Reset();
-                    item.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, axis);
+                    item.Start.Moving(0, 15, 0);
+                    foreach (Triangle initem in item.polygs)
+                    {
+                        initem.Reset();
+                        initem.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, axis);
+                    }
                 }
             }
             else
@@ -413,10 +435,13 @@ namespace GrapKurs
             Point axis = new Point();
             if (lboxObj.SelectedIndex == -1)
             {
-                foreach (Triangle item in scene.triangles)
+                foreach (ParamObj item in scene.objs)
                 {
-                    item.Reset();
-                    item.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
+                    foreach (Triangle initem in item.polygs)
+                    {
+                        initem.Reset();
+                        initem.Rotate((double)Rotate_x.Value, (double)Rotate_y.Value, (double)Rotate_z.Value, new Point(axis));
+                    }
                 }
             }
             else
@@ -430,21 +455,6 @@ namespace GrapKurs
                 }
             }
             ScaleUpDown_ValueChanged(sender, e);
-            Redraw();
-        }
-
-        public void AddObj(Point state, double scale, System.Drawing.Color color)
-        {
-            Obj obj = new Obj();
-            obj.LoadObj("../../Mar.obj");
-            ScaleUpDown.Value = 1;
-            ParamObj nobj = ReadObj3D(obj, color);
-            scene.AddObj(nobj);
-            lboxObj.Items.Add(nobj);
-            for (int i = 0; i < nobj.polygs.Count; i++)
-                nobj.polygs[i].Scale(scale, scale, scale, new Point());
-            for (int i = 0; i < nobj.polygs.Count; i++)
-                nobj.polygs[i].Moving(state.x, state.y, state.z);
             Redraw();
         }
 
@@ -464,8 +474,6 @@ namespace GrapKurs
 
         private void bDel_Click(object sender, EventArgs e)
         {
-            if (lboxObj.SelectedIndex == -1)
-                return;
             scene.objs.RemoveAt(lboxObj.SelectedIndex);
             lboxObj.Items.RemoveAt(lboxObj.SelectedIndex);
             Redraw();
@@ -481,6 +489,20 @@ namespace GrapKurs
         {
             scene.cenoutl = true;
             Redraw();
+        }
+
+        private void bEdit_Click(object sender, EventArgs e)
+        {
+            ParamForm form = new ParamForm(this, scene.objs[lboxObj.SelectedIndex].Start, scene.objs[lboxObj.SelectedIndex].bar_len, scene.objs[lboxObj.SelectedIndex].bar_diam, scene.objs[lboxObj.SelectedIndex].mag_len, scene.objs[lboxObj.SelectedIndex].box_width, scene.objs[lboxObj.SelectedIndex].cev_len, scene.objs[lboxObj.SelectedIndex].targ_ang, scene.objs[lboxObj.SelectedIndex].nas, scene.objs[lboxObj.SelectedIndex].rings, scene.objs[lboxObj.SelectedIndex].sp_ang, scene.objs[lboxObj.SelectedIndex].dist);
+            form.ShowDialog();
+        }
+
+        private void lboxObj_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lboxObj.SelectedIndex != -1)
+                bEdit.Enabled = bDel.Enabled = true;
+            else
+                bEdit.Enabled = bDel.Enabled = false;
         }
     }
 }

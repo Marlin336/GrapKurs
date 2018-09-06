@@ -10,7 +10,7 @@ namespace GrapKurs
 {
     public class WorkScene
     {
-        public List<Triangle> triangles = new List<Triangle>();
+        //public List<Triangle> triangles = new List<Triangle>();
         public List<ParamObj> objs = new List<ParamObj>();
         public Point Shifting = new Point();
         public Point eye;
@@ -33,8 +33,8 @@ namespace GrapKurs
         public void AddObj(Object obj)
         {
             ParamObj paramObj = (ParamObj)obj;
-            foreach (Triangle item in paramObj.polygs)
-                triangles.Add(item);
+            /*foreach (Triangle item in paramObj.polygs)
+                triangles.Add(item);*/
             objs.Add(paramObj);
         }
     }

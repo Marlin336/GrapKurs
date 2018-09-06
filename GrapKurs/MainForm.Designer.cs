@@ -60,6 +60,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.bEdit = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.PBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ScaleUpDown)).BeginInit();
@@ -75,10 +76,12 @@
             this.lboxObj.Name = "lboxObj";
             this.lboxObj.Size = new System.Drawing.Size(203, 420);
             this.lboxObj.TabIndex = 1;
+            this.lboxObj.SelectedIndexChanged += new System.EventHandler(this.lboxObj_SelectedIndexChanged);
             this.lboxObj.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lboxObj_MouseDown);
             // 
             // bDel
             // 
+            this.bDel.Enabled = false;
             this.bDel.Location = new System.Drawing.Point(778, 454);
             this.bDel.Name = "bDel";
             this.bDel.Size = new System.Drawing.Size(93, 23);
@@ -184,14 +187,14 @@
             // сохранитьToolStripMenuItem
             // 
             this.сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
-            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.сохранитьToolStripMenuItem.Text = "Сохранить";
             this.сохранитьToolStripMenuItem.Click += new System.EventHandler(this.СохранитьToolStripMenuItem_Click);
             // 
             // загрузитьToolStripMenuItem
             // 
             this.загрузитьToolStripMenuItem.Name = "загрузитьToolStripMenuItem";
-            this.загрузитьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.загрузитьToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.загрузитьToolStripMenuItem.Text = "Загрузить";
             this.загрузитьToolStripMenuItem.Click += new System.EventHandler(this.ЗагрузитьToolStripMenuItem_Click);
             // 
@@ -343,9 +346,9 @@
             // 
             // bRotate
             // 
-            this.bRotate.Location = new System.Drawing.Point(378, 514);
+            this.bRotate.Location = new System.Drawing.Point(378, 533);
             this.bRotate.Name = "bRotate";
-            this.bRotate.Size = new System.Drawing.Size(61, 71);
+            this.bRotate.Size = new System.Drawing.Size(61, 35);
             this.bRotate.TabIndex = 18;
             this.bRotate.Text = "Вращать";
             this.bRotate.UseVisualStyleBackColor = true;
@@ -391,11 +394,23 @@
             this.label7.TabIndex = 24;
             this.label7.Text = "Вращение";
             // 
+            // bEdit
+            // 
+            this.bEdit.Enabled = false;
+            this.bEdit.Location = new System.Drawing.Point(668, 484);
+            this.bEdit.Name = "bEdit";
+            this.bEdit.Size = new System.Drawing.Size(93, 23);
+            this.bEdit.TabIndex = 25;
+            this.bEdit.Text = "Редактировать";
+            this.bEdit.UseVisualStyleBackColor = true;
+            this.bEdit.Click += new System.EventHandler(this.bEdit_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(883, 591);
+            this.Controls.Add(this.bEdit);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
@@ -465,6 +480,7 @@
         private System.Windows.Forms.ToolStripMenuItem параллельнаяToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem центральнаяToolStripMenuItem;
         public System.Windows.Forms.ListBox lboxObj;
+        private System.Windows.Forms.Button bEdit;
     }
 }
 

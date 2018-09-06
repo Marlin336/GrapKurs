@@ -10,13 +10,25 @@ namespace GrapKurs
     public class ParamObj
     {
         public Point Start { set; get; }
+        public double bar_len, bar_diam, mag_len, box_width, cev_len, targ_ang, sp_ang, dist;
+        public int nas, rings;
         public List<Triangle> polygs = new List<Triangle>();
         public ParamObj(){  }
         public ParamObj(Point start_point, double bar_len, double bar_diam, double mag_len, double box_width, double cev_len, double targ_ang, int nas, int rings, double sp_ang, double dist)
         {
             Start = new Point(start_point);
+            this.bar_len = bar_len;
+            this.bar_diam = bar_diam;
+            this.mag_len = mag_len;
+            this.box_width = box_width;
+            this.cev_len = cev_len;
+            this.targ_ang = targ_ang;
+            this.sp_ang = sp_ang;
+            this.dist = dist;
+            this.nas = nas;
+            this.rings = rings;
             /*Ствол*/
-            Tube barrel = new Tube(Start, bar_diam, bar_diam - 1.5, bar_len, Color.DarkGray);//bar_len = 200; bar_diam = 4/2.5
+            Tube barrel = new Tube(Start, bar_diam, bar_diam - 1.5, bar_len, Color.DarkGray);//bar_len = 200; bar_diam = 4
             barrel.Rotate(0, 0, 90, Start);
             barrel.Resave();
             foreach (Triangle item in barrel.polygons)
@@ -156,6 +168,7 @@ namespace GrapKurs
                 foreach (Triangle item in scr_4.polygons)
                     polygs.Add(item);
             }
+            Start = new Point(start_point);
         }
     }
 }
