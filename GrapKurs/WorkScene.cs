@@ -10,19 +10,17 @@ namespace GrapKurs
 {
     public class WorkScene
     {
-        //public List<Triangle> triangles = new List<Triangle>();
         public List<ParamObj> objs = new List<ParamObj>();
-        public Point Shifting = new Point();
-        public Point eye;
+        public Camera camera;
+        public bool center_per = false;
         public bool fill = true;
-        public bool cenoutl = false;
         public Bitmap bmp;
         public int[] zBuf;
         public WorkScene(int width, int height)
         {
             bmp = new Bitmap(width, height);
             zBuf = new int[bmp.Width * bmp.Height];
-            eye = new Point(width/2, height/2,-1000);
+            camera = new Camera(new Point(0, 0, 1000), new Point(0, 0, 0));
             ClearzBuf();
         }
         public void ClearzBuf()
@@ -33,8 +31,6 @@ namespace GrapKurs
         public void AddObj(Object obj)
         {
             ParamObj paramObj = (ParamObj)obj;
-            /*foreach (Triangle item in paramObj.polygs)
-                triangles.Add(item);*/
             objs.Add(paramObj);
         }
     }

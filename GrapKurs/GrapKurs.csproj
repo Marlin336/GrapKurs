@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Camera.cs" />
     <Compile Include="Draw.cs" />
     <Compile Include="Extent.cs" />
     <Compile Include="MainForm.cs">

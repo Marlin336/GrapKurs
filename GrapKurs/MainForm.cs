@@ -21,72 +21,14 @@ namespace GrapKurs
         {
             scene.bmp = new Bitmap(PBox.Width, PBox.Height);
             scene.ClearzBuf();
-            foreach (Object item in scene.objs)
+            foreach (ParamObj item in scene.objs)
             {
-                switch (item.GetType().Name)
+                foreach (Triangle tr in item.polygs)
                 {
-                    case "Triangle":
-                        Triangle triangle = (Triangle)item;
-                        DrawTriangle(triangle, scene);
-                        break;
-                    case "Circle":
-                        Circle circle = (Circle)item;
-                        foreach (Triangle tr in circle.polygons)
-                        {
-                            DrawTriangle(tr, scene);
-                        }
-                        break;
-                    case "ParamObj":
-                        ParamObj paramObj = (ParamObj)item;
-                        foreach (Triangle tr in paramObj.polygs)
-                        {
-                            DrawTriangle(tr, scene);
-                        }
-                        break;
-                    case "Rectangle":
-                        Rectangle rectangle = (Rectangle)item;
-                        foreach (Triangle tr in rectangle.polygons)
-                        {
-                            DrawTriangle(tr, scene);
-                        }
-                        break;
-                    case "Box":
-                        Box box = (Box)item;
-                        foreach (Triangle tr in box.polygons)
-                        {
-                            DrawTriangle(tr, scene);
-                        }
-                        break;
-                    case "Cylinder":
-                        Cylinder cylinder = (Cylinder)item;
-                        foreach (Triangle tr in cylinder.polygons)
-                        {
-                            DrawTriangle(tr, scene);
-                        }
-                        break;
-                    case "Cone":
-                        Cone cone = (Cone)item;
-                        foreach (Triangle tr in cone.polygons)
-                        {
-                            DrawTriangle(tr, scene);
-                        }
-                        break;
-                    case "Ring":
-                        Ring ring = (Ring)item;
-                        foreach (Triangle tr in ring.polygons)
-                        {
-                            DrawTriangle(tr, scene);
-                        }
-                        break;
-                    case "Tube":
-                        Tube tube = (Tube)item;
-                        foreach (Triangle tr in tube.polygons)
-                        {
-                            DrawTriangle(tr, scene);
-                        }
-                        break;
-                    default:
-                        break;
+                    Triangle polyg = new Triangle(tr);
+                    if (scene.center_per)
+                        polyg.Cent_per(-90, Width/Height, scene.camera.near, scene.camera.far);
+                    DrawTriangle(polyg, scene);
                 }
             }
             scene.bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
@@ -107,11 +49,6 @@ namespace GrapKurs
         }
         void DrawLine(Point p1, Point p2, WorkScene scene, Color color)
         {
-            if (scene.cenoutl)
-            {
-                p1.Outlook(new Line(p1,scene.eye).Length);
-                p2.Outlook(new Line(p2, scene.eye).Length);
-            }
             double x1 = p1.x;
             double y1 = p1.y;
             double x2 = p2.x;
@@ -178,12 +115,6 @@ namespace GrapKurs
             }
             else
             {
-                if (scene.cenoutl)
-                {
-                    p1 = p1.Outlook(new Line(p1, scene.eye).Length);
-                    p2 = p2.Outlook(new Line(p2, scene.eye).Length);
-                    p3 = p3.Outlook(new Line(p3, scene.eye).Length);
-                }
                 int total_height = (int)(p3.y - p1.y);
                 for (int i = 0; i < total_height; i++)
                 {
@@ -248,7 +179,6 @@ namespace GrapKurs
                             lboxObj.Items.Add(paramObj);
                         }
                         paramObj = new ParamObj();
-                        //stream.ReadLine();
                         continue;
                     }
                     string[] line = service.Split(sep);
@@ -302,106 +232,6 @@ namespace GrapKurs
             }
         }
 
-        private void bUp_Click(object sender, EventArgs e)
-        {
-            if (lboxObj.SelectedIndex == -1)
-            {
-                foreach (ParamObj item in scene.objs)
-                {
-                    item.Start.Moving(0, 15, 0);
-                    foreach (Triangle initem in item.polygs)
-                    {
-                        initem.Moving(0, 15, 0);
-                    }
-                }
-                scene.Shifting.Moving(0, -15, 0);
-                scene.eye.Moving(0, -15, 0);
-            }
-            else
-            {
-                int index = lboxObj.SelectedIndex;
-                ParamObj paramObj = scene.objs[index];
-                paramObj.Start.Moving(0, 15, 0);
-                foreach (Triangle item in paramObj.polygs)
-                    item.Moving(0, 15, 0);
-            }
-            Redraw();
-        }
-        private void bDown_Click(object sender, EventArgs e)
-        {
-            if (lboxObj.SelectedIndex == -1)
-            {
-                foreach (ParamObj item in scene.objs)
-                {
-                    item.Start.Moving(0, -15, 0);
-                    foreach (Triangle initem in item.polygs)
-                    {
-                        initem.Moving(0, -15, 0);
-                    }
-                }
-                scene.Shifting.Moving(0, 15, 0);
-                scene.eye.Moving(0, 15, 0);
-            }
-            else
-            {
-                int index = lboxObj.SelectedIndex;
-                ParamObj paramObj = scene.objs[index];
-                paramObj.Start.Moving(0, -15, 0);
-                foreach (Triangle item in paramObj.polygs)
-                    item.Moving(0, -15, 0);
-            }
-            Redraw();
-        }
-        private void bRight_Click(object sender, EventArgs e)
-        {
-            if (lboxObj.SelectedIndex == -1)
-            {
-                foreach (ParamObj item in scene.objs)
-                {
-                    item.Start.Moving(15, 0, 0);
-                    foreach (Triangle initem in item.polygs)
-                    {
-                        initem.Moving(15, 0, 0);
-                    }
-                }
-                scene.Shifting.Moving(-15, 0, 0);
-                scene.eye.Moving(-15, 0, 0);
-            }
-            else
-            {
-                int index = lboxObj.SelectedIndex;
-                ParamObj paramObj = scene.objs[index];
-                paramObj.Start.Moving(15, 0, 0);
-                foreach (Triangle item in paramObj.polygs)
-                    item.Moving(15, 0, 0);
-            }
-            Redraw();
-        }
-        private void bLeft_Click(object sender, EventArgs e)
-        {
-            if (lboxObj.SelectedIndex == -1)
-            {
-                foreach (ParamObj item in scene.objs)
-                {
-                    item.Start.Moving(-15, 0, 0);
-                    foreach (Triangle initem in item.polygs)
-                    {
-                        initem.Moving(-15, 0, 0);
-                    }
-                }
-                scene.Shifting.Moving(15, 0, 0);
-                scene.eye.Moving(15, 0, 0);
-            }
-            else
-            {
-                int index = lboxObj.SelectedIndex;
-                ParamObj paramObj = scene.objs[index];
-                paramObj.Start.Moving(-15, 0, 0);
-                foreach (Triangle item in paramObj.polygs)
-                    item.Moving(-15, 0, 0);
-            }
-            Redraw();
-        }
         private void ScaleUpDown_ValueChanged(object sender, EventArgs e)
         {
             Point axis = new Point();
@@ -481,14 +311,22 @@ namespace GrapKurs
 
         private void ПараллельнаяToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            scene.cenoutl = false;
-            Redraw();
+            bool check = scene.center_per;
+            if (check)
+            {
+                scene.center_per = false;
+                Redraw();
+            }
         }
 
         private void ЦентральнаяToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            scene.cenoutl = true;
-            Redraw();
+            bool check = scene.center_per;
+            if (!check)
+            {
+                scene.center_per = true;
+                Redraw();
+            }
         }
 
         private void bEdit_Click(object sender, EventArgs e)
@@ -503,6 +341,261 @@ namespace GrapKurs
                 bEdit.Enabled = bDel.Enabled = true;
             else
                 bEdit.Enabled = bDel.Enabled = false;
+        }
+
+        private void bMoveCam_p_Click(object sender, EventArgs e)
+        {
+            byte axis = 0;
+            if (rbX.Checked)
+                axis = 1;
+            if (rbY.Checked)
+                axis = 2;
+            if (rbZ.Checked)
+                axis = 3;
+            switch (axis)
+            {
+                case 1:
+                    scene.camera.MoveCam(direct.right);
+                    break;
+                case 2:
+                    scene.camera.MoveCam(direct.up);
+                    break;
+                case 3:
+                    scene.camera.MoveCam(direct.front);
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void bMoveCam_m_Click(object sender, EventArgs e)
+        {
+            byte axis = 0;
+            if (rbX.Checked)
+                axis = 1;
+            if (rbY.Checked)
+                axis = 2;
+            if (rbZ.Checked)
+                axis = 3;
+            switch (axis)
+            {
+                case 1:
+                    scene.camera.MoveCam(direct.left);
+                    break;
+                case 2:
+                    scene.camera.MoveCam(direct.down);
+                    break;
+                case 3:
+                    scene.camera.MoveCam(direct.back);
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void bCen_m_Click(object sender, EventArgs e)
+        {
+            byte axis = 0;
+            if (rbCX.Checked)
+                axis = 1;
+            if (rbCY.Checked)
+                axis = 2;
+            if (rbCZ.Checked)
+                axis = 3;
+            switch (axis)
+            {
+                case 1:
+                    scene.camera.MoveTarg(direct.left);
+                    break;
+                case 2:
+                    scene.camera.MoveTarg(direct.down);
+                    break;
+                case 3:
+                    scene.camera.MoveTarg(direct.back);
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void bCen_p_Click(object sender, EventArgs e)
+        {
+            byte axis = 0;
+            if (rbCX.Checked)
+                axis = 1;
+            if (rbCY.Checked)
+                axis = 2;
+            if (rbCZ.Checked)
+                axis = 3;
+            switch (axis)
+            {
+                case 1:
+                    scene.camera.MoveTarg(direct.right);
+                    break;
+                case 2:
+                    scene.camera.MoveTarg(direct.up);
+                    break;
+                case 3:
+                    scene.camera.MoveTarg(direct.front);
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void bObj_m_Click(object sender, EventArgs e)
+        {
+            byte axis = 0;
+            if (rbObjX.Checked)
+                axis = 1;
+            if (rbObjY.Checked)
+                axis = 2;
+            if (rbObjZ.Checked)
+                axis = 3;
+            switch (axis)
+            {
+                case 1:
+                    if (lboxObj.SelectedIndex == -1)
+                    {
+                        foreach (ParamObj item in scene.objs)
+                        {
+                            item.Start.Moving(-15, 0, 0);
+                            foreach (Triangle initem in item.polygs)
+                            {
+                                initem.Moving(-15, 0, 0);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        int index = lboxObj.SelectedIndex;
+                        ParamObj paramObj = scene.objs[index];
+                        paramObj.Start.Moving(-15, 0, 0);
+                        foreach (Triangle item in paramObj.polygs)
+                            item.Moving(-15, 0, 0);
+                    }
+                    break;
+                case 2:
+                    if (lboxObj.SelectedIndex == -1)
+                    {
+                        foreach (ParamObj item in scene.objs)
+                        {
+                            item.Start.Moving(0, -15, 0);
+                            foreach (Triangle initem in item.polygs)
+                            {
+                                initem.Moving(0, -15, 0);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        int index = lboxObj.SelectedIndex;
+                        ParamObj paramObj = scene.objs[index];
+                        paramObj.Start.Moving(0, -15, 0);
+                        foreach (Triangle item in paramObj.polygs)
+                            item.Moving(0, -15, 0);
+                    }
+                    break;
+                case 3:
+                    if (lboxObj.SelectedIndex == -1)
+                    {
+                        foreach (ParamObj item in scene.objs)
+                        {
+                            item.Start.Moving(0, 0, -15);
+                            foreach (Triangle initem in item.polygs)
+                            {
+                                initem.Moving(0, 0, -15);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        int index = lboxObj.SelectedIndex;
+                        ParamObj paramObj = scene.objs[index];
+                        paramObj.Start.Moving(0, 0, -15);
+                        foreach (Triangle item in paramObj.polygs)
+                            item.Moving(0, 0, -15);
+                    }
+                    break;
+                default:
+                    break;
+            }
+            Redraw();
+        }
+        private void bObj_p_Click(object sender, EventArgs e)
+        {
+            byte axis = 0;
+            if (rbObjX.Checked)
+                axis = 1;
+            if (rbObjY.Checked)
+                axis = 2;
+            if (rbObjZ.Checked)
+                axis = 3;
+            switch (axis)
+            {
+                case 1:
+                    if (lboxObj.SelectedIndex == -1)
+                    {
+                        foreach (ParamObj item in scene.objs)
+                        {
+                            item.Start.Moving(15, 0, 0);
+                            foreach (Triangle initem in item.polygs)
+                            {
+                                initem.Moving(15, 0, 0);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        int index = lboxObj.SelectedIndex;
+                        ParamObj paramObj = scene.objs[index];
+                        paramObj.Start.Moving(15, 0, 0);
+                        foreach (Triangle item in paramObj.polygs)
+                            item.Moving(15, 0, 0);
+                    }
+                    break;
+                case 2:
+                    if (lboxObj.SelectedIndex == -1)
+                    {
+                        foreach (ParamObj item in scene.objs)
+                        {
+                            item.Start.Moving(0, 15, 0);
+                            foreach (Triangle initem in item.polygs)
+                            {
+                                initem.Moving(0, 15, 0);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        int index = lboxObj.SelectedIndex;
+                        ParamObj paramObj = scene.objs[index];
+                        paramObj.Start.Moving(0, 15, 0);
+                        foreach (Triangle item in paramObj.polygs)
+                            item.Moving(0, 15, 0);
+                    }
+                    break;
+                case 3:
+                    if (lboxObj.SelectedIndex == -1)
+                    {
+                        foreach (ParamObj item in scene.objs)
+                        {
+                            item.Start.Moving(0, 0, 15);
+                            foreach (Triangle initem in item.polygs)
+                            {
+                                initem.Moving(0, 0, 15);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        int index = lboxObj.SelectedIndex;
+                        ParamObj paramObj = scene.objs[index];
+                        paramObj.Start.Moving(0, 0, 15);
+                        foreach (Triangle item in paramObj.polygs)
+                            item.Moving(0, 0, 15);
+                    }
+                    break;
+                default:
+                    break;
+            }
+            Redraw();
         }
     }
 }

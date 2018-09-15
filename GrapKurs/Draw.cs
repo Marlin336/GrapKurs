@@ -18,6 +18,7 @@ namespace GrapKurs
         private double xsh = 0;
         private double ysh = 0;
         private double zsh = 0;
+        private Matrix Trans = new Matrix(4);
         public Point() { }
         public Point(double x, double y, double z)
         {
@@ -68,6 +69,7 @@ namespace GrapKurs
             xsh += x_move;
             ysh += y_move;
             zsh += z_move;
+            Trans *= MoveMtx;
         }
         public void Rotate(double x_angle, double y_angle, double z_angle, Point axis)
         {
@@ -100,6 +102,7 @@ namespace GrapKurs
             y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
             z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
             Moving(axis.x, axis.y, axis.z);
+            Trans *= TMtx;
         }
         public void Slip(double xy, double xz, double yx, double yz, double zx, double zy, Point axis)
         {
@@ -122,6 +125,7 @@ namespace GrapKurs
             y = res.Elems[1, 0] / res.Elems[3, 0];
             z = res.Elems[2, 0] / res.Elems[3, 0];
             Moving(-axis.x, -axis.y, -axis.z);
+            Trans *= TMtx;
         }
         public void Transform(double x_scale, double y_scale, double z_scale, double xy, double xz, double yx, double yz, double zx, double zy)
         {
@@ -140,8 +144,7 @@ namespace GrapKurs
             PMtx.Elems[1, 0] = y;
             PMtx.Elems[2, 0] = z;
             PMtx.Elems[3, 0] = 1;
-            Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
-            res = TMtx * PMtx;
+            Matrix res = TMtx * PMtx;
             x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
             y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
             z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
@@ -155,20 +158,27 @@ namespace GrapKurs
             sx = res.Elems[0, 0] / res.Elems[3, 0];
             sy = res.Elems[1, 0] / res.Elems[3, 0];
             sz = res.Elems[2, 0] / res.Elems[3, 0];
-
+            Trans *= TMtx;
         }
-        public Point Outlook(double distance)
+        public void Cent_perspective(double fov, double aspect, double near, double far)
         {
-            Matrix OlMtx = new Matrix(4);
-            OlMtx.Elems[3, 2] = -1 / distance;
+            double yScale = (1 / Math.Tan(fov / 2)) * (Math.PI / 180);
+            double xScale = yScale / aspect;
+            Matrix TMtx = new Matrix(4);
+            TMtx.Elems[0, 0] = xScale;
+            TMtx.Elems[1, 1] = yScale;
+            TMtx.Elems[2, 2] = far / (far - near);
+            TMtx.Elems[2, 3] = 1;
+            TMtx.Elems[3, 2] = -near * far / (far - near);
             Matrix PMtx = new Matrix(4, 1);
             PMtx.Elems[0, 0] = x;
             PMtx.Elems[1, 0] = y;
             PMtx.Elems[2, 0] = z;
             PMtx.Elems[3, 0] = 1;
-            Matrix res = new Matrix(OlMtx.Rows, PMtx.Columns);
-            res = OlMtx * PMtx;
-            return new Point(res.Elems[0, 0] / res.Elems[3, 0], res.Elems[1, 0] / res.Elems[3, 0], res.Elems[2, 0] / res.Elems[3, 0]);
+            Matrix res = TMtx * PMtx;
+            x = res.Elems[0, 0] / res.Elems[3, 0];
+            y = res.Elems[1, 0] / res.Elems[3, 0];
+            z = res.Elems[2, 0] / res.Elems[3, 0];
         }
         public static Point operator *(Point pt1, double dig)
         {
@@ -237,9 +247,12 @@ namespace GrapKurs
         public double Area;
         public Triangle(Triangle triangle)
         {
-            triangle.Points.CopyTo(Points, 0);
+            Points[0] = new Point(triangle.Points[0]);
+            Points[1] = new Point(triangle.Points[1]);
+            Points[2] = new Point(triangle.Points[2]);
             Center = new Point(triangle.Center);
             Color = triangle.Color;
+            Area = triangle.Area;
         }
         public Triangle(Point pt1, Point pt2, Point pt3, Color color)
         {
@@ -275,6 +288,13 @@ namespace GrapKurs
         {
             for (int i = 0; i < 3; i++)
                 Points[i].Slip(xy, xz, yx, yz, zx, zy, axis);
+        }
+        public void Cent_per(double fov, double aspect, double near, double far)
+        {
+            foreach (Point item in Points)
+            {
+                item.Cent_perspective(fov, aspect, near, far);
+            }
         }
         private void Transform(double x_scale, double y_scale, double z_scale, double xy, double xz, double yx, double yz, double zx, double zy)
         {
