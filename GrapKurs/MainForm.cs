@@ -26,8 +26,11 @@ namespace GrapKurs
                 foreach (Triangle tr in item.polygs)
                 {
                     Triangle polyg = new Triangle(tr);
+                    for (int i = 0; i < 3; i++)
+                        polyg.Points[i].Moving(polyg.Points[i].x - scene.camera.eye.x + scene.bmp.Width / 2, polyg.Points[i].y - scene.camera.eye.y + scene.bmp.Height / 2, polyg.Points[i].z - scene.camera.eye.z);
+                    polyg.LookAt(scene.camera.eye, scene.camera.target);
                     if (scene.center_per)
-                        polyg.Cent_per(-90, Width/Height, scene.camera.near, scene.camera.far);
+                        polyg.Cent_per(-90, scene.camera.near, scene.camera.far);
                     DrawTriangle(polyg, scene);
                 }
             }
@@ -131,7 +134,7 @@ namespace GrapKurs
                         Point P = new Point(A) + new Point(B - A) * phi;
                         P.x = j; P.y = p1.y + i;
                         int idx = (int)(P.x + P.y * scene.bmp.Width);
-                        if (P.x >= scene.bmp.Width || P.x < 0 || P.y >= scene.bmp.Height || P.y < 0) continue;
+                        if (P.x >= scene.bmp.Width || P.x < 0 || P.y >= scene.bmp.Height || P.y < 0 || new Line(scene.camera.eye, P).Length < scene.camera.near || new Line(scene.camera.eye, P).Length > scene.camera.far) continue;
                         try
                         {
                             if (scene.zBuf[idx] < P.z)
@@ -366,6 +369,7 @@ namespace GrapKurs
                 default:
                     break;
             }
+            Redraw();
         }
         private void bMoveCam_m_Click(object sender, EventArgs e)
         {
@@ -390,6 +394,7 @@ namespace GrapKurs
                 default:
                     break;
             }
+            Redraw();
         }
         private void bCen_m_Click(object sender, EventArgs e)
         {
@@ -414,6 +419,7 @@ namespace GrapKurs
                 default:
                     break;
             }
+            Redraw();
         }
         private void bCen_p_Click(object sender, EventArgs e)
         {
@@ -438,6 +444,7 @@ namespace GrapKurs
                 default:
                     break;
             }
+            Redraw();
         }
         private void bObj_m_Click(object sender, EventArgs e)
         {

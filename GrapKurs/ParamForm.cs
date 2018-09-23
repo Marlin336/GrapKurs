@@ -12,7 +12,7 @@ namespace GrapKurs
 {
     public partial class ParamForm : Form
     {
-        Point st = new Point(325, 225, 0);
+        Point st = new Point(0, 0, 0);
         MainForm main;
         bool edit;
         int select;

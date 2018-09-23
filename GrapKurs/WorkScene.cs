@@ -20,7 +20,7 @@ namespace GrapKurs
         {
             bmp = new Bitmap(width, height);
             zBuf = new int[bmp.Width * bmp.Height];
-            camera = new Camera(new Point(0, 0, 1000), new Point(0, 0, 0));
+            camera = new Camera(new Point(0, 100, 100), new Point(0, 0, 0));
             ClearzBuf();
         }
         public void ClearzBuf()

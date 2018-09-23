@@ -160,16 +160,39 @@ namespace GrapKurs
             sz = res.Elems[2, 0] / res.Elems[3, 0];
             Trans *= TMtx;
         }
-        public void Cent_perspective(double fov, double aspect, double near, double far)
+        public void LookAt(Point eye, Point target)
         {
-            double yScale = (1 / Math.Tan(fov / 2)) * (Math.PI / 180);
-            double xScale = yScale / aspect;
+            double a = Math.Sqrt((eye.y - target.y)*(eye.y - target.y));
+            double b = Math.Sqrt((eye.x - target.x) * (eye.x - target.x) + (eye.z - target.z) * (eye.z - target.z));
+            double c = new Line(eye, target).Length;
+
+            double cam_angle_x = Math.Acos(b / c) * 180 / Math.PI;
+
+            a = Math.Sqrt((eye.z - target.z) * (eye.z - target.z));
+            b = Math.Sqrt((eye.x - target.x) * (eye.x - target.x) + (eye.y - target.y) * (eye.y - target.y));
+            
+            double cam_angle_y = Math.Asin(b / c) * 180 / Math.PI;
+
             Matrix TMtx = new Matrix(4);
-            TMtx.Elems[0, 0] = xScale;
-            TMtx.Elems[1, 1] = yScale;
-            TMtx.Elems[2, 2] = far / (far - near);
-            TMtx.Elems[2, 3] = 1;
-            TMtx.Elems[3, 2] = -near * far / (far - near);
+            TMtx.Elems[0, 0] = Math.Cos(cam_angle_y);
+            TMtx.Elems[1, 0] = Math.Sin(cam_angle_x) * Math.Sin(cam_angle_y);
+            TMtx.Elems[1, 1] = Math.Cos(cam_angle_x);
+            TMtx.Elems[0, 2] = Math.Sin(cam_angle_y);
+            TMtx.Elems[1, 2] = -Math.Sin(cam_angle_x) * Math.Cos(cam_angle_y);
+            Matrix PMtx = new Matrix(4, 1);
+            PMtx.Elems[0, 0] = x;
+            PMtx.Elems[1, 0] = y;
+            PMtx.Elems[2, 0] = z;
+            PMtx.Elems[3, 0] = 1;
+            Matrix res = TMtx * PMtx;
+            x = res.Elems[0, 0] / res.Elems[3, 0];
+            y = res.Elems[1, 0] / res.Elems[3, 0];
+            z = res.Elems[2, 0] / res.Elems[3, 0];
+        }
+        public void Cent_perspective(double distan)
+        {
+            Matrix TMtx = new Matrix(4);
+            TMtx.Elems[2, 0] = 1.0 / 10.0;
             Matrix PMtx = new Matrix(4, 1);
             PMtx.Elems[0, 0] = x;
             PMtx.Elems[1, 0] = y;
@@ -289,12 +312,17 @@ namespace GrapKurs
             for (int i = 0; i < 3; i++)
                 Points[i].Slip(xy, xz, yx, yz, zx, zy, axis);
         }
-        public void Cent_per(double fov, double aspect, double near, double far)
+        public void Cent_per(double dist, double near, double far)
         {
             foreach (Point item in Points)
             {
-                item.Cent_perspective(fov, aspect, near, far);
+                item.Cent_perspective(dist);
             }
+        }
+        public void LookAt(Point eye, Point target)
+        {
+            foreach (Point item in Points)
+                item.LookAt(eye, target);
         }
         private void Transform(double x_scale, double y_scale, double z_scale, double xy, double xz, double yx, double yz, double zx, double zy)
         {
