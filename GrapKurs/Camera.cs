@@ -19,10 +19,10 @@ namespace GrapKurs
         public double focus;
         public double rotLeftRight = 0;
         public double rotUpDown = 0;
-        public double pos_cam_x = 180;
-        public double pos_cam_y = 0;
-        public double pos_targ_x;
-        public double pos_targ_y;
+        //public double pos_cam_x = 180;
+        //public double pos_cam_y = 0;
+        //public double pos_targ_x;
+        //public double pos_targ_y;
         public Camera(Point eye_pos, Point targ_pos)
         {
             eye = eye_pos;

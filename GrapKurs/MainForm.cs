@@ -1,5 +1,4 @@
-﻿using ObjParser;
-using System;
+﻿using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -26,11 +25,11 @@ namespace GrapKurs
                 foreach (Triangle tr in item.polygs)
                 {
                     Triangle polyg = new Triangle(tr);
-                    for (int i = 0; i < 3; i++)
-                        polyg.Points[i].Moving(polyg.Points[i].x - scene.camera.eye.x + scene.bmp.Width / 2, polyg.Points[i].y - scene.camera.eye.y + scene.bmp.Height / 2, polyg.Points[i].z - scene.camera.eye.z);
+                    
                     polyg.LookAt(scene.camera.eye, scene.camera.target);
-                    if (scene.center_per)
-                        polyg.Cent_per(-90, scene.camera.near, scene.camera.far);
+                    polyg.Moving(-scene.camera.eye.x + scene.bmp.Width / 2, -scene.camera.eye.y + scene.bmp.Height / 2, -scene.camera.eye.z);
+                    /*if (scene.center_per)
+                        polyg.Cent_per(-90, scene.camera.near, scene.camera.far);*/
                     DrawTriangle(polyg, scene);
                 }
             }

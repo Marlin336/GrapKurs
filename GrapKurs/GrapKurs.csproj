@@ -47,7 +47,6 @@
   <ItemGroup>
     <Compile Include="Camera.cs" />
     <Compile Include="Draw.cs" />
-    <Compile Include="Extent.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -55,8 +54,6 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Matrix.cs" />
-    <Compile Include="Mtl.cs" />
-    <Compile Include="Obj.cs" />
     <Compile Include="ParamForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -66,12 +63,6 @@
     <Compile Include="ParamObj.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Types\Color.cs" />
-    <Compile Include="Types\Face.cs" />
-    <Compile Include="Types\IType.cs" />
-    <Compile Include="Types\Material.cs" />
-    <Compile Include="Types\TextureVertex.cs" />
-    <Compile Include="Types\Vertex.cs" />
     <Compile Include="WorkScene.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

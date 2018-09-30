@@ -175,10 +175,10 @@ namespace GrapKurs
 
             Matrix TMtx = new Matrix(4);
             TMtx.Elems[0, 0] = Math.Cos(cam_angle_y);
-            TMtx.Elems[1, 0] = Math.Sin(cam_angle_x) * Math.Sin(cam_angle_y);
+            TMtx.Elems[0, 1] = Math.Sin(cam_angle_x) * Math.Sin(cam_angle_y);
             TMtx.Elems[1, 1] = Math.Cos(cam_angle_x);
-            TMtx.Elems[0, 2] = Math.Sin(cam_angle_y);
-            TMtx.Elems[1, 2] = -Math.Sin(cam_angle_x) * Math.Cos(cam_angle_y);
+            TMtx.Elems[2, 0] = Math.Sin(cam_angle_y);
+            TMtx.Elems[2, 1] = -Math.Sin(cam_angle_x) * Math.Cos(cam_angle_y);
             Matrix PMtx = new Matrix(4, 1);
             PMtx.Elems[0, 0] = x;
             PMtx.Elems[1, 0] = y;
@@ -189,19 +189,42 @@ namespace GrapKurs
             y = res.Elems[1, 0] / res.Elems[3, 0];
             z = res.Elems[2, 0] / res.Elems[3, 0];
         }
-        public void Cent_perspective(double distan)
+        public void Cent_perspective(Camera cam)
         {
-            Matrix TMtx = new Matrix(4);
-            TMtx.Elems[2, 0] = 1.0 / 10.0;
-            Matrix PMtx = new Matrix(4, 1);
-            PMtx.Elems[0, 0] = x;
-            PMtx.Elems[1, 0] = y;
-            PMtx.Elems[2, 0] = z;
-            PMtx.Elems[3, 0] = 1;
-            Matrix res = TMtx * PMtx;
-            x = res.Elems[0, 0] / res.Elems[3, 0];
-            y = res.Elems[1, 0] / res.Elems[3, 0];
-            z = res.Elems[2, 0] / res.Elems[3, 0];
+            double x = cam.eye.x - cam.target.x;
+            double y = cam.eye.y - cam.target.y;
+            double z = cam.eye.z - cam.target.z;
+            double roxy = Math.Sqrt(x * x + y * y);
+            double teta = Math.Acos(x / roxy);
+            if (y < 0) {teta *= -1;}
+            double fi = Math.PI / 2 - Math.Atan(z / roxy);
+            double ro = Math.Sqrt(x * x + y * y + z * z);
+            double sinTeta = Math.Sin(teta);
+            double sinFi = Math.Sin(fi);
+            double cosTeta = Math.Cos(teta);
+            double cosFi = Math.Cos(fi);
+
+            Matrix TransMtx = new Matrix(4);
+            TransMtx.Elems[0, 0] = -sinTeta;
+            TransMtx.Elems[0, 1] = -cosFi * cosTeta;
+            TransMtx.Elems[0, 2] = -sinFi * cosTeta;
+
+            TransMtx.Elems[1, 0] = cosTeta;
+            TransMtx.Elems[1, 1] = -cosFi * sinTeta;
+            TransMtx.Elems[1, 2] = -sinFi * sinTeta;
+
+            TransMtx.Elems[2, 1] = sinFi;
+            TransMtx.Elems[2, 2] = cosFi;
+
+            TransMtx.Elems[3, 2] = ro;
+
+            Matrix MoveMtx = new Matrix(4);
+            MoveMtx.Elems[3, 0] = -cam.target.x;
+            MoveMtx.Elems[3, 1] = -cam.target.y;
+            MoveMtx.Elems[3, 2] = -cam.target.z;
+
+            Matrix ProjMtx = new Matrix(4);
+            ProjMtx.Elems[2, 3] = 1 / cam.focus;
         }
         public static Point operator *(Point pt1, double dig)
         {
@@ -250,6 +273,7 @@ namespace GrapKurs
             return hashCode;
         }
     }
+    
     public class Line
     {
         public Point[] Points { get; } = new Point[2];
@@ -316,7 +340,7 @@ namespace GrapKurs
         {
             foreach (Point item in Points)
             {
-                item.Cent_perspective(dist);
+                //item.Cent_perspective(dist);
             }
         }
         public void LookAt(Point eye, Point target)
