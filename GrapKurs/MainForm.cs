@@ -169,6 +169,10 @@ namespace GrapKurs
                 char[] sep = { '/', ':' };
                 StreamReader stream = new StreamReader(openFD.FileName, System.Text.Encoding.Default, false);
                 ParamObj paramObj = null;
+                string[] cam_str = stream.ReadLine().Split(sep);
+                string[] targ_str = stream.ReadLine().Split(sep);
+                scene.camera.eye = new Point(Double.Parse(cam_str[1]), Double.Parse(cam_str[2]), Double.Parse(cam_str[3]));
+                scene.camera.target = new Point(Double.Parse(targ_str[1]), Double.Parse(targ_str[2]), Double.Parse(targ_str[3]));
                 while (!stream.EndOfStream)
                 {
                     string service = stream.ReadLine();
@@ -217,6 +221,8 @@ namespace GrapKurs
                 string vertex = null;
                 for (int i = 0; i < scene.objs.Count; i++)
                 {
+                    vertex += "cam:" + scene.camera.eye.x + "/" + scene.camera.eye.y + "/" + scene.camera.eye.z+"\n";
+                    vertex += "targ:" + scene.camera.target.x + "/" + scene.camera.target.y + "/" + scene.camera.target.z + "\n";
                     vertex += "[Obj]\n";
                     vertex += scene.objs[i].Start.x + "/" + scene.objs[i].Start.y + "/" + scene.objs[i].Start.z + "/" + scene.objs[i].bar_len + "/" + scene.objs[i].bar_diam + "/" + scene.objs[i].mag_len + "/" + scene.objs[i].box_width + "/" + scene.objs[i].cev_len + "/" + scene.objs[i].targ_ang + "/" + scene.objs[i].nas + "/" + scene.objs[i].rings + "/" + scene.objs[i].sp_ang + "/" + scene.objs[i].dist + "\n";
                     for (int j = 0; j < scene.objs[i].polygs.Count; j++)
