@@ -25,7 +25,6 @@ namespace GrapKurs
                 foreach (Triangle tr in item.polygs)
                 {
                     Triangle polyg = new Triangle(tr);
-                    
                     polyg.LookAt(scene.camera.eye, scene.camera.target);
                     polyg.Moving(-scene.camera.eye.x + scene.bmp.Width / 2, -scene.camera.eye.y + scene.bmp.Height / 2, -scene.camera.eye.z);
                     /*if (scene.center_per)
@@ -279,7 +278,8 @@ namespace GrapKurs
             else
             {
                 int index = lboxObj.SelectedIndex;
-                ParamObj paramObj = (ParamObj)scene.objs[index];
+                ParamObj paramObj = scene.objs[index];
+                axis = paramObj.Start;
                 foreach (Triangle item in paramObj.polygs)
                 {
                     item.Reset();

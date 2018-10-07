@@ -18,7 +18,6 @@ namespace GrapKurs
         private double xsh = 0;
         private double ysh = 0;
         private double zsh = 0;
-        private Matrix Trans = new Matrix(4);
         public Point() { }
         public Point(double x, double y, double z)
         {
@@ -61,15 +60,13 @@ namespace GrapKurs
             PointMtx.Elems[1, 0] = y;
             PointMtx.Elems[2, 0] = z;
             PointMtx.Elems[3, 0] = 1;
-            Matrix res = new Matrix(MoveMtx.Rows, PointMtx.Columns);
-            res = MoveMtx * PointMtx;
+            Matrix res = MoveMtx * PointMtx;
             x = res.Elems[0, 0] / res.Elems[3, 0];
             y = res.Elems[1, 0] / res.Elems[3, 0];
             z = res.Elems[2, 0] / res.Elems[3, 0];
             xsh += x_move;
             ysh += y_move;
             zsh += z_move;
-            Trans *= MoveMtx;
         }
         public void Rotate(double x_angle, double y_angle, double z_angle, Point axis)
         {
@@ -102,7 +99,6 @@ namespace GrapKurs
             y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
             z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
             Moving(axis.x, axis.y, axis.z);
-            Trans *= TMtx;
         }
         public void Slip(double xy, double xz, double yx, double yz, double zx, double zy, Point axis)
         {
@@ -125,7 +121,6 @@ namespace GrapKurs
             y = res.Elems[1, 0] / res.Elems[3, 0];
             z = res.Elems[2, 0] / res.Elems[3, 0];
             Moving(-axis.x, -axis.y, -axis.z);
-            Trans *= TMtx;
         }
         public void Transform(double x_scale, double y_scale, double z_scale, double xy, double xz, double yx, double yz, double zx, double zy)
         {
@@ -158,36 +153,23 @@ namespace GrapKurs
             sx = res.Elems[0, 0] / res.Elems[3, 0];
             sy = res.Elems[1, 0] / res.Elems[3, 0];
             sz = res.Elems[2, 0] / res.Elems[3, 0];
-            Trans *= TMtx;
         }
         public void LookAt(Point eye, Point target)
         {
+            Reset();
             double a = Math.Sqrt((eye.y - target.y)*(eye.y - target.y));
             double b = Math.Sqrt((eye.x - target.x) * (eye.x - target.x) + (eye.z - target.z) * (eye.z - target.z));
             double c = new Line(eye, target).Length;
 
             double cam_angle_x = Math.Acos(b / c) * 180 / Math.PI;
 
-            a = Math.Sqrt((eye.z - target.z) * (eye.z - target.z));
-            b = Math.Sqrt((eye.x - target.x) * (eye.x - target.x) + (eye.y - target.y) * (eye.y - target.y));
+            a = Math.Sqrt((eye.x - target.x) * (eye.x - target.x));
+            b = Math.Sqrt((eye.z - target.z) * (eye.z - target.z) + (eye.y - target.y) * (eye.y - target.y));
             
-            double cam_angle_y = Math.Asin(b / c) * 180 / Math.PI;
+            double cam_angle_y = Math.Acos(b / c) * 180 / Math.PI;
 
-            Matrix TMtx = new Matrix(4);
-            TMtx.Elems[0, 0] = Math.Cos(cam_angle_y);
-            TMtx.Elems[0, 1] = Math.Sin(cam_angle_x) * Math.Sin(cam_angle_y);
-            TMtx.Elems[1, 1] = Math.Cos(cam_angle_x);
-            TMtx.Elems[2, 0] = Math.Sin(cam_angle_y);
-            TMtx.Elems[2, 1] = -Math.Sin(cam_angle_x) * Math.Cos(cam_angle_y);
-            Matrix PMtx = new Matrix(4, 1);
-            PMtx.Elems[0, 0] = x;
-            PMtx.Elems[1, 0] = y;
-            PMtx.Elems[2, 0] = z;
-            PMtx.Elems[3, 0] = 1;
-            Matrix res = TMtx * PMtx;
-            x = res.Elems[0, 0] / res.Elems[3, 0];
-            y = res.Elems[1, 0] / res.Elems[3, 0];
-            z = res.Elems[2, 0] / res.Elems[3, 0];
+            Moving(-target.x, -target.y, -target.z);
+            Rotate(-cam_angle_x, cam_angle_y, 0, new Point());
         }
         public void Cent_perspective(Camera cam)
         {
