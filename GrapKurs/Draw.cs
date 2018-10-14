@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
+using System.Linq;
 
 namespace GrapKurs
 {
@@ -95,9 +92,12 @@ namespace GrapKurs
             PMtx.Elems[3, 0] = 1;
             Matrix res = new Matrix(TMtx.Rows, PMtx.Columns);
             res = TMtx * PMtx;
-            x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
-            y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
-            z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
+            //x = (int)res.Elems[0, 0] / (int)res.Elems[3, 0];
+            //y = (int)res.Elems[1, 0] / (int)res.Elems[3, 0];
+            //z = (int)res.Elems[2, 0] / (int)res.Elems[3, 0];
+            x = res.Elems[0, 0] / res.Elems[3, 0];
+            y = res.Elems[1, 0] / res.Elems[3, 0];
+            z = res.Elems[2, 0] / res.Elems[3, 0];
             Moving(axis.x, axis.y, axis.z);
         }
         public void Slip(double xy, double xz, double yx, double yz, double zx, double zy, Point axis)
@@ -156,7 +156,7 @@ namespace GrapKurs
         }
         public void LookAt(Point eye, Point target)
         {
-            Reset();
+            //Reset();
             double a = Math.Sqrt((eye.y - target.y)*(eye.y - target.y));
             double b = Math.Sqrt((eye.x - target.x) * (eye.x - target.x) + (eye.z - target.z) * (eye.z - target.z));
             double c = new Line(eye, target).Length;
@@ -169,7 +169,7 @@ namespace GrapKurs
             double cam_angle_y = Math.Acos(b / c) * 180 / Math.PI;
 
             Moving(-target.x, -target.y, -target.z);
-            Rotate(-cam_angle_x, cam_angle_y, 0, new Point());
+            Rotate(cam_angle_x, -cam_angle_y, 0, new Point());
         }
         public void Cent_perspective(Camera cam)
         {
@@ -254,8 +254,7 @@ namespace GrapKurs
             hashCode = hashCode * -1521134295 + z.GetHashCode();
             return hashCode;
         }
-    }
-    
+    }   
     public class Line
     {
         public Point[] Points { get; } = new Point[2];

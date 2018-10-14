@@ -12,6 +12,7 @@ namespace GrapKurs
         public Point Start { set; get; }
         public double bar_len, bar_diam, mag_len, box_width, cev_len, targ_ang, sp_ang, dist;
         public int nas, rings;
+        public double scale = 1;
         public List<Triangle> polygs = new List<Triangle>();
         public ParamObj(){  }
         public ParamObj(Point start_point, double bar_len, double bar_diam, double mag_len, double box_width, double cev_len, double targ_ang, int nas, int rings, double sp_ang, double dist)

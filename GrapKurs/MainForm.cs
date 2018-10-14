@@ -9,6 +9,7 @@ namespace GrapKurs
     {
         public WorkScene scene;
         Random r = new Random();
+        double scale = 1;
         public MainForm()
         {
             InitializeComponent();
@@ -25,10 +26,9 @@ namespace GrapKurs
                 foreach (Triangle tr in item.polygs)
                 {
                     Triangle polyg = new Triangle(tr);
+                    polyg.Scale(item.scale * scale, item.scale * scale, item.scale * scale, item.Start);
                     polyg.LookAt(scene.camera.eye, scene.camera.target);
                     polyg.Moving(-scene.camera.eye.x + scene.bmp.Width / 2, -scene.camera.eye.y + scene.bmp.Height / 2, -scene.camera.eye.z);
-                    /*if (scene.center_per)
-                        polyg.Cent_per(-90, scene.camera.near, scene.camera.far);*/
                     DrawTriangle(polyg, scene);
                 }
             }
@@ -219,10 +219,10 @@ namespace GrapKurs
             {
                 StreamWriter stream = new StreamWriter(saveFD.FileName, false, System.Text.Encoding.Default);
                 string vertex = null;
+                vertex += "cam:" + scene.camera.eye.x + "/" + scene.camera.eye.y + "/" + scene.camera.eye.z + "\n";
+                vertex += "targ:" + scene.camera.target.x + "/" + scene.camera.target.y + "/" + scene.camera.target.z + "\n";
                 for (int i = 0; i < scene.objs.Count; i++)
                 {
-                    vertex += "cam:" + scene.camera.eye.x + "/" + scene.camera.eye.y + "/" + scene.camera.eye.z+"\n";
-                    vertex += "targ:" + scene.camera.target.x + "/" + scene.camera.target.y + "/" + scene.camera.target.z + "\n";
                     vertex += "[Obj]\n";
                     vertex += scene.objs[i].Start.x + "/" + scene.objs[i].Start.y + "/" + scene.objs[i].Start.z + "/" + scene.objs[i].bar_len + "/" + scene.objs[i].bar_diam + "/" + scene.objs[i].mag_len + "/" + scene.objs[i].box_width + "/" + scene.objs[i].cev_len + "/" + scene.objs[i].targ_ang + "/" + scene.objs[i].nas + "/" + scene.objs[i].rings + "/" + scene.objs[i].sp_ang + "/" + scene.objs[i].dist + "\n";
                     for (int j = 0; j < scene.objs[i].polygs.Count; j++)
@@ -244,25 +244,13 @@ namespace GrapKurs
             Point axis = new Point();
             if (lboxObj.SelectedIndex == -1)
             {
-                foreach (ParamObj item in scene.objs)
-                {
-                    item.Start.Moving(0, 15, 0);
-                    foreach (Triangle initem in item.polygs)
-                    {
-                        initem.Reset();
-                        initem.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, axis);
-                    }
-                }
+                scale = (double)ScaleUpDown.Value;
             }
             else
             {
                 int index = lboxObj.SelectedIndex;
                 ParamObj paramObj = (ParamObj)scene.objs[index];
-                foreach (Triangle item in paramObj.polygs)
-                {
-                    item.Reset();
-                    item.Scale((double)ScaleUpDown.Value, (double)ScaleUpDown.Value, (double)ScaleUpDown.Value, axis);
-                }
+                paramObj.scale = (double)ScaleUpDown.Value;
             }
             Redraw();
         }
@@ -346,9 +334,15 @@ namespace GrapKurs
         private void lboxObj_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lboxObj.SelectedIndex != -1)
+            {
                 bEdit.Enabled = bDel.Enabled = true;
+                ScaleUpDown.Value = Convert.ToDecimal(scene.objs[lboxObj.SelectedIndex].scale);
+            }
             else
+            {
                 bEdit.Enabled = bDel.Enabled = false;
+                ScaleUpDown.Value = Convert.ToDecimal(scale);
+            }
         }
 
         private void bMoveCam_p_Click(object sender, EventArgs e)
